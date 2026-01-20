@@ -45,7 +45,7 @@ export const LocationWrapper = styled.div`
 export const LocationIcon = styled(LocationSvg)`
   width: 16px;
   height: 16px;
-  fill: ${({ theme }) => theme.colors.gray[400]};
+  fill: ${({ theme }) => theme.colors.gray[200]};
 `;
 
 export const LocationText = styled.span`
