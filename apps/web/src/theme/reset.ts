@@ -1,6 +1,12 @@
 import { css } from '@emotion/react';
 
 export const reset = css`
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
   html,
   body,
   div,
