@@ -1,14 +1,15 @@
 import LocationSvg from '@/assets/images/location.svg';
 import styled from '@emotion/styled';
 
-export const Container = styled.header`
+export const Container = styled.header<{ transparent?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   height: 56px;
   padding: 0 16px;
-  background: ${({ theme }) => theme.colors.gray[1000]};
+  background: ${({ theme, transparent }) =>
+    transparent ? 'transparent' : theme.colors.gradient.black1};
 `;
 
 export const LeftSection = styled.div`

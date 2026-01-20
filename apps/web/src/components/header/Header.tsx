@@ -106,7 +106,7 @@ const Header = (props: HeaderProps) => {
   const { buttonText, disabled = false } = props;
 
   return (
-    <S.Container>
+    <S.Container transparent>
       <S.LeftSection>
         <S.IconButton type="button" onClick={onClickLeft}>
           <ChevronLeftIcon width={ICON_SIZE} height={ICON_SIZE} />
