@@ -13,6 +13,9 @@ const meta: Meta<typeof Header> = {
     type: {
       control: 'select',
       options: [HEADER_TYPE.DEFAULT, HEADER_TYPE.EXPLORE, HEADER_TYPE.MENU],
+      table: {
+        type: { summary: "'default' | 'explore' | 'menu'" },
+      },
     },
   },
 };
