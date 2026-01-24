@@ -1,6 +1,0 @@
-.page {
-  background: radial-gradient(circle at top, #e0e7ff, #f4f4f5 30%);
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
