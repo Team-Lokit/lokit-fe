@@ -35,7 +35,6 @@ const MenuHeaderMain = ({ title, onClickBack, children }: MenuHeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClickMenu = () => {
-    console.log('메뉴 버튼 클릭됨');
     setIsOpen((prev) => !prev);
   };
 
