@@ -7,6 +7,8 @@ node_modules
 .DS_Store
 .next
 .expo
+.turbo
+dist
 apps/mobile/android/app/build
 apps/mobile/ios/build
 apps/mobile/ios/Pods
