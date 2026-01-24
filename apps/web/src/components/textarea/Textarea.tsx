@@ -13,9 +13,7 @@ interface TextareaProps
   onChange: (value: string) => void;
   /** 최대 글자 수 */
   max?: number;
-  /** 에러 상태 */
-  isError?: boolean;
-  /** 에러 메시지 */
+  /** 에러 메시지 (값이 있으면 에러 상태로 표시) */
   errorMessage?: string;
 }
 
@@ -23,10 +21,10 @@ const Textarea = ({
   value,
   onChange,
   max = DEFAULT_MAX_LENGTH,
-  isError = false,
-  errorMessage = '',
+  errorMessage,
   ...rest
 }: TextareaProps) => {
+  const isError = !!errorMessage;
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     if (newValue.length <= max) {
@@ -44,9 +42,7 @@ const Textarea = ({
           </S.CharCount>
         </S.TextareaFooter>
       </S.TextareaWrapper>
-      {isError && errorMessage && (
-        <S.ErrorMessage>{errorMessage}</S.ErrorMessage>
-      )}
+      {isError && <S.ErrorMessage>{errorMessage}</S.ErrorMessage>}
     </S.Container>
   );
 };

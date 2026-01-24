@@ -46,7 +46,6 @@ export const WithError: Story = {
   args: {
     name: 'error-input',
     placeholder: '텍스트를 입력하세요',
-    isError: true,
     errorMessage: '필수 입력 항목입니다.',
   },
 };
@@ -56,7 +55,6 @@ export const SearchWithError: Story = {
     name: 'search-error-input',
     type: 'search',
     placeholder: '검색어를 입력하세요',
-    isError: true,
     errorMessage: '검색어를 입력해주세요.',
   },
 };

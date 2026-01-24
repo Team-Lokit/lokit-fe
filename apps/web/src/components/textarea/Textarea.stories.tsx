@@ -31,7 +31,6 @@ export const WithError: Story = {
   args: {
     name: 'error-textarea',
     placeholder: '내용을 입력하세요',
-    isError: true,
     errorMessage: '최소 10자 이상 입력해주세요.',
   },
 };
