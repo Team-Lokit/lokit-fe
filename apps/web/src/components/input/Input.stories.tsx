@@ -1,15 +1,23 @@
 import Input from '@/components/input/Input';
 import type { Meta, StoryObj } from '@storybook/react';
+import { useArgs } from 'storybook/preview-api';
 
 const meta: Meta<typeof Input> = {
   title: 'Components/Input',
   component: Input,
   tags: ['autodocs'],
+  args: {
+    value: '',
+  },
   argTypes: {
     type: {
       control: 'select',
       options: ['input', 'search', 'textarea'],
     },
+  },
+  render: function Render(args) {
+    const [, updateArgs] = useArgs();
+    return <Input {...args} onChange={(newValue) => updateArgs({ value: newValue })} />;
   },
 };
 
