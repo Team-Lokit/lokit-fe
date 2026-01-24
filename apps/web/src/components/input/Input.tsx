@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, ChangeEvent } from 'react';
+import { ChangeEvent } from 'react';
 import * as S from './Input.styles';
 import { DEFAULT_MAX_LENGTH, INPUT_TYPE, InputType } from './Input.constants';
 
@@ -9,6 +9,8 @@ interface InputProps {
   type?: InputType;
   /** 인풋 name */
   name: string;
+  /** 인풋 값 */
+  value: string;
   /** placeholder */
   placeholder?: string;
   /** onChange 핸들러 */
@@ -24,26 +26,24 @@ interface InputProps {
 const Input = ({
   type = INPUT_TYPE.INPUT,
   name,
+  value,
   placeholder = '',
   onChange,
   max = DEFAULT_MAX_LENGTH,
   isError = false,
   errorMessage = '',
 }: InputProps) => {
-  const [value, setValue] = useState('');
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const newValue = e.target.value;
     if (newValue.length <= max) {
-      setValue(newValue);
       onChange(newValue);
     }
   };
 
   const handleReset = () => {
-    setValue('');
     onChange('');
   };
 
