@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 
 export const Container = styled.div`
   position: relative;
-  width: 118px;
-  height: 157px;
+  width: 100%;
+  aspect-ratio: 118 / 157;
 `;
 
 export const Photo = styled.img`
