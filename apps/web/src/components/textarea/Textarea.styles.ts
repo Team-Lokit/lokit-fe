@@ -1,7 +1,5 @@
 import { Theme, css } from '@emotion/react';
 import styled from '@emotion/styled';
-import SearchSvg from '@/assets/images/search.svg';
-import ResetSvg from '@/assets/images/reset.svg';
 
 const SPACING = {
   GAP: 10,
@@ -12,9 +10,7 @@ const SPACING = {
 
 const SIZES = {
   BORDER_RADIUS: 8,
-  INPUT_HEIGHT: 26,
-  SEARCH_ICON: 20,
-  RESET_ICON: 16,
+  MIN_HEIGHT: 100,
 } as const;
 
 export const Container = styled.div`
@@ -23,16 +19,17 @@ export const Container = styled.div`
   width: 100%;
 `;
 
-export const InputWrapper = styled.div<{ isError: boolean }>`
+export const TextareaWrapper = styled.div<{ isError: boolean }>`
   display: flex;
-  align-items: center;
-  gap: ${SPACING.GAP}px;
+  flex-direction: column;
+  min-height: ${SIZES.MIN_HEIGHT}px;
   padding: ${SPACING.PADDING_VERTICAL}px ${SPACING.PADDING_HORIZONTAL}px;
   background: ${({ theme }) => theme.colors.blueWhite.bg5};
   border: 1px solid
     ${({ theme, isError }) =>
       isError ? theme.colors.status.red[200] : theme.colors.blueWhite.border10};
   border-radius: ${SIZES.BORDER_RADIUS}px;
+  box-sizing: border-box;
 
   &:focus-within {
     border-color: ${({ theme, isError }) =>
@@ -40,7 +37,7 @@ export const InputWrapper = styled.div<{ isError: boolean }>`
   }
 `;
 
-const baseInputStyles = (theme: Theme) => css`
+const baseTextareaStyles = (theme: Theme) => css`
   flex: 1;
   background: transparent;
   border: none;
@@ -53,36 +50,17 @@ const baseInputStyles = (theme: Theme) => css`
   }
 `;
 
-export const StyledInput = styled.input`
-  ${({ theme }) => baseInputStyles(theme)}
-  height: ${SIZES.INPUT_HEIGHT}px;
+export const StyledTextarea = styled.textarea`
+  ${({ theme }) => baseTextareaStyles(theme)}
+  resize: none;
 `;
 
-export const SearchIcon = styled(SearchSvg)`
-  width: ${SIZES.SEARCH_ICON}px;
-  height: ${SIZES.SEARCH_ICON}px;
-  flex-shrink: 0;
-
-  path {
-    fill: ${({ theme }) => theme.colors.gray[400]};
-  }
-`;
-
-export const ResetIcon = styled(ResetSvg)`
-  width: ${SIZES.RESET_ICON}px;
-  height: ${SIZES.RESET_ICON}px;
-  flex-shrink: 0;
-`;
-
-export const ResetButton = styled.button`
-  display: inline-flex;
+export const TextareaFooter = styled.div`
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;
-  padding: 0;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  flex-shrink: 0;
+  gap: ${SPACING.GAP}px;
+  margin-top: ${SPACING.MARGIN_TOP}px;
 `;
 
 export const CharCount = styled.span`
