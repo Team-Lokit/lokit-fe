@@ -96,7 +96,7 @@ export const SearchIcon = styled(SearchSvg)`
   flex-shrink: 0;
 
   path {
-    stroke: ${({ theme }) => theme.colors.gray[400]};
+    fill: ${({ theme }) => theme.colors.gray[400]};
   }
 `;
 
