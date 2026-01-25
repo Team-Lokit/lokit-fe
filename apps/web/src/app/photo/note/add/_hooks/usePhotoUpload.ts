@@ -11,23 +11,9 @@ interface UploadPhotoParams {
   userId: number;
 }
 
-const dataUrlToBlob = (dataUrl: string): Blob => {
-  const [header, base64] = dataUrl.split(',');
-  const mimeMatch = header.match(/:(.*?);/);
-  const mime = mimeMatch?.[1] ?? 'image/jpeg';
-  const binary = atob(base64);
-  const array = new Uint8Array(binary.length);
-
-  for (let i = 0; i < binary.length; i++) {
-    array[i] = binary.charCodeAt(i);
-  }
-
-  return new Blob([array], { type: mime });
-};
-
-const getMimeType = (dataUrl: string): string => {
-  const match = dataUrl.match(/data:(.*?);/);
-  return match?.[1] ?? 'image/jpeg';
+const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
+  const response = await fetch(dataUrl);
+  return response.blob();
 };
 
 export const usePhotoUpload = () => {
@@ -36,9 +22,11 @@ export const usePhotoUpload = () => {
 
   return useMutation({
     mutationFn: async ({ photo, description, albumId, userId }: UploadPhotoParams) => {
-      const contentType = getMimeType(photo.uri);
+      // 1. Data URL을 Blob으로 변환
+      const blob = await dataUrlToBlob(photo.uri);
+      const contentType = blob.type || 'image/jpeg';
 
-      // 1. Presigned URL 발급
+      // 2. Presigned URL 발급
       const presignedUrlResponse = await getPresignedUrl({
         data: {
           fileName: photo.filename,
@@ -51,8 +39,7 @@ export const usePhotoUpload = () => {
         throw new Error('Failed to get presigned URL');
       }
 
-      // 2. S3에 이미지 업로드
-      const blob = dataUrlToBlob(photo.uri);
+      // 3. S3에 이미지 업로드
       const uploadResponse = await fetch(presignedUrlResponse.presignedUrl, {
         method: 'PUT',
         body: blob,
@@ -65,7 +52,7 @@ export const usePhotoUpload = () => {
         throw new Error('Failed to upload image to S3');
       }
 
-      // 3. POST /photos로 메타데이터 저장
+      // 4. POST /photos로 메타데이터 저장
       const createResponse = await createPhoto({
         data: {
           url: presignedUrlResponse.objectUrl,
