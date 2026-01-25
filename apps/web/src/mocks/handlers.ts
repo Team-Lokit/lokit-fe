@@ -1,3 +1,3 @@
-import { getGetGreetingMockHandler } from '@repo/api-client';
+import { getLokitAPIMock } from '@repo/api-client';
 
-export const handlers = [getGetGreetingMockHandler()];
+export const handlers = getLokitAPIMock();
