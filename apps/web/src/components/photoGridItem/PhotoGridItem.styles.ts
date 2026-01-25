@@ -1,9 +1,22 @@
 import styled from '@emotion/styled';
 
-export const Container = styled.div`
+export const Container = styled.button`
   position: relative;
   width: 100%;
   aspect-ratio: 118 / 157;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  background: transparent;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
 `;
 
 export const Photo = styled.img`
