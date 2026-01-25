@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 import type { SelectedPhoto } from '../add/_types/photo';
 
 interface PhotoContextValue {
@@ -20,15 +20,16 @@ export function PhotoProvider({ children }: { children: ReactNode }) {
   const [photos, setPhotos] = useState<SelectedPhoto[]>([]);
   const [selectedPhoto, setSelectedPhoto] = useState<SelectedPhoto | null>(null);
 
-  const addPhotos = (newPhotos: SelectedPhoto[]) => {
+  const addPhotos = useCallback((newPhotos: SelectedPhoto[]) => {
     setPhotos((prev) => [...prev, ...newPhotos]);
-  };
+  }, []);
 
-  return (
-    <PhotoContext.Provider value={{ photos, addPhotos, selectedPhoto, setSelectedPhoto }}>
-      {children}
-    </PhotoContext.Provider>
+  const value = useMemo(
+    () => ({ photos, addPhotos, selectedPhoto, setSelectedPhoto }),
+    [photos, addPhotos, selectedPhoto],
   );
+
+  return <PhotoContext.Provider value={value}>{children}</PhotoContext.Provider>;
 }
 
 export function usePhotoContext() {
