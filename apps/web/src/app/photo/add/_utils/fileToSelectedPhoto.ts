@@ -16,7 +16,7 @@ export const fileToSelectedPhoto = (file: File): Promise<SelectedPhoto | null> =
 
       img.onload = () => {
         resolve({
-          id: `file-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          id: crypto.randomUUID(),
           uri: dataUrl,
           filename: file.name,
           createdAt: new Date(file.lastModified).toISOString(),
