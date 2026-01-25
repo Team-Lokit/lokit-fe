@@ -54,10 +54,11 @@ function buildUrlWithPathParams(
 
   let result = url;
   Object.entries(pathParams).forEach(([key, value]) => {
-    // {paramName} 형식 치환
-    result = result.replace(`{${key}}`, String(value));
-    // :paramName 형식도 지원
-    result = result.replace(`:${key}`, String(value));
+    const encodedValue = encodeURIComponent(String(value));
+    // {paramName} 형식 치환 (모든 occurrence)
+    result = result.replace(new RegExp(`\\{${key}\\}`, 'g'), encodedValue);
+    // :paramName 형식도 지원 (모든 occurrence)
+    result = result.replace(new RegExp(`:${key}(?=/|$)`, 'g'), encodedValue);
   });
 
   return result;
