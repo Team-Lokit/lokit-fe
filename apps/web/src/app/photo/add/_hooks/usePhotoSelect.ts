@@ -33,12 +33,9 @@ export const usePhotoSelect = (options?: UsePhotoSelectOptions): UsePhotoSelectR
         }
 
         setIsLoading(true);
-        const newPhotos: SelectedPhoto[] = [];
-
-        for (const file of Array.from(files)) {
-          const photo = await fileToSelectedPhoto(file);
-          if (photo) newPhotos.push(photo);
-        }
+        const photoPromises = Array.from(files).map((file) => fileToSelectedPhoto(file));
+        const results = await Promise.all(photoPromises);
+        const newPhotos = results.filter((photo): photo is SelectedPhoto => photo !== null);
 
         options?.onPhotosSelected?.(newPhotos);
         setIsLoading(false);
