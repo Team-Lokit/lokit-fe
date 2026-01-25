@@ -44,7 +44,7 @@ function joinUrl(url: string, baseUrl: string) {
 /**
  * Path parameter 치환: /users/{userId} → /users/123
  */
-function buildUrlWithPathParams(
+export function buildUrlWithPathParams(
   url: string,
   pathParams?: Record<string, string | number>,
 ): string {
@@ -67,7 +67,10 @@ function buildUrlWithPathParams(
 /**
  * Query parameter 추가: /users → /users?page=1&limit=10
  */
-function buildUrlWithQueryParams(url: string, params?: Record<string, unknown>): string {
+export function buildUrlWithQueryParams(
+  url: string,
+  params?: Record<string, unknown>,
+): string {
   if (!params || Object.keys(params).length === 0) {
     return url;
   }
