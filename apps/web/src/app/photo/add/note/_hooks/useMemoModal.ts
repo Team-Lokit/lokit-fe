@@ -1,9 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const useMemoModal = () => {
-  const [memo, setMemo] = useState('');
-  const [tempMemo, setTempMemo] = useState('');
+const useMemoModal = (initialMemo: string = '') => {
+  const [memo, setMemo] = useState(initialMemo);
+  const [tempMemo, setTempMemo] = useState(initialMemo);
   const [isOpen, setIsOpen] = useState(false);
+
+  // initialMemo가 변경될 때마다 상태 재설정
+  useEffect(() => {
+    setMemo(initialMemo);
+    setTempMemo(initialMemo);
+  }, [initialMemo]);
 
   const openModal = () => {
     setTempMemo(memo);
@@ -23,6 +29,7 @@ const useMemoModal = () => {
     memo,
     tempMemo,
     setTempMemo,
+    setMemo,
     isOpen,
     openModal,
     closeModal,
