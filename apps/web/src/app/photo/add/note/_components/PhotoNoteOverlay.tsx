@@ -42,9 +42,6 @@ import SuccessIcon from '@/assets/images/success.svg';
 import WarningIcon from '@/assets/images/warning.svg';
 import { useToast } from '@/components/toast';
 
-// TODO: 사용자 컨텍스트에서 가져오도록 수정
-const TEMP_USER_ID = 1;
-
 interface PhotoNoteOverlayProps {
   onClose: () => void;
 }
@@ -106,7 +103,6 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
         photo: selectedPhoto,
         description: memo || undefined,
         albumId: selectedAlbum?.id,
-        userId: TEMP_USER_ID,
       },
       {
         onSuccess: () => {
