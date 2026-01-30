@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { AnimatePresence } from 'framer-motion';
 import AlbumIcon from '@/assets/images/album.svg';
 import CommentIcon from '@/assets/images/comment.svg';
 import DateIcon from '@/assets/images/date.svg';
 import Chip from '@/components/buttons/chip/Chip';
 import MenuHeader from '@/components/header/menu/MenuHeader';
+import { AnimatePresence } from 'framer-motion';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import DeleteConfirmModal from './_components/DeleteConfirmModal';
 import PhotoEditOverlay from './_components/PhotoEditOverlay';
 import {
@@ -45,8 +45,14 @@ export default function PhotoViewPage() {
 
   const { isOverlayVisible, longPressHandlers } = useLongPress();
 
-  const { isEditing, editingPhotoId, openEditOverlay, closeEditOverlay, saveEdit } =
-    usePhotoEdit();
+  const {
+    isEditing,
+    isSaving,
+    editingPhotoId,
+    openEditOverlay,
+    closeEditOverlay,
+    saveEdit,
+  } = usePhotoEdit();
 
   const {
     isModalOpen: isDeleteModalOpen,
@@ -190,6 +196,7 @@ export default function PhotoViewPage() {
             photoId={editingPhotoId}
             onClose={closeEditOverlay}
             onSave={saveEdit}
+            isSaving={isSaving}
           />
         )}
       </AnimatePresence>
