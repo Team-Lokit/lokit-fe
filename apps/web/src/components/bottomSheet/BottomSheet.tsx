@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import AddIcon from '@/assets/images/add.svg';
 import CrossHairIcon from '@/assets/images/crossHair.svg';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
@@ -10,12 +11,13 @@ import TextButton from '../buttons/textButton/TextButton';
 import { SHEET_CONTEXT_TYPE, SheetContext } from './constants';
 import { useBottomSheetController } from './_hooks/useBottomSheetController';
 import BottomSheetContent from './bottomSheetContent/BottomSheetContent';
-import type { Album, AlbumDetailData } from '@/types/album.type';
+import type { SelectableAlbum, AlbumWithPhotosResponse } from '@repo/api-client';
+import { ROUTES } from '@/constants/routes';
 
 interface BottomSheetProps {
   context: SheetContext;
-  albums: Album[];
-  albumDetailById: Record<number, AlbumDetailData>;
+  albums: SelectableAlbum[];
+  albumDetailById: Record<number, AlbumWithPhotosResponse>;
   onChangeContext: (context: SheetContext) => void;
   onSelectAlbum: (albumId: number) => void;
 }
@@ -27,6 +29,7 @@ const BottomSheet = ({
   onChangeContext,
   onSelectAlbum,
 }: BottomSheetProps) => {
+  const router = useRouter();
   const [isDragging, setIsDragging] = useState(false);
 
   const {
@@ -89,9 +92,13 @@ const BottomSheet = ({
           )}
           placement="top"
         >
-          <TextButton text="사진 추가" onClick={() => {}} />
-          <TextButton text="사진 추가" onClick={() => {}} />
-          <TextButton text="앨범 추가" onClick={() => {}} />
+          <TextButton text="사진 촬영" onClick={() => {}} textAlign="left" />
+          <TextButton
+            text="사진 추가"
+            onClick={() => router.push(ROUTES.PHOTO.ADD)}
+            textAlign="left"
+          />
+          <TextButton text="앨범 추가" onClick={() => {}} textAlign="left" />
         </MenuButton>
 
         <CircleButton aria-label="취소" onClick={() => {}}>
@@ -114,7 +121,7 @@ const BottomSheet = ({
           <div className="handle" />
         </S.HandleBar>
 
-        <S.Content>
+        <S.Content $noPadding={context.type === SHEET_CONTEXT_TYPE.ALBUM_DETAIL}>
           <BottomSheetContent
             context={context}
             albums={albums}
