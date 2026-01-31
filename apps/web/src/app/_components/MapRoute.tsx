@@ -8,17 +8,17 @@ import { ROUTES } from '@/constants/routes';
 import { SHEET_CONTEXT_TYPE } from '@/components/bottomSheet/constants';
 import { DEFAULT_ZOOM } from '../constants';
 import * as S from '../page.styles';
-
 import { useMapRouteViewState } from '../_hooks/useMapRouteViewState';
 import { useMapRouteSheetContext } from '../_hooks/useMapRouteSheetContext';
 import { useMapRouteData } from '../_hooks/useMapRouteData';
 import { calculatePhotoCount } from '../_utils/mapRoute.calc';
-
 import { MapRouteHeader } from './MapRouteHeader';
 import { MapRouteBottomSection } from './MapRouteBottomSection';
 import { AlbumAddModalContainer } from './albumAddModal/AlbumAddModalContainer';
 import { AlbumRenameModalContainer } from './albumRenameModal/AlbumRenameModalContainer';
 import { AlbumDeleteModalContainer } from './albumDeleteModal/AlbumDeleteModalContainer';
+import LocationPermissionModal from './locationPermissionModal/LocationPermissionModal';
+import { getCurrentPosition } from '@/utils/getCurrentPosition';
 
 export default function MapRoute() {
   const router = useRouter();
@@ -48,6 +48,7 @@ export default function MapRoute() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLocationDeniedModalOpen, setIsLocationDeniedModalOpen] = useState(false);
 
   // 앨범이 선택되었을 때 앨범의 중심 위치로 지도 이동
   useEffect(() => {
@@ -64,6 +65,17 @@ export default function MapRoute() {
       });
     }
   }, [selectedAlbumId, albumMapInfo, viewState, handleViewStateChange]);
+
+  useEffect(() => {
+    const initLocation = async () => {
+      const position = await getCurrentPosition();
+      if (!position) {
+        setIsLocationDeniedModalOpen(true);
+        return;
+      }
+    };
+    initLocation();
+  }, []);
 
   // 계산된 데이터
   const albumDetailById = useMemo(() => {
@@ -117,6 +129,10 @@ export default function MapRoute() {
     setSheetContext({ type: SHEET_CONTEXT_TYPE.HOME });
   };
 
+  const handleCloseLocationDeniedModal = () => {
+    setIsLocationDeniedModalOpen(false);
+  };
+
   return (
     <S.Wrapper>
       <S.HeaderContainer>
@@ -167,6 +183,10 @@ export default function MapRoute() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         selectedAlbumId={selectedAlbumId ?? undefined}
+      />
+      <LocationPermissionModal
+        isOpen={isLocationDeniedModalOpen}
+        onClose={handleCloseLocationDeniedModal}
       />
     </S.Wrapper>
   );
