@@ -3,6 +3,7 @@ import { AppProviders } from './providers';
 import { pretendard } from '@/theme/font';
 import EmotionRegistry from './emotion-registry';
 import LayoutClient from '@/components/layout/Layout.client';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -35,6 +36,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const beusableId = process.env.NEXT_PUBLIC_BEUSABLE_ID;
+
   return (
     <html lang="ko">
       <body className={pretendard.variable}>
@@ -45,6 +48,26 @@ export default function RootLayout({
         </AppProviders>
         <div id="modal-root" />
         <div id="toast-root" />
+        {beusableId && (
+          <Script
+            id="beusable-rum"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function(w, d, a){
+                  w.beusablerumclient = {
+                      load : function(src){
+                          var b = d.createElement("script");
+                          b.src = src; b.async=true; b.type = "text/javascript";
+                          d.getElementsByTagName("head")[0].appendChild(b);
+                      }
+                  };
+                  w.beusablerumclient.load(a + "?url=" + encodeURIComponent(d.URL));
+                })(window, document, "//rum.beusable.net/load/${beusableId}");
+              `,
+            }}
+          />
+        )}
       </body>
     </html>
   );
