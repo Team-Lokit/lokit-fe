@@ -19,11 +19,14 @@ import type {
 import type {
   AlbumRequest,
   ApiResponseErrorDetail,
+  CreateCoupleRequest,
   CreatePhotoRequest,
   GetClusterPhotosParams,
   GetLocationInfoParams,
+  GetMeParams,
   GetPhotos1Params,
   HomeParams,
+  JoinCoupleRequest,
   PresignedUrlRequest,
   SearchPlacesParams,
   UpdateAlbumTitleRequest,
@@ -41,6 +44,7 @@ import type {
   HomeResponse,
   IdResponse,
   LocationInfoResponse,
+  MapMeResponse,
   MapPhotosResponse,
   PhotoDetailResponse,
   PhotoListResponse,
@@ -443,33 +447,36 @@ export const useGetPresignedUrl = <
 };
 
 /**
- * 새로운 앨범을 생성합니다.
- * @summary 앨범 생성
+ * 새로운 커플을 생성합니다.
+ * @summary 커플 생성
  */
-export const create1 = (albumRequest: AlbumRequest, signal?: AbortSignal) => {
+export const create1 = (
+  createCoupleRequest: CreateCoupleRequest,
+  signal?: AbortSignal,
+) => {
   return customFetcher<IdResponse>({
-    url: `/albums`,
+    url: `/couples`,
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    data: albumRequest,
+    data: createCoupleRequest,
     signal,
   });
 };
 
 export const getCreate1MutationOptions = <
-  TError = ApiResponseErrorDetail | IdResponse,
+  TError = void | ApiResponseErrorDetail,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof create1>>,
     TError,
-    { data: AlbumRequest },
+    { data: CreateCoupleRequest },
     TContext
   >;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof create1>>,
   TError,
-  { data: AlbumRequest },
+  { data: CreateCoupleRequest },
   TContext
 > => {
   const mutationKey = ['create1'];
@@ -483,7 +490,7 @@ export const getCreate1MutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof create1>>,
-    { data: AlbumRequest }
+    { data: CreateCoupleRequest }
   > = (props) => {
     const { data } = props ?? {};
 
@@ -494,29 +501,192 @@ export const getCreate1MutationOptions = <
 };
 
 export type Create1MutationResult = NonNullable<Awaited<ReturnType<typeof create1>>>;
-export type Create1MutationBody = AlbumRequest;
-export type Create1MutationError = ApiResponseErrorDetail | IdResponse;
+export type Create1MutationBody = CreateCoupleRequest;
+export type Create1MutationError = void | ApiResponseErrorDetail;
 
 /**
- * @summary 앨범 생성
+ * @summary 커플 생성
  */
 export const useCreate1 = <
-  TError = ApiResponseErrorDetail | IdResponse,
+  TError = void | ApiResponseErrorDetail,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof create1>>,
     TError,
-    { data: AlbumRequest },
+    { data: CreateCoupleRequest },
     TContext
   >;
 }): UseMutationResult<
   Awaited<ReturnType<typeof create1>>,
   TError,
-  { data: AlbumRequest },
+  { data: CreateCoupleRequest },
   TContext
 > => {
   const mutationOptions = getCreate1MutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+/**
+ * 초대 코드를 통해 커플에 합류합니다.
+ * @summary 초대 코드로 커플 합류
+ */
+export const joinByInviteCode = (
+  joinCoupleRequest: JoinCoupleRequest,
+  signal?: AbortSignal,
+) => {
+  return customFetcher<IdResponse>({
+    url: `/couples/join`,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    data: joinCoupleRequest,
+    signal,
+  });
+};
+
+export const getJoinByInviteCodeMutationOptions = <
+  TError = ApiResponseErrorDetail | IdResponse,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof joinByInviteCode>>,
+    TError,
+    { data: JoinCoupleRequest },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof joinByInviteCode>>,
+  TError,
+  { data: JoinCoupleRequest },
+  TContext
+> => {
+  const mutationKey = ['joinByInviteCode'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof joinByInviteCode>>,
+    { data: JoinCoupleRequest }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return joinByInviteCode(data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type JoinByInviteCodeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof joinByInviteCode>>
+>;
+export type JoinByInviteCodeMutationBody = JoinCoupleRequest;
+export type JoinByInviteCodeMutationError = ApiResponseErrorDetail | IdResponse;
+
+/**
+ * @summary 초대 코드로 커플 합류
+ */
+export const useJoinByInviteCode = <
+  TError = ApiResponseErrorDetail | IdResponse,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof joinByInviteCode>>,
+    TError,
+    { data: JoinCoupleRequest },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof joinByInviteCode>>,
+  TError,
+  { data: JoinCoupleRequest },
+  TContext
+> => {
+  const mutationOptions = getJoinByInviteCodeMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+/**
+ * 새로운 앨범을 생성합니다.
+ * @summary 앨범 생성
+ */
+export const create2 = (albumRequest: AlbumRequest, signal?: AbortSignal) => {
+  return customFetcher<IdResponse>({
+    url: `/albums`,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    data: albumRequest,
+    signal,
+  });
+};
+
+export const getCreate2MutationOptions = <
+  TError = ApiResponseErrorDetail | IdResponse,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof create2>>,
+    TError,
+    { data: AlbumRequest },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof create2>>,
+  TError,
+  { data: AlbumRequest },
+  TContext
+> => {
+  const mutationKey = ['create2'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof create2>>,
+    { data: AlbumRequest }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return create2(data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type Create2MutationResult = NonNullable<Awaited<ReturnType<typeof create2>>>;
+export type Create2MutationBody = AlbumRequest;
+export type Create2MutationError = ApiResponseErrorDetail | IdResponse;
+
+/**
+ * @summary 앨범 생성
+ */
+export const useCreate2 = <
+  TError = ApiResponseErrorDetail | IdResponse,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof create2>>,
+    TError,
+    { data: AlbumRequest },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof create2>>,
+  TError,
+  { data: AlbumRequest },
+  TContext
+> => {
+  const mutationOptions = getCreate2MutationOptions(options);
 
   return useMutation(mutationOptions);
 };
@@ -611,7 +781,7 @@ export const updateTitle = (
 };
 
 export const getUpdateTitleMutationOptions = <
-  TError = ApiResponseErrorDetail | IdResponse,
+  TError = ApiResponseErrorDetail | void | IdResponse,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -651,13 +821,13 @@ export type UpdateTitleMutationResult = NonNullable<
   Awaited<ReturnType<typeof updateTitle>>
 >;
 export type UpdateTitleMutationBody = UpdateAlbumTitleRequest;
-export type UpdateTitleMutationError = ApiResponseErrorDetail | IdResponse;
+export type UpdateTitleMutationError = ApiResponseErrorDetail | void | IdResponse;
 
 /**
  * @summary 앨범 제목 수정
  */
 export const useUpdateTitle = <
-  TError = ApiResponseErrorDetail | IdResponse,
+  TError = ApiResponseErrorDetail | void | IdResponse,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -695,7 +865,7 @@ export const getGetPhotosQueryKey = (albumId?: number) => {
 
 export const getGetPhotosQueryOptions = <
   TData = Awaited<ReturnType<typeof getPhotos>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = ApiResponseErrorDetail,
 >(
   albumId: number,
   options?: {
@@ -717,7 +887,7 @@ export const getGetPhotosQueryOptions = <
 };
 
 export type GetPhotosQueryResult = NonNullable<Awaited<ReturnType<typeof getPhotos>>>;
-export type GetPhotosQueryError = ApiResponseErrorDetail | void;
+export type GetPhotosQueryError = ApiResponseErrorDetail;
 
 /**
  * @summary 사진 목록 조회
@@ -725,7 +895,7 @@ export type GetPhotosQueryError = ApiResponseErrorDetail | void;
 
 export function useGetPhotos<
   TData = Awaited<ReturnType<typeof getPhotos>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = ApiResponseErrorDetail,
 >(
   albumId: number,
   options?: {
@@ -768,7 +938,7 @@ export const getSearchPlacesQueryKey = (params?: SearchPlacesParams) => {
 
 export const getSearchPlacesQueryOptions = <
   TData = Awaited<ReturnType<typeof searchPlaces>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = ApiResponseErrorDetail,
 >(
   params: SearchPlacesParams,
   options?: {
@@ -792,7 +962,7 @@ export const getSearchPlacesQueryOptions = <
 export type SearchPlacesQueryResult = NonNullable<
   Awaited<ReturnType<typeof searchPlaces>>
 >;
-export type SearchPlacesQueryError = ApiResponseErrorDetail | void;
+export type SearchPlacesQueryError = ApiResponseErrorDetail;
 
 /**
  * @summary 장소 검색
@@ -800,7 +970,7 @@ export type SearchPlacesQueryError = ApiResponseErrorDetail | void;
 
 export function useSearchPlaces<
   TData = Awaited<ReturnType<typeof searchPlaces>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = ApiResponseErrorDetail,
 >(
   params: SearchPlacesParams,
   options?: {
@@ -822,7 +992,7 @@ export function useSearchPlaces<
  * 
             줌 레벨과 바운딩 박스를 기반으로 지도에 표시할 사진 또는 클러스터를 조회합니다.
 
-            - **줌 레벨 < 16**: ST_SnapToGrid를 사용하여 사진을 클러스터링하여 반환
+            - **줌 레벨 < 15**: ST_SnapToGrid를 사용하여 사진을 클러스터링하여 반환
             - clusterId: 줌 레벨 + 그리드 셀 인덱스 (예: z14_130234_38456)
             - count: 클러스터 내 사진 개수
             - thumbnailUrl: 클러스터 내 가장 최근 생성된 사진의 URL
@@ -846,7 +1016,7 @@ export const getGetPhotos1QueryKey = (params?: GetPhotos1Params) => {
 
 export const getGetPhotos1QueryOptions = <
   TData = Awaited<ReturnType<typeof getPhotos1>>,
-  TError = void | ApiResponseErrorDetail,
+  TError = ApiResponseErrorDetail,
 >(
   params: GetPhotos1Params,
   options?: {
@@ -868,7 +1038,7 @@ export const getGetPhotos1QueryOptions = <
 };
 
 export type GetPhotos1QueryResult = NonNullable<Awaited<ReturnType<typeof getPhotos1>>>;
-export type GetPhotos1QueryError = void | ApiResponseErrorDetail;
+export type GetPhotos1QueryError = ApiResponseErrorDetail;
 
 /**
  * @summary 지도 사진 조회
@@ -876,7 +1046,7 @@ export type GetPhotos1QueryError = void | ApiResponseErrorDetail;
 
 export function useGetPhotos1<
   TData = Awaited<ReturnType<typeof getPhotos1>>,
-  TError = void | ApiResponseErrorDetail,
+  TError = ApiResponseErrorDetail,
 >(
   params: GetPhotos1Params,
   options?: {
@@ -884,6 +1054,70 @@ export function useGetPhotos1<
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetPhotos1QueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * 
+            홈 정보와 지도 사진을 한 번에 조회합니다.
+            
+            - 위치 정보, 앨범 목록, 바운딩 박스 (map/home 응답)
+            - 줌 레벨과 바운딩 박스 기반 사진/클러스터 (map/photos 응답)
+            - 두 API를 하나로 통합하여 네트워크 요청을 줄입니다.
+        
+ * @summary 지도 ME 조회 (홈 + 사진 조회 통합)
+ */
+export const getMe = (params: GetMeParams, signal?: AbortSignal) => {
+  return customFetcher<MapMeResponse>({ url: `/map/me`, method: 'GET', params, signal });
+};
+
+export const getGetMeQueryKey = (params?: GetMeParams) => {
+  return [`/map/me`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetMeQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMe>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params: GetMeParams,
+  options?: { query?: UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData> },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMeQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMe>>> = ({ signal }) =>
+    getMe(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMe>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMeQueryResult = NonNullable<Awaited<ReturnType<typeof getMe>>>;
+export type GetMeQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 지도 ME 조회 (홈 + 사진 조회 통합)
+ */
+
+export function useGetMe<
+  TData = Awaited<ReturnType<typeof getMe>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params: GetMeParams,
+  options?: { query?: UseQueryOptions<Awaited<ReturnType<typeof getMe>>, TError, TData> },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMeQueryOptions(params, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
@@ -919,7 +1153,7 @@ export const getGetLocationInfoQueryKey = (params?: GetLocationInfoParams) => {
 
 export const getGetLocationInfoQueryOptions = <
   TData = Awaited<ReturnType<typeof getLocationInfo>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = ApiResponseErrorDetail,
 >(
   params: GetLocationInfoParams,
   options?: {
@@ -944,7 +1178,7 @@ export const getGetLocationInfoQueryOptions = <
 export type GetLocationInfoQueryResult = NonNullable<
   Awaited<ReturnType<typeof getLocationInfo>>
 >;
-export type GetLocationInfoQueryError = ApiResponseErrorDetail | void;
+export type GetLocationInfoQueryError = ApiResponseErrorDetail;
 
 /**
  * @summary 위치 정보 조회
@@ -952,7 +1186,7 @@ export type GetLocationInfoQueryError = ApiResponseErrorDetail | void;
 
 export function useGetLocationInfo<
   TData = Awaited<ReturnType<typeof getLocationInfo>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = ApiResponseErrorDetail,
 >(
   params: GetLocationInfoParams,
   options?: {
@@ -1060,7 +1294,7 @@ export const getGetClusterPhotosQueryKey = (
 
 export const getGetClusterPhotosQueryOptions = <
   TData = Awaited<ReturnType<typeof getClusterPhotos>>,
-  TError = void | ApiResponseErrorDetail,
+  TError = ApiResponseErrorDetail,
 >(
   clusterId: string,
   params?: GetClusterPhotosParams,
@@ -1087,7 +1321,7 @@ export const getGetClusterPhotosQueryOptions = <
 export type GetClusterPhotosQueryResult = NonNullable<
   Awaited<ReturnType<typeof getClusterPhotos>>
 >;
-export type GetClusterPhotosQueryError = void | ApiResponseErrorDetail;
+export type GetClusterPhotosQueryError = ApiResponseErrorDetail;
 
 /**
  * @summary 클러스터 내 사진 목록 조회
@@ -1095,7 +1329,7 @@ export type GetClusterPhotosQueryError = void | ApiResponseErrorDetail;
 
 export function useGetClusterPhotos<
   TData = Awaited<ReturnType<typeof getClusterPhotos>>,
-  TError = void | ApiResponseErrorDetail,
+  TError = ApiResponseErrorDetail,
 >(
   clusterId: string,
   params?: GetClusterPhotosParams,
@@ -1137,7 +1371,7 @@ export const getGetAlbumMapInfoQueryKey = (albumId?: number) => {
 
 export const getGetAlbumMapInfoQueryOptions = <
   TData = Awaited<ReturnType<typeof getAlbumMapInfo>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = ApiResponseErrorDetail,
 >(
   albumId: number,
   options?: {
@@ -1162,7 +1396,7 @@ export const getGetAlbumMapInfoQueryOptions = <
 export type GetAlbumMapInfoQueryResult = NonNullable<
   Awaited<ReturnType<typeof getAlbumMapInfo>>
 >;
-export type GetAlbumMapInfoQueryError = ApiResponseErrorDetail | void;
+export type GetAlbumMapInfoQueryError = ApiResponseErrorDetail;
 
 /**
  * @summary 앨범 지도 정보 조회
@@ -1170,7 +1404,7 @@ export type GetAlbumMapInfoQueryError = ApiResponseErrorDetail | void;
 
 export function useGetAlbumMapInfo<
   TData = Awaited<ReturnType<typeof getAlbumMapInfo>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = ApiResponseErrorDetail,
 >(
   albumId: number,
   options?: {
@@ -1322,7 +1556,7 @@ export const getGetPhotoDetailResponseMock = (
     undefined,
   ]),
   takenAt: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
+    `${faker.date.past().toISOString().split('.')[0]}Z`,
     undefined,
   ]),
   albumName: faker.helpers.arrayElement([
@@ -1379,6 +1613,26 @@ export const getGetPresignedUrlResponseMock = (
 });
 
 export const getCreate1ResponseMock = (
+  overrideResponse: Partial<IdResponse> = {},
+): IdResponse => ({
+  id: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  ...overrideResponse,
+});
+
+export const getJoinByInviteCodeResponseMock = (
+  overrideResponse: Partial<IdResponse> = {},
+): IdResponse => ({
+  id: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  ...overrideResponse,
+});
+
+export const getCreate2ResponseMock = (
   overrideResponse: Partial<IdResponse> = {},
 ): IdResponse => ({
   id: faker.helpers.arrayElement([
@@ -1490,14 +1744,8 @@ export const getSearchPlacesResponseMock = (
           faker.string.alpha({ length: { min: 10, max: 20 } }),
           undefined,
         ]),
-        longitude: faker.helpers.arrayElement([
-          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
-          undefined,
-        ]),
-        latitude: faker.helpers.arrayElement([
-          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
-          undefined,
-        ]),
+        longitude: faker.number.float({ min: 124, max: 132, fractionDigits: 2 }),
+        latitude: faker.number.float({ min: 33, max: 39, fractionDigits: 2 }),
         category: faker.helpers.arrayElement([
           faker.string.alpha({ length: { min: 10, max: 20 } }),
           undefined,
@@ -1527,14 +1775,8 @@ export const getGetPhotos1ResponseMock = (
           faker.string.alpha({ length: { min: 10, max: 20 } }),
           undefined,
         ]),
-        longitude: faker.helpers.arrayElement([
-          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
-          undefined,
-        ]),
-        latitude: faker.helpers.arrayElement([
-          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
-          undefined,
-        ]),
+        longitude: faker.number.float({ min: 124, max: 132, fractionDigits: 2 }),
+        latitude: faker.number.float({ min: 33, max: 39, fractionDigits: 2 }),
       }),
     ),
     undefined,
@@ -1550,16 +1792,130 @@ export const getGetPhotos1ResponseMock = (
           faker.string.alpha({ length: { min: 10, max: 20 } }),
           undefined,
         ]),
-        longitude: faker.helpers.arrayElement([
-          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+        longitude: faker.number.float({ min: 124, max: 132, fractionDigits: 2 }),
+        latitude: faker.number.float({ min: 33, max: 39, fractionDigits: 2 }),
+        takenAt: faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split('.')[0]}Z`,
           undefined,
         ]),
-        latitude: faker.helpers.arrayElement([
-          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+      }),
+    ),
+    undefined,
+  ]),
+  ...overrideResponse,
+});
+
+export const getGetMeResponseMock = (
+  overrideResponse: Partial<MapMeResponse> = {},
+): MapMeResponse => ({
+  location: faker.helpers.arrayElement([
+    {
+      address: faker.helpers.arrayElement([
+        faker.string.alpha({ length: { min: 10, max: 20 } }),
+        undefined,
+      ]),
+      roadName: faker.helpers.arrayElement([
+        faker.string.alpha({ length: { min: 10, max: 20 } }),
+        undefined,
+      ]),
+      placeName: faker.helpers.arrayElement([
+        faker.string.alpha({ length: { min: 10, max: 20 } }),
+        undefined,
+      ]),
+      regionName: faker.helpers.arrayElement([
+        faker.string.alpha({ length: { min: 10, max: 20 } }),
+        undefined,
+      ]),
+    },
+    undefined,
+  ]),
+  boundingBox: faker.helpers.arrayElement([
+    {
+      west: faker.helpers.arrayElement([
+        faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+        undefined,
+      ]),
+      south: faker.helpers.arrayElement([
+        faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+        undefined,
+      ]),
+      east: faker.helpers.arrayElement([
+        faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+        undefined,
+      ]),
+      north: faker.helpers.arrayElement([
+        faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+        undefined,
+      ]),
+    },
+    undefined,
+  ]),
+  totalHistoryCount: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  albums: faker.helpers.arrayElement([
+    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+      () => ({
+        id: faker.helpers.arrayElement([
+          faker.number.int({ min: undefined, max: undefined }),
           undefined,
         ]),
-        date: faker.helpers.arrayElement([
+        title: faker.helpers.arrayElement([
           faker.string.alpha({ length: { min: 10, max: 20 } }),
+          undefined,
+        ]),
+        photoCount: faker.helpers.arrayElement([
+          faker.number.int({ min: undefined, max: undefined }),
+          undefined,
+        ]),
+        thumbnailUrls: faker.helpers.arrayElement([
+          Array.from(
+            { length: faker.number.int({ min: 1, max: 10 }) },
+            (_, i) => i + 1,
+          ).map(() => faker.string.alpha({ length: { min: 10, max: 20 } })),
+          undefined,
+        ]),
+      }),
+    ),
+    undefined,
+  ]),
+  clusters: faker.helpers.arrayElement([
+    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+      () => ({
+        clusterId: faker.helpers.arrayElement([
+          faker.string.alpha({ length: { min: 10, max: 20 } }),
+          undefined,
+        ]),
+        count: faker.helpers.arrayElement([
+          faker.number.int({ min: undefined, max: undefined }),
+          undefined,
+        ]),
+        thumbnailUrl: faker.helpers.arrayElement([
+          faker.string.alpha({ length: { min: 10, max: 20 } }),
+          undefined,
+        ]),
+        longitude: faker.number.float({ min: 124, max: 132, fractionDigits: 2 }),
+        latitude: faker.number.float({ min: 33, max: 39, fractionDigits: 2 }),
+      }),
+    ),
+    undefined,
+  ]),
+  photos: faker.helpers.arrayElement([
+    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+      () => ({
+        id: faker.helpers.arrayElement([
+          faker.number.int({ min: undefined, max: undefined }),
+          undefined,
+        ]),
+        thumbnailUrl: faker.helpers.arrayElement([
+          faker.string.alpha({ length: { min: 10, max: 20 } }),
+          undefined,
+        ]),
+        longitude: faker.number.float({ min: 124, max: 132, fractionDigits: 2 }),
+        latitude: faker.number.float({ min: 33, max: 39, fractionDigits: 2 }),
+        takenAt: faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split('.')[0]}Z`,
           undefined,
         ]),
       }),
@@ -1573,6 +1929,10 @@ export const getGetLocationInfoResponseMock = (
   overrideResponse: Partial<LocationInfoResponse> = {},
 ): LocationInfoResponse => ({
   address: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
+  roadName: faker.helpers.arrayElement([
     faker.string.alpha({ length: { min: 10, max: 20 } }),
     undefined,
   ]),
@@ -1593,6 +1953,10 @@ export const getHomeResponseMock = (
   location: faker.helpers.arrayElement([
     {
       address: faker.helpers.arrayElement([
+        faker.string.alpha({ length: { min: 10, max: 20 } }),
+        undefined,
+      ]),
+      roadName: faker.helpers.arrayElement([
         faker.string.alpha({ length: { min: 10, max: 20 } }),
         undefined,
       ]),
@@ -1671,16 +2035,10 @@ export const getGetClusterPhotosResponseMock = (
           faker.string.alpha({ length: { min: 10, max: 20 } }),
           undefined,
         ]),
-        longitude: faker.helpers.arrayElement([
-          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
-          undefined,
-        ]),
-        latitude: faker.helpers.arrayElement([
-          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
-          undefined,
-        ]),
-        date: faker.helpers.arrayElement([
-          faker.string.alpha({ length: { min: 10, max: 20 } }),
+        longitude: faker.number.float({ min: 124, max: 132, fractionDigits: 2 }),
+        latitude: faker.number.float({ min: 33, max: 39, fractionDigits: 2 }),
+        takenAt: faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split('.')[0]}Z`,
           undefined,
         ]),
       }),
@@ -1915,7 +2273,7 @@ export const getCreate1MockHandler = (
   options?: RequestHandlerOptions,
 ) => {
   return http.post(
-    '*/albums',
+    '*/couples',
     async (info) => {
       await delay(1000);
 
@@ -1926,6 +2284,62 @@ export const getCreate1MockHandler = (
               ? await overrideResponse(info)
               : overrideResponse
             : getCreate1ResponseMock(),
+        ),
+        { status: 201, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
+export const getJoinByInviteCodeMockHandler = (
+  overrideResponse?:
+    | IdResponse
+    | ((
+        info: Parameters<Parameters<typeof http.post>[1]>[0],
+      ) => Promise<IdResponse> | IdResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/couples/join',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getJoinByInviteCodeResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
+export const getCreate2MockHandler = (
+  overrideResponse?:
+    | IdResponse
+    | ((
+        info: Parameters<Parameters<typeof http.post>[1]>[0],
+      ) => Promise<IdResponse> | IdResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/albums',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getCreate2ResponseMock(),
         ),
         { status: 201, headers: { 'Content-Type': 'application/json' } },
       );
@@ -2057,6 +2471,34 @@ export const getGetPhotos1MockHandler = (
               ? await overrideResponse(info)
               : overrideResponse
             : getGetPhotos1ResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
+export const getGetMeMockHandler = (
+  overrideResponse?:
+    | MapMeResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<MapMeResponse> | MapMeResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/map/me',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetMeResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       );
@@ -2232,11 +2674,14 @@ export const getLokitAPIMock = () => [
   getCreateMockHandler(),
   getGetPresignedUrlMockHandler(),
   getCreate1MockHandler(),
+  getJoinByInviteCodeMockHandler(),
+  getCreate2MockHandler(),
   getDelete1MockHandler(),
   getUpdateTitleMockHandler(),
   getGetPhotosMockHandler(),
   getSearchPlacesMockHandler(),
   getGetPhotos1MockHandler(),
+  getGetMeMockHandler(),
   getGetLocationInfoMockHandler(),
   getHomeMockHandler(),
   getGetClusterPhotosMockHandler(),

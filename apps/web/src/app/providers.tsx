@@ -10,6 +10,7 @@ import { MSWProvider } from '@/mocks/MSWProvider';
 import GlobalStyles from '@/theme/globalStyles';
 import { setAuthHeaderProvider } from '@repo/api-client';
 import { ToastProvider } from '@/components/toast';
+import { PhotoProvider } from './photo/_contexts/PhotoContext';
 
 export type AppProvidersProps = PropsWithChildren<{
   showDevtools?: boolean;
@@ -51,7 +52,9 @@ export function AppProviders({
       <ThemeProvider theme={theme}>
         <GlobalStyles />
         <QueryClientProvider client={queryClient}>
-          <ToastProvider>{children}</ToastProvider>
+          <PhotoProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </PhotoProvider>
           {showDevtools ? <ReactQueryDevtools initialIsOpen={false} /> : null}
         </QueryClientProvider>
       </ThemeProvider>
