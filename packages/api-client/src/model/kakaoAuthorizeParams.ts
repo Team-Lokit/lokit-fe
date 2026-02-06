@@ -6,9 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type SearchPlacesParams = {
+export type KakaoAuthorizeParams = {
 /**
- * 검색 키워드
+ * 로그인 후 리다이렉트할 프론트엔드 URL
  */
-query: string;
+redirect?: string;
 };

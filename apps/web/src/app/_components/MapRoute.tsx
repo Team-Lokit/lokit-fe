@@ -19,6 +19,7 @@ import { AlbumRenameModalContainer } from './albumRenameModal/AlbumRenameModalCo
 import { AlbumDeleteModalContainer } from './albumDeleteModal/AlbumDeleteModalContainer';
 import LocationPermissionModal from './locationPermissionModal/LocationPermissionModal';
 import { getCurrentPosition } from '@/utils/getCurrentPosition';
+import { validateCenterCoordinate } from '../_utils/mapRoute.calc';
 
 export default function MapRoute() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function MapRoute() {
     albumDetail,
     albumMapInfo,
     mapPins,
+    totalHistoryCount,
     clusterLocationData,
     clusterPhotosData,
   } = useMapRouteData({
@@ -52,16 +54,21 @@ export default function MapRoute() {
 
   // 앨범이 선택되었을 때 앨범의 중심 위치로 지도 이동
   useEffect(() => {
-    if (
-      viewState &&
-      selectedAlbumId &&
-      albumMapInfo?.centerLongitude &&
-      albumMapInfo?.centerLatitude
-    ) {
+    if (!viewState || !selectedAlbumId || !albumMapInfo) return;
+
+    // centerLongitude/centerLatitude가 boundingBox 범위 내에 있는지 검증
+    // 범위를 벗어나면 boundingBox에서 중심 계산
+    const centerInfo = validateCenterCoordinate(
+      albumMapInfo.centerLongitude,
+      albumMapInfo.centerLatitude,
+      albumMapInfo.boundingBox,
+    );
+
+    if (centerInfo) {
       handleViewStateChange({
-        longitude: albumMapInfo.centerLongitude,
-        latitude: albumMapInfo.centerLatitude,
-        zoom: viewState.zoom ?? DEFAULT_ZOOM,
+        longitude: centerInfo.longitude,
+        latitude: centerInfo.latitude,
+        zoom: centerInfo.zoom,
       });
     }
   }, [selectedAlbumId, albumMapInfo, viewState, handleViewStateChange]);
@@ -84,19 +91,32 @@ export default function MapRoute() {
   }, [albumDetail]);
 
   const photoCount = useMemo(() => {
-    const clusterPhotoCount = clusterPhotosData?.totalElements ?? 0;
+    const clusterPhotoCount = clusterPhotosData?.length ?? 0;
     return calculatePhotoCount(
       sheetContext,
       albumDetail,
       clusterPhotoCount,
-      mapPins.length,
+      totalHistoryCount,
     );
-  }, [sheetContext, albumDetail, clusterPhotosData, mapPins.length]);
+  }, [sheetContext, albumDetail, clusterPhotosData, totalHistoryCount]);
 
   const selectedAlbumTitle = albumDetail?.title;
 
   const handlePinClick = (pin: MapPin) => {
     if (pin.isCluster) {
+      // 같은 클러스터 Detail을 이미 보고 있는 경우 슬라이드 뷰로 전환
+      if (
+        sheetContext.type === SHEET_CONTEXT_TYPE.CLUSTER_DETAIL &&
+        sheetContext.clusterId === pin.clusterId
+      ) {
+        const firstPhotoId = clusterPhotosData?.[0]?.id;
+        if (firstPhotoId) {
+          router.push(ROUTES.PHOTO.VIEW_WITH_CLUSTER(firstPhotoId, pin.clusterId));
+        }
+        return;
+      }
+
+      // 새로운 클러스터 Detail 열기
       setSheetContext({
         type: SHEET_CONTEXT_TYPE.CLUSTER_DETAIL,
         clusterId: pin.clusterId!,

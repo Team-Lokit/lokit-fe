@@ -175,6 +175,10 @@ const BottomSheet = ({
             context.type === SHEET_CONTEXT_TYPE.ALBUM_DETAIL ||
             context.type === SHEET_CONTEXT_TYPE.CLUSTER_DETAIL
           }
+          $isMaxHeight={
+            height >= (typeof window !== 'undefined' ? window.innerHeight : 800) - 10
+          }
+          $isHomeContext={context.type === SHEET_CONTEXT_TYPE.HOME}
         >
           <BottomSheetContent
             context={context}
