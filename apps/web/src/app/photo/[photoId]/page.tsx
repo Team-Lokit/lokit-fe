@@ -1,10 +1,12 @@
 'use client';
 
 import AlbumIcon from '@/assets/images/album.svg';
-import CommentIcon from '@/assets/images/comment.svg';
+// TODO: 2차 MVP에서 반영 예정
+// import CommentIcon from '@/assets/images/comment.svg';
 import DateIcon from '@/assets/images/date.svg';
 import Chip from '@/components/buttons/chip/Chip';
 import MenuHeader from '@/components/header/menu/MenuHeader';
+import { formatDate } from '@/utils/formatDate';
 import { useGetPhotoDetail, getGetPhotoDetailQueryOptions } from '@repo/api-client';
 import { AnimatePresence } from 'framer-motion';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -44,7 +46,12 @@ export default function PhotoViewPage() {
     handlePrevPhoto,
     handleNextPhoto,
     handleThumbnailClick,
-  } = usePhotoSlider({ photos, initialPhotoId: photoId });
+  } = usePhotoSlider({
+    photos,
+    initialPhotoId: photoId,
+    albumIdFromQuery,
+    clusterIdFromQuery,
+  });
 
   // 슬라이더에서 현재 선택된 사진의 상세 정보 조회
   const currentPhotoIdForDetail = currentPhoto?.id ?? photoId;
@@ -166,7 +173,7 @@ export default function PhotoViewPage() {
 
             <S.ContainerB>
               <Chip
-                text={photoDetail.takenAt || '날짜 없음'}
+                text={formatDate(currentDisplayPhotoDetail?.takenAt)}
                 variant="white"
                 size="small"
                 icon={<DateIcon width={14} height={14} />}
@@ -177,6 +184,7 @@ export default function PhotoViewPage() {
                 size="small"
                 icon={<AlbumIcon width={14} height={14} />}
               />
+              {/* TODO: 2차 MVP에서 반영 예정
               <Chip
                 text="댓글 추가..."
                 variant="white"
@@ -184,6 +192,7 @@ export default function PhotoViewPage() {
                 icon={<CommentIcon width={14} height={14} />}
                 onClick={() => {}}
               />
+              */}
             </S.ContainerB>
 
             {photos.length > 1 && (

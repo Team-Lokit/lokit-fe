@@ -6,13 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetLocationInfoParams = {
-  /**
-   * 경도
-   */
-  longitude: number;
-  /**
-   * 위도
-   */
-  latitude: number;
-};
+export interface PairLongString {
+  first?: number;
+  second?: string;
+}

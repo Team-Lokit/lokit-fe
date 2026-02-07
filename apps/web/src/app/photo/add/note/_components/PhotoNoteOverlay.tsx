@@ -117,9 +117,9 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
         onSuccess: () => {
           showToast('사진이 추가되었습니다');
           if (selectedAlbum) {
-            router.push(ROUTES.ALBUM.DETAIL(selectedAlbum.id));
+            router.replace(ROUTES.ALBUM.DETAIL(selectedAlbum.id));
           } else {
-            router.push(ROUTES.HOME);
+            router.replace(ROUTES.HOME);
           }
         },
         onError: (error) => {
@@ -221,7 +221,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
         top: 0,
         left: 0,
         width: '100%',
-        height: '100vh',
+        height: '100dvh',
         zIndex: 100,
         overflow: 'hidden',
         // 이 지점을 중심으로 scale 변환이 일어남
