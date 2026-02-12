@@ -14,7 +14,14 @@ import * as S from './page.styles';
 
 export default function PhotoAddPage() {
   const router = useRouter();
-  const { photos, addPhotos, setSelectedPhoto, setSelectedPhotoRect } = usePhotoContext();
+  const {
+    photos,
+    addPhotos,
+    setSelectedPhoto,
+    setSelectedPhotoRect,
+    setInitialAlbumId,
+    resetPhotoNoteState,
+  } = usePhotoContext();
 
   /**
    * 웹 브라우저 환경에서는 보안 정책상 사용자의 전체 갤러리에 접근할 수 없음.
@@ -29,10 +36,12 @@ export default function PhotoAddPage() {
       // 첫 번째 사진을 선택하고 바로 정보 기입 화면으로 이동
       if (newPhotos.length > 0) {
         setSelectedPhoto(newPhotos[0]);
+        resetPhotoNoteState(newPhotos[0]);
+        setInitialAlbumId(null);
         router.push(ROUTES.PHOTO.NOTE.ADD);
       }
     },
-    [addPhotos, setSelectedPhoto, router],
+    [addPhotos, setSelectedPhoto, resetPhotoNoteState, setInitialAlbumId, router],
   );
 
   const { isLoading, selectPhotosFromFile } = usePhotoSelect({
@@ -55,13 +64,21 @@ export default function PhotoAddPage() {
         height: rect.height,
       });
       setSelectedPhoto(photo);
+      resetPhotoNoteState(photo);
+      setInitialAlbumId(null);
       router.push(ROUTES.PHOTO.NOTE.ADD);
     },
-    [router, setSelectedPhoto, setSelectedPhotoRect],
+    [
+      router,
+      setSelectedPhoto,
+      setSelectedPhotoRect,
+      resetPhotoNoteState,
+      setInitialAlbumId,
+    ],
   );
 
-  const handleAddPhotos = useCallback(async () => {
-    await selectPhotosFromFile();
+  const handleAddPhotos = useCallback(() => {
+    selectPhotosFromFile();
   }, [selectPhotosFromFile]);
 
   if (isLoading && photos.length === 0) {

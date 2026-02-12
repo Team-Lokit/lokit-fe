@@ -2,27 +2,29 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { searchPlaces, getSearchPlacesQueryKey, PlaceResponse } from '@repo/api-client';
+import { searchPlaces, getSearchPlacesQueryKey } from '@repo/api-client';
 import { useDebounce } from '@/hooks/useDebounce';
+import { usePhotoContext, type PhotoNoteState } from '@/app/photo/_contexts/PhotoContext';
+import { STATE_SOURCE, type StateSource } from '@/app/photo/_constants/stateSource';
 
 const DEBOUNCE_DELAY = 500;
 
+type SelectedLocation = PhotoNoteState['selectedLocation'];
+
 interface UseLocationModalOptions {
-  initialLocation?: Pick<PlaceResponse, 'latitude' | 'longitude' | 'address'> | null;
+  /** 상태 소스: 사진 추가(NOTE) 또는 사진 수정(EDIT) */
+  stateSource?: StateSource;
 }
 
 const useLocationModal = (options?: UseLocationModalOptions) => {
-  const initialLocationState: PlaceResponse | null = options?.initialLocation
-    ? {
-        latitude: options.initialLocation.latitude,
-        longitude: options.initialLocation.longitude,
-        address: options.initialLocation.address,
-      }
-    : null;
+  const stateSource = options?.stateSource ?? STATE_SOURCE.NOTE;
+  const { photoNoteState, updatePhotoNoteState, photoEditState, updatePhotoEditState } =
+    usePhotoContext();
 
-  const [selectedLocation, setSelectedLocation] = useState<PlaceResponse | null>(
-    initialLocationState,
-  );
+  const state = stateSource === STATE_SOURCE.EDIT ? photoEditState : photoNoteState;
+  const updateState =
+    stateSource === STATE_SOURCE.EDIT ? updatePhotoEditState : updatePhotoNoteState;
+
   const [tempSelectedLocationId, setTempSelectedLocationId] = useState<string | null>(
     null,
   );
@@ -39,10 +41,14 @@ const useLocationModal = (options?: UseLocationModalOptions) => {
 
   const locations = data?.places ?? [];
 
+  const setSelectedLocation = (location: SelectedLocation) => {
+    updateState({ selectedLocation: location });
+  };
+
   const openModal = () => {
     setTempSelectedLocationId(
-      selectedLocation
-        ? `${selectedLocation.longitude}-${selectedLocation.latitude}`
+      state.selectedLocation
+        ? `${state.selectedLocation.longitude}-${state.selectedLocation.latitude}`
         : null,
     );
     setSearchQuery('');
@@ -59,14 +65,20 @@ const useLocationModal = (options?: UseLocationModalOptions) => {
         (l) => `${l.longitude}-${l.latitude}` === tempSelectedLocationId,
       );
       if (location) {
-        setSelectedLocation(location);
+        setSelectedLocation({
+          latitude: location.latitude,
+          longitude: location.longitude,
+          address: location.address,
+          roadAddress: location.roadAddress,
+          placeName: location.placeName,
+        });
       }
     }
     closeModal();
   };
 
   return {
-    selectedLocation,
+    selectedLocation: state.selectedLocation,
     setSelectedLocation,
     tempSelectedLocationId,
     setTempSelectedLocationId,

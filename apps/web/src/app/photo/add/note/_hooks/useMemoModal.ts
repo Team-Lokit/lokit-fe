@@ -1,18 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { usePhotoContext } from '@/app/photo/_contexts/PhotoContext';
+import { STATE_SOURCE, type StateSource } from '@/app/photo/_constants/stateSource';
 
-const useMemoModal = (initialMemo: string = '') => {
-  const [memo, setMemo] = useState(initialMemo);
-  const [tempMemo, setTempMemo] = useState(initialMemo);
+interface UseMemoModalOptions {
+  /** 상태 소스: 사진 추가(NOTE) 또는 사진 수정(EDIT) */
+  stateSource?: StateSource;
+}
+
+const useMemoModal = (options?: UseMemoModalOptions) => {
+  const stateSource = options?.stateSource ?? STATE_SOURCE.NOTE;
+  const { photoNoteState, updatePhotoNoteState, photoEditState, updatePhotoEditState } =
+    usePhotoContext();
+
+  const state = stateSource === STATE_SOURCE.EDIT ? photoEditState : photoNoteState;
+  const updateState =
+    stateSource === STATE_SOURCE.EDIT ? updatePhotoEditState : updatePhotoNoteState;
+
+  const [tempMemo, setTempMemo] = useState(state.memo);
   const [isOpen, setIsOpen] = useState(false);
 
-  // initialMemo가 변경될 때마다 상태 재설정
-  useEffect(() => {
-    setMemo(initialMemo);
-    setTempMemo(initialMemo);
-  }, [initialMemo]);
-
   const openModal = () => {
-    setTempMemo(memo);
+    setTempMemo(state.memo);
     setIsOpen(true);
   };
 
@@ -21,15 +29,14 @@ const useMemoModal = (initialMemo: string = '') => {
   };
 
   const submitMemo = () => {
-    setMemo(tempMemo);
+    updateState({ memo: tempMemo });
     closeModal();
   };
 
   return {
-    memo,
+    memo: state.memo,
     tempMemo,
     setTempMemo,
-    setMemo,
     isOpen,
     openModal,
     closeModal,

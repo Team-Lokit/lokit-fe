@@ -157,11 +157,12 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const hasSelectedLocation = !!selectedLocation;
   const hasLocation = hasPhotoLocation || hasSelectedLocation;
 
-  const locationText = selectedLocation
-    ? selectedLocation.placeName ||
-      selectedLocation.roadAddress ||
-      selectedLocation.address
-    : addressData?.placeName || addressData?.address;
+  const locationText =
+    selectedLocation?.placeName ||
+    selectedLocation?.roadAddress ||
+    selectedLocation?.address ||
+    addressData?.placeName ||
+    addressData?.address;
 
   /**
    * scale 애니메이션을 위한 초기값과 transform-origin 계산
