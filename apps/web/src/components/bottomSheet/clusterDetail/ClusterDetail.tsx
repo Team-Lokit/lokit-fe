@@ -2,18 +2,45 @@
 
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useGetClusterPhotos } from '@repo/api-client';
+import { useGetClusterPhotos, type ClusterPhotoResponse } from '@repo/api-client';
 import PhotoGridContainer from '@/components/photoGridContainer/PhotoGridContainer';
 import PhotoGridItem from '@/components/photoGridItem/PhotoGridItem';
 import { ROUTES } from '@/constants/routes';
+import { saveClusterToSession, getClusterFromSession } from '@/utils/sessionStorage';
 
 interface ClusterDetailProps {
   clusterId: string;
+  clusterExpansionData?: Map<string, ClusterPhotoResponse[]>;
 }
 
-const ClusterDetail = ({ clusterId }: ClusterDetailProps) => {
+const ClusterDetail = ({ clusterId, clusterExpansionData }: ClusterDetailProps) => {
   const router = useRouter();
-  const { data, isLoading, isError } = useGetClusterPhotos(clusterId);
+
+  // 클라이언트 클러스터인지 판별
+  const isClientCluster = clusterId.startsWith('client_');
+
+  // 클라이언트 클러스터인 경우 로컬 데이터 사용, 아니면 API 호출
+  const clientClusterData = useMemo(() => {
+    if (isClientCluster) {
+      // 1. clusterExpansionData에서 먼저 찾기
+      if (clusterExpansionData) {
+        const data = clusterExpansionData.get(clusterId);
+        if (data) {
+          return data;
+        }
+      }
+
+      // 2. sessionStorage에서 복구하기 (navigation 후 돌아온 경우)
+      return getClusterFromSession<ClusterPhotoResponse[]>(clusterId);
+    }
+    return undefined;
+  }, [isClientCluster, clusterId, clusterExpansionData]);
+
+  const { data: serverClusterData, isLoading, isError } = useGetClusterPhotos(
+    isClientCluster ? '' : clusterId,
+  );
+
+  const data = isClientCluster ? clientClusterData : serverClusterData;
 
   const processedPhotos = useMemo(() => {
     if (!data) return [];
@@ -37,10 +64,15 @@ const ClusterDetail = ({ clusterId }: ClusterDetailProps) => {
     });
   }, [data]);
 
-  if (isLoading) return <div>로딩 중...</div>;
-  if (isError) return <div>사진을 불러올 수 없어요.</div>;
+  // 클라이언트 클러스터는 로딩/에러 상태 체크 불필요
+  if (!isClientCluster && isLoading) return <div>로딩 중...</div>;
+  if (!isClientCluster && isError) return <div>사진을 불러올 수 없어요.</div>;
 
   const handlePhotoClick = (photoId: number) => {
+    // 클라이언트 클러스터인 경우 sessionStorage에 데이터 저장
+    if (isClientCluster && data) {
+      saveClusterToSession(clusterId, data);
+    }
     router.push(ROUTES.PHOTO.VIEW_WITH_CLUSTER(photoId, clusterId));
   };
 

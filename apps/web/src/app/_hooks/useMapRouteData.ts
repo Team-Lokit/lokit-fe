@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { LocationState } from '@/types/map.type';
 import { DEFAULT_ZOOM } from '../constants';
@@ -37,6 +38,7 @@ interface UseMapRouteDataReturn {
   totalHistoryCount: number | undefined;
   clusterLocationData: LocationInfoResponse | undefined;
   clusterPhotosData: ClusterPhotoResponse[] | undefined;
+  clusterExpansionData: Map<string, ClusterPhotoResponse[]> | undefined;
 }
 
 /**
@@ -52,29 +54,40 @@ export const useMapRouteData = ({
   sheetContext,
   selectedAlbumId,
 }: UseMapRouteDataProps): UseMapRouteDataReturn => {
+  // 선택된 앨범의 상세 정보 조회 (bbox 계산에 필요하므로 먼저 호출)
+  const { albumDetail } = useAlbumPhotos(selectedAlbumId);
+
+  // 선택된 앨범의 맵 정보 (중심 좌표) 조회
+  const { data: albumMapInfo } = useGetAlbumMapInfo(
+    selectedAlbumId ?? 0,
+  );
+
+  // 앨범이 선택되면 앨범의 boundingBox 사용, 아니면 현재 위치 기반 bbox 사용
+  const bbox = useMemo(() => {
+    if (selectedAlbumId && albumMapInfo?.boundingBox) {
+      const bb = albumMapInfo.boundingBox;
+      return `${bb.west},${bb.south},${bb.east},${bb.north}`;
+    }
+    return viewState ? calculateBbox(viewState) : '';
+  }, [selectedAlbumId, albumMapInfo?.boundingBox, viewState]);
+
   // 앨범 리스트 조회 (/map/me에서 albums만 별도 관리)
   const { albumList } = useMapMeAlbums({
     longitude: viewState?.longitude,
     latitude: viewState?.latitude,
     zoom: viewState?.zoom ?? DEFAULT_ZOOM,
-    bbox: viewState ? calculateBbox(viewState) : '',
+    bbox,
     albumId: selectedAlbumId,
   });
 
   // 사진 핀 조회 (/map/me에서 photos/clusters 처리)
-  const { address, mapPins, totalHistoryCount } = useMapMe({
+  const { address, mapPins, totalHistoryCount, clusterExpansionData } = useMapMe({
     longitude: viewState?.longitude,
     latitude: viewState?.latitude,
     zoom: viewState?.zoom ?? DEFAULT_ZOOM,
-    bbox: viewState ? calculateBbox(viewState) : '',
+    bbox,
     albumId: selectedAlbumId,
   });
-
-  // 선택된 앨범의 상세 정보 조회
-  const { albumDetail } = useAlbumPhotos(selectedAlbumId);
-
-  // 선택된 앨범의 맵 정보 (중심 좌표) 조회
-  const { data: albumMapInfo } = useGetAlbumMapInfo(selectedAlbumId ?? 0);
 
   // 클러스터의 위치 정보 조회
   const clusterLatitude =
@@ -100,7 +113,23 @@ export const useMapRouteData = ({
       ? sheetContext.clusterId
       : null;
 
-  const { data: clusterPhotosData } = useGetClusterPhotos(clusterId ?? '');
+  // 클라이언트 클러스터인지 판별
+  const isClientCluster = clusterId?.startsWith('client_');
+
+  // 서버 클러스터인 경우에만 API 호출 (클라이언트 클러스터는 빈 문자열 전달)
+  const { data: serverClusterPhotosData } = useGetClusterPhotos(
+    isClientCluster || !clusterId ? '' : clusterId,
+  );
+
+  // 클라이언트 클러스터는 로컬 데이터 사용
+  const clientClusterPhotosData = useMemo(() => {
+    if (!isClientCluster || !clusterId || !clusterExpansionData) {
+      return undefined;
+    }
+    return clusterExpansionData.get(clusterId);
+  }, [isClientCluster, clusterId, clusterExpansionData]);
+
+  const clusterPhotosData = isClientCluster ? clientClusterPhotosData : serverClusterPhotosData;
 
   return {
     albumList,
@@ -111,5 +140,6 @@ export const useMapRouteData = ({
     totalHistoryCount,
     clusterLocationData,
     clusterPhotosData,
+    clusterExpansionData,
   };
 };
