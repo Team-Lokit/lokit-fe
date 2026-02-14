@@ -16,7 +16,6 @@ interface UseMapMeParams {
   longitude?: number;
   latitude?: number;
   zoom: number;
-  bbox: string;
   albumId?: number | null;
 }
 
@@ -30,34 +29,52 @@ export const useMapMe = ({
   longitude,
   latitude,
   zoom,
-  bbox,
   albumId,
 }: UseMapMeParams) => {
-  const isValid = !!(longitude !== undefined && latitude !== undefined && bbox);
+  const isValid = longitude !== undefined && latitude !== undefined;
   const roundedZoom = Math.round(zoom);
   const [lastDataVersion, setLastDataVersion] = useState<number | undefined>(undefined);
 
-  const params = {
-    longitude: longitude ?? 0,
-    latitude: latitude ?? 0,
-    zoom: roundedZoom,
-    bbox: bbox || '',
-    ...(albumId ? { albumId } : {}),
-    ...(lastDataVersion ? { lastDataVersion } : {}),
-  };
+  // 클라이언트 측 클러스터링을 위한 bbox 계산 (longitude, latitude 기반)
+  const bbox = useMemo(() => {
+    if (longitude !== undefined && latitude !== undefined) {
+      const offset = 0.05;
+      const west = longitude - offset;
+      const south = latitude - offset;
+      const east = longitude + offset;
+      const north = latitude + offset;
+      return `${west},${south},${east},${north}`;
+    }
+    return '';
+  }, [longitude, latitude]);
+
+  const params = useMemo(
+    () => ({
+      longitude: longitude ?? 0,
+      latitude: latitude ?? 0,
+      zoom: roundedZoom,
+      ...(albumId ? { albumId } : {}),
+    }),
+    [longitude, latitude, roundedZoom, albumId],
+  );
+
 
   const response = useQuery({
     queryKey: getGetMeQueryKey(params),
-    queryFn: ({ signal }) => getMe(params, signal),
+    queryFn: ({ signal }) => {
+      const requestParams = lastDataVersion ? { ...params, lastDataVersion } : params;
+      return getMe(requestParams, signal);
+    },
     enabled: isValid,
     placeholderData: keepPreviousData,
   });
 
+
   useEffect(() => {
-    if (response.data?.dataVersion !== undefined) {
+    if (response.data?.dataVersion !== undefined && response.data.dataVersion !== lastDataVersion) {
       setLastDataVersion(response.data.dataVersion);
     }
-  }, [response.data?.dataVersion]);
+  }, [response.data?.dataVersion, lastDataVersion]);
 
   const address = useMemo(() => {
     if (!isValid) return '';
@@ -123,7 +140,7 @@ export const useMapMe = ({
     superclusterInstance.load(geoJsonPoints as any);
 
     // bbox 파싱 (헬퍼 함수 사용)
-    const bboxValues = parseBbox(bbox);
+    const bboxValues = parseBbox(bbox ?? '');
     if (!bboxValues) {
       // bbox가 없으면 개별 핀으로 반환
       const photoPins: MapPin[] = photos.map((photo) => ({
@@ -170,7 +187,7 @@ export const useMapMe = ({
     clusterExpansionCacheRef.current = mergedClusterExpansionData;
 
     return { mapPins, clusterExpansionData: mergedClusterExpansionData };
-  }, [response.data, roundedZoom, bbox, superclusterInstance]);
+  }, [response.data, roundedZoom, bbox ?? '', superclusterInstance]);
 
   // 개별 값 추출 (메모이제이션으로 불필요한 리렌더링 방지)
   const mapPins: MapPin[] = useMemo(

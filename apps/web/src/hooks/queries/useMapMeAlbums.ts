@@ -1,12 +1,11 @@
 import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { getMe, getGetMeQueryKey, type AlbumThumbnails } from '@repo/api-client';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 interface UseMapMeAlbumsParams {
   longitude?: number;
   latitude?: number;
   zoom: number;
-  bbox: string;
   albumId?: number | null;
 }
 
@@ -21,20 +20,21 @@ export const useMapMeAlbums = ({
   longitude,
   latitude,
   zoom,
-  bbox,
   albumId,
 }: UseMapMeAlbumsParams) => {
-  const isValid = !!(longitude !== undefined && latitude !== undefined && bbox);
+  const isValid = longitude !== undefined && latitude !== undefined;
   const queryClient = useQueryClient();
   const roundedZoom = Math.round(zoom);
 
-  const params = {
-    longitude: longitude ?? 0,
-    latitude: latitude ?? 0,
-    zoom: roundedZoom,
-    bbox: bbox || '',
-    ...(albumId ? { albumId } : {}),
-  };
+  const params = useMemo(
+    () => ({
+      longitude: longitude ?? 0,
+      latitude: latitude ?? 0,
+      zoom: roundedZoom,
+      ...(albumId ? { albumId } : {}),
+    }),
+    [longitude, latitude, roundedZoom, albumId],
+  );
 
   // /map/me 데이터 가져오기 (백그라운드)
   const mapMeResponse = useQuery({
@@ -45,6 +45,7 @@ export const useMapMeAlbums = ({
   });
 
   // /map/me 응답에서 albums을 별도 쿼리 키로 저장
+  // invalidate되면 이 쿼리가 자동으로 refetch됨
   useEffect(() => {
     if (mapMeResponse.data?.albums) {
       queryClient.setQueryData(
@@ -54,25 +55,12 @@ export const useMapMeAlbums = ({
     }
   }, [mapMeResponse.data?.albums, queryClient]);
 
-  // ['mapMe', 'albums'] 쿼리를 직접 구독
-  // invalidate되면 이 쿼리가 자동으로 refetch됨
-  const albumsResponse = useQuery({
-    queryKey: getMapMeAlbumsQueryKey(),
-    queryFn: async () => {
-      // /map/me를 호출해서 albums 데이터만 추출
-      const data = await getMe(params);
-      return data.albums ?? [];
-    },
-    enabled: isValid,
-    placeholderData: keepPreviousData,
-  });
-
-  const albumList: AlbumThumbnails[] = albumsResponse.data ?? [];
+  const albumList: AlbumThumbnails[] = mapMeResponse.data?.albums ?? [];
 
   return {
     albumList,
-    isLoading: albumsResponse.isLoading,
-    isError: albumsResponse.isError,
-    error: albumsResponse.error,
+    isLoading: mapMeResponse.isLoading,
+    isError: mapMeResponse.isError,
+    error: mapMeResponse.error,
   };
 };
