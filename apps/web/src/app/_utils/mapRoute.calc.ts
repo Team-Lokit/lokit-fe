@@ -2,6 +2,7 @@ import { LocationState } from '@/types/map.type';
 import { SHEET_CONTEXT_TYPE } from '@/components/bottomSheet/constants';
 import type { SheetContext } from '@/components/bottomSheet/constants';
 import type { AlbumWithPhotosResponse, BoundingBoxResponse } from '@repo/api-client';
+import { BBOX_ZOOM_CALCULATION } from '@/constants/map';
 
 /**
  * 중심 좌표가 바운딩박스 범위 내에 있는지 검증합니다.
@@ -53,6 +54,10 @@ export const validateCenterCoordinate = (
 
 /**
  * 바운딩박스로부터 중심 좌표와 적절한 줌 레벨을 계산합니다.
+ *
+ * 백엔드는 화면에 보이는 범위를 1이라 할 때 세로 3배, 가로 3.3배로 늘려서 범위를 제공합니다.
+ * 따라서 줌 레벨 계산 시 이를 보정하여 실제 필요한 줌 레벨을 계산합니다.
+ *
  * @param boundingBox - 바운딩박스 정보 {west, south, east, north}
  * @returns {longitude, latitude, zoom} 중심 좌표와 줌 레벨
  */
@@ -76,12 +81,13 @@ export const calculateCenterFromBoundingBox = (
   const latDiff = Math.abs(boundingBox.north - boundingBox.south);
   const lngDiff = Math.abs(boundingBox.east - boundingBox.west);
 
+  // 백엔드가 확대된 범위를 제공하므로 보정
   // Mapbox 줌 레벨 공식: 전체 바운딩박스가 화면에 보이도록 계산
-  // 경도 기반: zoom = log2(360 / (lngDiff * 2)) - 1
-  // 위도 기반: zoom = log2(180 / latDiff) - 1
+  // 경도 기반: zoom = log2(360 * BACKEND_LNG_EXPANSION_RATIO / (lngDiff * ZOOM_LEVEL_ADJUSTMENT_FACTOR)) - 1
+  // 위도 기반: zoom = log2(180 * BACKEND_LAT_EXPANSION_RATIO / (latDiff * ZOOM_LEVEL_ADJUSTMENT_FACTOR)) - 1
   // 두 값 중 더 작은 값을 선택해서 전체 영역이 보이도록 함
-  const lngZoom = lngDiff > 0 ? Math.log2(360 / (lngDiff * 2.5)) - 1 : 15;
-  const latZoom = latDiff > 0 ? Math.log2(180 / (latDiff * 2.5)) - 1 : 15;
+  const lngZoom = lngDiff > 0 ? Math.log2(360 * BBOX_ZOOM_CALCULATION.BACKEND_LNG_EXPANSION_RATIO / (lngDiff * BBOX_ZOOM_CALCULATION.ZOOM_LEVEL_ADJUSTMENT_FACTOR)) - 1 : BBOX_ZOOM_CALCULATION.DEFAULT_ZOOM;
+  const latZoom = latDiff > 0 ? Math.log2(180 * BBOX_ZOOM_CALCULATION.BACKEND_LAT_EXPANSION_RATIO / (latDiff * BBOX_ZOOM_CALCULATION.ZOOM_LEVEL_ADJUSTMENT_FACTOR)) - 1 : BBOX_ZOOM_CALCULATION.DEFAULT_ZOOM;
   const zoom = Math.max(0, Math.floor(Math.min(lngZoom, latZoom)));
 
   return { longitude, latitude, zoom };

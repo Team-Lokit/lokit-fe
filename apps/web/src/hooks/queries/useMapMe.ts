@@ -1,6 +1,6 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { getMe, getGetMeQueryKey } from '@repo/api-client';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import Supercluster from 'supercluster';
 import type { MapPin } from '@/types/map.type';
 import { MAP_CLUSTERING_CONFIG } from '@/constants/map';
@@ -35,6 +35,7 @@ export const useMapMe = ({
 }: UseMapMeParams) => {
   const isValid = !!(longitude !== undefined && latitude !== undefined && bbox);
   const roundedZoom = Math.round(zoom);
+  const [lastDataVersion, setLastDataVersion] = useState<number | undefined>(undefined);
 
   const params = {
     longitude: longitude ?? 0,
@@ -42,6 +43,7 @@ export const useMapMe = ({
     zoom: roundedZoom,
     bbox: bbox || '',
     ...(albumId ? { albumId } : {}),
+    ...(lastDataVersion ? { lastDataVersion } : {}),
   };
 
   const response = useQuery({
@@ -50,6 +52,12 @@ export const useMapMe = ({
     enabled: isValid,
     placeholderData: keepPreviousData,
   });
+
+  useEffect(() => {
+    if (response.data?.dataVersion !== undefined) {
+      setLastDataVersion(response.data.dataVersion);
+    }
+  }, [response.data?.dataVersion]);
 
   const address = useMemo(() => {
     if (!isValid) return '';
