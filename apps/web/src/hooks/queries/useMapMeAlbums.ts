@@ -24,16 +24,15 @@ export const useMapMeAlbums = ({
 }: UseMapMeAlbumsParams) => {
   const isValid = longitude !== undefined && latitude !== undefined;
   const queryClient = useQueryClient();
-  const roundedZoom = Math.round(zoom);
 
   const params = useMemo(
     () => ({
       longitude: longitude ?? 0,
       latitude: latitude ?? 0,
-      zoom: roundedZoom,
+      zoom,
       ...(albumId ? { albumId } : {}),
     }),
-    [longitude, latitude, roundedZoom, albumId],
+    [longitude, latitude, zoom, albumId],
   );
 
   // /map/me 데이터 가져오기 (백그라운드)

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { customFetcher, type MapPhotosResponse } from '@repo/api-client';
 import { useMemo } from 'react';
 import type { MapPin } from '@/types/map.type';
+import { MAP_CLUSTERING_CONFIG } from '@/constants/map';
 
 interface UseMapPhotosParams {
   zoom: number;
@@ -14,7 +15,7 @@ const fetchMapPhotos = (params: UseMapPhotosParams, signal?: AbortSignal) => {
     url: '/map/photos',
     method: 'GET',
     params: {
-      zoom: Math.round(params.zoom),
+      zoom: params.zoom,
       bbox: params.bbox,
       ...(params.albumId ? { albumId: params.albumId } : {}),
     },
@@ -23,12 +24,9 @@ const fetchMapPhotos = (params: UseMapPhotosParams, signal?: AbortSignal) => {
 };
 
 export const useMapPhotos = (params: UseMapPhotosParams) => {
-  // zoom을 정수로 정규화하여 캐시 성능 향상
-  const roundedZoom = Math.round(params.zoom);
-
   const query = useQuery({
-    queryKey: ['mapPhotos', roundedZoom, params.bbox, params.albumId],
-    queryFn: ({ signal }) => fetchMapPhotos({ ...params, zoom: roundedZoom }, signal),
+    queryKey: ['mapPhotos', params.zoom, params.bbox, params.albumId],
+    queryFn: ({ signal }) => fetchMapPhotos(params, signal),
     enabled: Boolean(params.bbox),
   });
 
@@ -57,8 +55,10 @@ export const useMapPhotos = (params: UseMapPhotosParams) => {
       isCluster: true,
     }));
 
-    return roundedZoom >= 15 ? photoPins : clusterPins;
-  }, [query.data, roundedZoom]);
+    return params.zoom >= MAP_CLUSTERING_CONFIG.CLIENT_CLUSTERING_MIN_ZOOM
+      ? photoPins
+      : clusterPins;
+  }, [query.data, params.zoom]);
 
   return {
     mapPins,

@@ -1,5 +1,6 @@
 import type Supercluster from 'supercluster';
 import type { MapPin } from '@/types/map.type';
+import { MAP_CLUSTERING_CONFIG } from '@/constants/map';
 
 /**
  * 클러스터 내 사진 응답
@@ -21,12 +22,16 @@ export interface ClusterPhotoResponse {
  * 클라이언트 clusterId를 생성합니다.
  * 서버 클러스터와 구분하기 위해 "client_" prefix를 사용합니다.
  *
+ * NOTE: zoom 값을 정수화하여 사용합니다.
+ * 클라이언트 클러스터링에서는 데이터는 동일하고 클러스터만 달라지므로,
+ * 부동소수점 값으로 중복 캐싱되는 것을 방지합니다.
+ *
  * @param superclusterId - Supercluster 내부 ID
  * @param zoom - 현재 줌 레벨
- * @returns "client_z{zoom}_{id}" 형식의 클러스터 ID
+ * @returns "{prefix}{zoom}_{id}" 형식의 클러스터 ID
  */
 export function generateClientClusterId(superclusterId: number, zoom: number): string {
-  return `client_z${Math.floor(zoom)}_${superclusterId}`;
+  return `${MAP_CLUSTERING_CONFIG.CLIENT_CLUSTER_PREFIX}z${Math.floor(zoom)}_${superclusterId}`;
 }
 
 /**
@@ -43,7 +48,7 @@ export function convertPhotosToGeoJsonFeatures(
     longitude?: number;
     latitude?: number;
     takenAt?: string;
-  }>
+  }>,
 ): GeoJSON.Feature<GeoJSON.Point>[] {
   return photos.map((photo) => ({
     type: 'Feature',
@@ -86,7 +91,7 @@ export function parseBbox(bbox: string): [number, number, number, number] | null
 export function convertClusteredResultsToMapPins(
   clusteredResults: Array<GeoJSON.Feature<GeoJSON.Point>>,
   superclusterInstance: Supercluster,
-  zoom: number
+  zoom: number,
 ): MapPin[] {
   return clusteredResults.map((feature) => {
     const [lng, lat] = feature.geometry.coordinates;
@@ -134,7 +139,7 @@ export function convertClusteredResultsToMapPins(
 export function extractClusterPhotoData(
   clusteredResults: Array<GeoJSON.Feature<GeoJSON.Point>>,
   superclusterInstance: Supercluster,
-  zoom: number
+  zoom: number,
 ): Map<string, ClusterPhotoResponse[]> {
   const map = new Map<string, ClusterPhotoResponse[]>();
 

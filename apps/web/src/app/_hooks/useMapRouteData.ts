@@ -17,6 +17,7 @@ import {
   type AlbumMapInfoResponse,
   type ClusterPhotoResponse,
 } from '@repo/api-client';
+import { MAP_CLUSTERING_CONFIG } from '@/constants/map';
 import {
   SHEET_CONTEXT_TYPE,
   type SheetContext,
@@ -57,9 +58,7 @@ export const useMapRouteData = ({
   const { albumDetail } = useAlbumPhotos(selectedAlbumId);
 
   // 선택된 앨범의 맵 정보 (중심 좌표) 조회
-  const { data: albumMapInfo } = useGetAlbumMapInfo(
-    selectedAlbumId ?? 0,
-  );
+  const { data: albumMapInfo } = useGetAlbumMapInfo(selectedAlbumId ?? 0);
 
   // 앨범 리스트 조회 (/map/me에서 albums만 별도 관리)
   const { albumList } = useMapMeAlbums({
@@ -102,7 +101,9 @@ export const useMapRouteData = ({
       : null;
 
   // 클라이언트 클러스터인지 판별
-  const isClientCluster = clusterId?.startsWith('client_');
+  const isClientCluster = clusterId?.startsWith(
+    MAP_CLUSTERING_CONFIG.CLIENT_CLUSTER_PREFIX,
+  );
 
   // 서버 클러스터인 경우에만 API 호출 (클라이언트 클러스터는 빈 문자열 전달)
   const { data: serverClusterPhotosData } = useGetClusterPhotos(
@@ -117,7 +118,9 @@ export const useMapRouteData = ({
     return clusterExpansionData.get(clusterId);
   }, [isClientCluster, clusterId, clusterExpansionData]);
 
-  const clusterPhotosData = isClientCluster ? clientClusterPhotosData : serverClusterPhotosData;
+  const clusterPhotosData = isClientCluster
+    ? clientClusterPhotosData
+    : serverClusterPhotosData;
 
   return {
     albumList,
