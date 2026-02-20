@@ -27,7 +27,7 @@ import { PHOTO_NOTE_OVERLAY_ANIMATION_DURATION } from '../../_constants';
 import useAlbumModal from '../_hooks/useAlbumModal';
 import useLocationModal from '../_hooks/useLocationModal';
 import useMemoModal from '../_hooks/useMemoModal';
-import { usePhotoUpload } from '../_hooks/usePhotoUpload';
+import { usePendingPhotos } from '@/stores/pendingPhotos/PendingPhotosContext';
 import { useReverseGeocode } from '../_hooks/useReverseGeocode';
 import AlbumSelectOverlay from './AlbumSelectOverlay';
 import LocationSelectOverlay from './LocationSelectOverlay';
@@ -42,6 +42,7 @@ import MapPinIcon from '@/assets/images/mapPin.svg';
 import SuccessIcon from '@/assets/images/success.svg';
 import WarningIcon from '@/assets/images/warning.svg';
 import { useToast } from '@/components/toast';
+import { useRef } from 'react';
 
 interface PhotoNoteOverlayProps {
   onClose: () => void;
@@ -95,39 +96,32 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
     longitude: selectedPhoto?.location?.longitude,
   });
 
-  const { mutate: uploadPhoto, isPending: isUploading } = usePhotoUpload();
+  const { addPendingPhoto } = usePendingPhotos();
+  const isSubmittingRef = useRef(false);
 
   const handleUpload = () => {
-    if (!selectedPhoto || !hasLocation) return;
+    if (!selectedPhoto || !hasLocation || isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
 
-    uploadPhoto(
-      {
-        photo: selectedPhoto,
-        description: memo || undefined,
-        albumId: selectedAlbum?.id,
-        location:
-          selectedLocation?.latitude != null && selectedLocation?.longitude != null
-            ? {
-                latitude: selectedLocation.latitude,
-                longitude: selectedLocation.longitude,
-              }
-            : undefined,
-      },
-      {
-        onSuccess: () => {
-          showToast('사진이 추가되었습니다');
-          if (selectedAlbum) {
-            router.replace(ROUTES.ALBUM.DETAIL(selectedAlbum.id));
-          } else {
-            router.replace(ROUTES.HOME);
-          }
-        },
-        onError: (error) => {
-          console.error('Upload failed:', error);
-          showToast('사진 추가에 실패했습니다. 다시 시도해주세요');
-        },
-      },
-    );
+    addPendingPhoto({
+      photo: selectedPhoto,
+      description: memo || undefined,
+      albumId: selectedAlbum?.id,
+      location:
+        selectedLocation?.latitude != null && selectedLocation?.longitude != null
+          ? {
+              latitude: selectedLocation.latitude,
+              longitude: selectedLocation.longitude,
+            }
+          : undefined,
+    });
+
+    showToast('사진이 추가되었어요');
+    if (selectedAlbum) {
+      router.replace(ROUTES.ALBUM.DETAIL(selectedAlbum.id));
+    } else {
+      router.replace(ROUTES.HOME);
+    }
   };
 
   const handleMapPreview = () => {
@@ -323,11 +317,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
               <S.MapPreviewText>지도뷰 미리보기</S.MapPreviewText>
             </S.MapPreviewButton>
 
-            <S.UploadButton
-              type="button"
-              onClick={handleUpload}
-              disabled={isUploading || !hasLocation}
-            >
+            <S.UploadButton type="button" onClick={handleUpload} disabled={!hasLocation}>
               <S.UploadIcon>
                 <ArrowRightIcon width={24} height={24} />
               </S.UploadIcon>
