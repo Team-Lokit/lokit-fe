@@ -1,17 +1,17 @@
 'use client';
 
-import AlbumIcon from '@/assets/images/album.svg';
+import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 // TODO: 2차 MVP에서 반영 예정
 // import CommentIcon from '@/assets/images/comment.svg';
 import DateIcon from '@/assets/images/date.svg';
 import Chip from '@/components/buttons/chip/Chip';
 import MenuHeader from '@/components/header/menu/MenuHeader';
+import { usePendingPhotoDetail } from '@/hooks/usePendingPhotosViewModel';
 import { formatDate } from '@/utils/formatDate';
-import { useGetPhotoDetail, getGetPhotoDetailQueryOptions } from '@repo/api-client';
+import { getGetPhotoDetailQueryOptions, useGetPhotoDetail } from '@repo/api-client';
 import { AnimatePresence } from 'framer-motion';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { usePendingPhotoDetail } from '@/hooks/usePendingPhotosViewModel';
 import DeleteConfirmModal from './_components/DeleteConfirmModal';
 import PhotoEditOverlay from './_components/PhotoEditOverlay';
 import {
@@ -254,7 +254,7 @@ export default function PhotoViewPage() {
                   text={resolvedDetail?.albumName || '앨범 없음'}
                   variant="white"
                   size="small"
-                  icon={<AlbumIcon width={14} height={14} />}
+                  icon={<AlbumSmallIcon />}
                 />
               )}
               {/* TODO: 2차 MVP에서 반영 예정
