@@ -40,6 +40,12 @@ export default function RootLayout({
 
   return (
     <html lang="ko">
+      <head>
+        <Script
+          src="https://developers.kakao.com/sdk/js/kakao.js"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className={pretendard.variable}>
         <AppProviders enableMocking={enableMocking}>
           <EmotionRegistry>

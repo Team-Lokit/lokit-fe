@@ -43,6 +43,7 @@ import type { RequestHandlerOptions } from 'msw';
 
 import type {
   AdminActionResponse,
+  AdminCoupleMigrationResponse,
   AdminPartnerResponse,
   AdminUserSummaryResponse,
   AlbumMapInfoResponse,
@@ -54,6 +55,7 @@ import type {
   InviteCodeResponse,
   LocationInfoResponse,
   MapMeResponse,
+  MyPageResponse,
   PhotoDetailResponse,
   PhotoListResponse,
   PlaceSearchResponse,
@@ -61,7 +63,7 @@ import type {
   SelectableAlbumResponse,
 } from './model';
 
-import { customFetcher } from './fetcher';
+import { customFetcher } from './customFetcher';
 type AwaitedInput<T> = PromiseLike<T> | T;
 
 type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
@@ -1001,6 +1003,79 @@ export const useReconnect = <
 };
 
 /**
+ * 현재 사용자의 커플 상태를 coupleStatus 쿠키에 저장합니다.
+ * @summary 커플 상태 쿠키 저장
+ */
+export const saveCoupleStatusCookie = (signal?: AbortSignal) => {
+  return customFetcher<void>({ url: `/couples/me/cookie`, method: 'POST', signal });
+};
+
+export const getSaveCoupleStatusCookieMutationOptions = <
+  TError = ApiResponseErrorDetail,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof saveCoupleStatusCookie>>,
+    TError,
+    void,
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof saveCoupleStatusCookie>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ['saveCoupleStatusCookie'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof saveCoupleStatusCookie>>,
+    void
+  > = () => {
+    return saveCoupleStatusCookie();
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SaveCoupleStatusCookieMutationResult = NonNullable<
+  Awaited<ReturnType<typeof saveCoupleStatusCookie>>
+>;
+
+export type SaveCoupleStatusCookieMutationError = ApiResponseErrorDetail;
+
+/**
+ * @summary 커플 상태 쿠키 저장
+ */
+export const useSaveCoupleStatusCookie = <
+  TError = ApiResponseErrorDetail,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof saveCoupleStatusCookie>>,
+    TError,
+    void,
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof saveCoupleStatusCookie>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions = getSaveCoupleStatusCookieMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+/**
  * 초대 코드를 통해 커플에 합류합니다.
  * @summary 초대 코드로 커플 합류
  */
@@ -1563,6 +1638,86 @@ export const useCreateCouplePartner = <
 };
 
 /**
+ * 관리자 키와 사용자 JWT를 이용해 사용자의 과거 커플 데이터(본인 소유 리소스)를 현재 커플로 이관합니다.
+ * @summary 현재 사용자 기준 이전 커플 데이터 이관
+ */
+export const migratePreviousCoupleData = (signal?: AbortSignal) => {
+  return customFetcher<AdminCoupleMigrationResponse>({
+    url: `/admin/couples/migrate`,
+    method: 'POST',
+    signal,
+  });
+};
+
+export const getMigratePreviousCoupleDataMutationOptions = <
+  TError = ApiResponseErrorDetail | void | AdminCoupleMigrationResponse,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof migratePreviousCoupleData>>,
+    TError,
+    void,
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof migratePreviousCoupleData>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ['migratePreviousCoupleData'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof migratePreviousCoupleData>>,
+    void
+  > = () => {
+    return migratePreviousCoupleData();
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MigratePreviousCoupleDataMutationResult = NonNullable<
+  Awaited<ReturnType<typeof migratePreviousCoupleData>>
+>;
+
+export type MigratePreviousCoupleDataMutationError =
+  | ApiResponseErrorDetail
+  | void
+  | AdminCoupleMigrationResponse;
+
+/**
+ * @summary 현재 사용자 기준 이전 커플 데이터 이관
+ */
+export const useMigratePreviousCoupleData = <
+  TError = ApiResponseErrorDetail | void | AdminCoupleMigrationResponse,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof migratePreviousCoupleData>>,
+    TError,
+    void,
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof migratePreviousCoupleData>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions = getMigratePreviousCoupleDataMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+/**
  * 서버 캐시를 즉시 비웁니다.
  * @summary 전체 캐시 강제 비우기
  */
@@ -1851,6 +2006,62 @@ export function useGetPhotos<
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetPhotosQueryOptions(albumId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * 내 정보와 상대방 정보, 커플 D+일수, 커플 전체 사진 수를 조회합니다.
+ * @summary 마이페이지 조회
+ */
+export const getMyPage = (signal?: AbortSignal) => {
+  return customFetcher<MyPageResponse>({ url: `/my-page`, method: 'GET', signal });
+};
+
+export const getGetMyPageQueryKey = () => {
+  return [`/my-page`] as const;
+};
+
+export const getGetMyPageQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyPage>>,
+  TError = ApiResponseErrorDetail | MyPageResponse,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyPageQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyPage>>> = ({ signal }) =>
+    getMyPage(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMyPage>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMyPageQueryResult = NonNullable<Awaited<ReturnType<typeof getMyPage>>>;
+export type GetMyPageQueryError = ApiResponseErrorDetail | MyPageResponse;
+
+/**
+ * @summary 마이페이지 조회
+ */
+
+export function useGetMyPage<
+  TData = Awaited<ReturnType<typeof getMyPage>>,
+  TError = ApiResponseErrorDetail | MyPageResponse,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMyPageQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
@@ -2728,6 +2939,8 @@ export const getGetPhotoDetailResponseMock = (
     faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
     undefined,
   ]),
+  editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   ...overrideResponse,
 });
 
@@ -2815,9 +3028,13 @@ export const getGetCommentsResponseMock = (
               undefined,
             ]),
             reacted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+            editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+            isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
           })),
           undefined,
         ]),
+        editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
       }),
     ),
     undefined,
@@ -2879,7 +3096,7 @@ export const getReconnectResponseMock = (
     },
     undefined,
   ]),
-  coupled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  isCoupled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   ...overrideResponse,
 });
 
@@ -2903,7 +3120,7 @@ export const getJoinByInviteCodeResponseMock = (
     },
     undefined,
   ]),
-  coupled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  isCoupled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   ...overrideResponse,
 });
 
@@ -2973,7 +3190,7 @@ export const getConfirmInviteCodeResponseMock = (
     },
     undefined,
   ]),
-  coupled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  isCoupled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   ...overrideResponse,
 });
 
@@ -3005,6 +3222,40 @@ export const getCreateCouplePartnerResponseMock = (
         undefined,
       ]),
     },
+    undefined,
+  ]),
+  ...overrideResponse,
+});
+
+export const getMigratePreviousCoupleDataResponseMock = (
+  overrideResponse: Partial<AdminCoupleMigrationResponse> = {},
+): AdminCoupleMigrationResponse => ({
+  previousCoupleCount: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  createdAlbumCount: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  movedPhotoCount: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  movedCommentCount: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  skippedCommentCount: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  movedEmoticonCount: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  skippedEmoticonCount: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
     undefined,
   ]),
   ...overrideResponse,
@@ -3094,11 +3345,45 @@ export const getGetPhotosResponseMock = (
               `${faker.date.past().toISOString().split('.')[0]}Z`,
               undefined,
             ]),
+            editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+            isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
           })),
           undefined,
         ]),
+        editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
       }),
     ),
+    undefined,
+  ]),
+  ...overrideResponse,
+});
+
+export const getGetMyPageResponseMock = (
+  overrideResponse: Partial<MyPageResponse> = {},
+): MyPageResponse => ({
+  myName: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
+  myProfileImageUrl: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
+  partnerName: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
+  partnerProfileImageUrl: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
+  coupledDay: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  couplePhotoCount: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
     undefined,
   ]),
   ...overrideResponse,
@@ -3364,7 +3649,7 @@ export const getGetMyStatusResponseMock = (
     },
     undefined,
   ]),
-  coupled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  isCoupled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   ...overrideResponse,
 });
 
@@ -3390,6 +3675,8 @@ export const getGetSelectableAlbumsResponseMock = (
           faker.string.alpha({ length: { min: 10, max: 20 } }),
           undefined,
         ]),
+        editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
       }),
     ),
     undefined,
@@ -3739,6 +4026,25 @@ export const getReconnectMockHandler = (
   );
 };
 
+export const getSaveCoupleStatusCookieMockHandler = (
+  overrideResponse?:
+    | void
+    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/couples/me/cookie',
+    async (info) => {
+      await delay(1000);
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info);
+      }
+      return new HttpResponse(null, { status: 204 });
+    },
+    options,
+  );
+};
+
 export const getJoinByInviteCodeMockHandler = (
   overrideResponse?:
     | CoupleStatusResponse
@@ -3935,6 +4241,34 @@ export const getCreateCouplePartnerMockHandler = (
   );
 };
 
+export const getMigratePreviousCoupleDataMockHandler = (
+  overrideResponse?:
+    | AdminCoupleMigrationResponse
+    | ((
+        info: Parameters<Parameters<typeof http.post>[1]>[0],
+      ) => Promise<AdminCoupleMigrationResponse> | AdminCoupleMigrationResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/admin/couples/migrate',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getMigratePreviousCoupleDataResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
 export const getClearAllCachesMockHandler = (
   overrideResponse?:
     | AdminActionResponse
@@ -4030,6 +4364,34 @@ export const getGetPhotosMockHandler = (
               ? await overrideResponse(info)
               : overrideResponse
             : getGetPhotosResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
+export const getGetMyPageMockHandler = (
+  overrideResponse?:
+    | MyPageResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<MyPageResponse> | MyPageResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/my-page',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetMyPageResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       );
@@ -4363,6 +4725,7 @@ export const getLokitAPIMock = () => [
   getAddEmoticonMockHandler(),
   getRemoveEmoticonMockHandler(),
   getReconnectMockHandler(),
+  getSaveCoupleStatusCookieMockHandler(),
   getJoinByInviteCodeMockHandler(),
   getCreateInviteMockHandler(),
   getVerifyInviteCodeMockHandler(),
@@ -4370,10 +4733,12 @@ export const getLokitAPIMock = () => [
   getConfirmInviteCodeMockHandler(),
   getCreate1MockHandler(),
   getCreateCouplePartnerMockHandler(),
+  getMigratePreviousCoupleDataMockHandler(),
   getClearAllCachesMockHandler(),
   getDelete1MockHandler(),
   getUpdateTitleMockHandler(),
   getGetPhotosMockHandler(),
+  getGetMyPageMockHandler(),
   getSearchPlacesMockHandler(),
   getGetMapMeMockHandler(),
   getGetLocationInfoMockHandler(),

@@ -21,7 +21,7 @@ const useAlbumAdd = (onSuccess?: () => void) => {
       { data: { title: nextTitle } },
       {
         onSuccess: () => {
-          // getMe 관련 모든 쿼리 invalidate (params 무관)
+          // getMapMe 관련 모든 쿼리 invalidate (params 무관)
           queryClient.invalidateQueries({ queryKey: getGetMapMeQueryKey() });
           // 앨범 리스트 쿼리도 invalidate
           queryClient.invalidateQueries({ queryKey: getMapMeAlbumsQueryKey() });

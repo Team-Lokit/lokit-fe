@@ -48,6 +48,25 @@ export function AppProviders({
     };
   }, []);
 
+  // Kakao SDK 초기화
+  useEffect(() => {
+    const initKakao = () => {
+      const kakao = window.Kakao;
+      const javascriptKey = process.env.NEXT_PUBLIC_JAVASCRIPT_KEY;
+
+      if (kakao && javascriptKey && !kakao.isInitialized()) {
+        kakao.init(javascriptKey);
+      }
+    };
+
+    if (window.Kakao) {
+      initKakao();
+    } else {
+      const timer = setTimeout(initKakao, 100);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   const content = (
     <CacheProvider value={cache}>
       <ThemeProvider theme={theme}>
