@@ -148,7 +148,13 @@ export default function MapRoute() {
 
     router.push(ROUTES.PHOTO.VIEW_WITH_CLUSTER(firstPhotoId, pendingClusterId));
     setPendingClusterId(null);
-  }, [pendingClusterId, clusterPhotosFromQuery, clusterExpansionData, isClusterQueryError, router]);
+  }, [
+    pendingClusterId,
+    clusterPhotosFromQuery,
+    clusterExpansionData,
+    isClusterQueryError,
+    router,
+  ]);
 
   const handlePinClick = (pin: MapPin) => {
     if (!pin.isCluster) {

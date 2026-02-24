@@ -7,6 +7,7 @@ import {
 } from '@/components/bottomSheet/constants';
 import { ExploreHeader, MenuHeader } from '@/components/header';
 import { DEFAULT_ALBUM_TITLE, ROUTES } from '@/constants';
+import type { LocationInfoResponse } from '@repo/api-client';
 
 interface MapRouteHeaderProps {
   sheetContext: SheetContext;
@@ -55,7 +56,7 @@ export const MapRouteHeader = ({
   return (
     <ExploreHeader
       title={address || '위치 정보 로딩 중'}
-      onClickProfile={() => {}}
+      onClickProfile={() => router.push(ROUTES.MYPAGE)}
       onClickExplore={() => router.push(ROUTES.EXPLORE)}
     />
   );

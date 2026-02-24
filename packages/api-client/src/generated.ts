@@ -5,7 +5,7 @@
  * Lokit API 문서
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import type {
   MutationFunction,
   QueryFunction,
@@ -14,6 +14,8 @@ import type {
   UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
+  UseSuspenseQueryOptions,
+  UseSuspenseQueryResult,
 } from '@tanstack/react-query';
 
 import type {
@@ -30,6 +32,7 @@ import type {
   RemoveEmoticonRequest,
   SearchPlacesParams,
   UpdateAlbumTitleRequest,
+  UpdateFirstMetDateRequest,
   UpdateNicknameRequest,
   UpdatePhotoRequest,
   UpdateProfileImageRequest,
@@ -136,6 +139,68 @@ export function useGetPhotoDetail<
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
   };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetPhotoDetailSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPhotoDetail>>,
+  TError = ApiResponseErrorDetail | void,
+>(
+  id: number,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getPhotoDetail>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPhotoDetailQueryKey(id);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPhotoDetail>>> = ({
+    signal,
+  }) => getPhotoDetail(id, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getPhotoDetail>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPhotoDetailSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPhotoDetail>>
+>;
+export type GetPhotoDetailSuspenseQueryError = ApiResponseErrorDetail | void;
+
+/**
+ * @summary 사진 상세 조회
+ */
+
+export function useGetPhotoDetailSuspense<
+  TData = Awaited<ReturnType<typeof getPhotoDetail>>,
+  TError = ApiResponseErrorDetail | void,
+>(
+  id: number,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getPhotoDetail>>,
+      TError,
+      TData
+    >;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPhotoDetailSuspenseQueryOptions(id, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
 
   query.queryKey = queryOptions.queryKey;
 
@@ -594,6 +659,67 @@ export function useGetComments<
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
   };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetCommentsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getComments>>,
+  TError = ApiResponseErrorDetail,
+>(
+  photoId: number,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getComments>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetCommentsQueryKey(photoId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getComments>>> = ({ signal }) =>
+    getComments(photoId, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getComments>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetCommentsSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getComments>>
+>;
+export type GetCommentsSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 댓글 목록 조회
+ */
+
+export function useGetCommentsSuspense<
+  TData = Awaited<ReturnType<typeof getComments>>,
+  TError = ApiResponseErrorDetail,
+>(
+  photoId: number,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getComments>>,
+      TError,
+      TData
+    >;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetCommentsSuspenseQueryOptions(photoId, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
 
   query.queryKey = queryOptions.queryKey;
 
@@ -1076,8 +1202,8 @@ export const useSaveCoupleStatusCookie = <
 };
 
 /**
- * 초대 코드를 통해 커플에 합류합니다.
- * @summary 초대 코드로 커플 합류
+ * 초대 코드를 입력한 사용자가 커플에 합류합니다.
+ * @summary 초대 코드로 커플 합류(입력자)
  */
 export const joinByInviteCode = (
   joinCoupleRequest: JoinCoupleRequest,
@@ -1136,7 +1262,7 @@ export type JoinByInviteCodeMutationBody = JoinCoupleRequest;
 export type JoinByInviteCodeMutationError = ApiResponseErrorDetail | CoupleStatusResponse;
 
 /**
- * @summary 초대 코드로 커플 합류
+ * @summary 초대 코드로 커플 합류(입력자)
  */
 export const useJoinByInviteCode = <
   TError = ApiResponseErrorDetail | CoupleStatusResponse,
@@ -1398,39 +1524,25 @@ export const useRefreshInvite = <
 };
 
 /**
- * 초대코드를 사용해 커플 연결을 확정합니다.
- * @summary 커플 연결 확정
+ * 현재 로그인된 사용자의 세션을 종료합니다.
+ * @summary 로그아웃
  */
-export const confirmInviteCode = (
-  joinCoupleRequest: JoinCoupleRequest,
-  signal?: AbortSignal,
-) => {
-  return customFetcher<CoupleStatusResponse>({
-    url: `/couples/invites/confirm`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: joinCoupleRequest,
-    signal,
-  });
+export const logout = (signal?: AbortSignal) => {
+  return customFetcher<void>({ url: `/auth/logout`, method: 'POST', signal });
 };
 
-export const getConfirmInviteCodeMutationOptions = <
+export const getLogoutMutationOptions = <
   TError = ApiResponseErrorDetail,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof confirmInviteCode>>,
+    Awaited<ReturnType<typeof logout>>,
     TError,
-    { data: JoinCoupleRequest },
+    void,
     TContext
   >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof confirmInviteCode>>,
-  TError,
-  { data: JoinCoupleRequest },
-  TContext
-> => {
-  const mutationKey = ['confirmInviteCode'];
+}): UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext> => {
+  const mutationKey = ['logout'];
   const { mutation: mutationOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
@@ -1439,44 +1551,29 @@ export const getConfirmInviteCodeMutationOptions = <
       : { ...options, mutation: { ...options.mutation, mutationKey } }
     : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof confirmInviteCode>>,
-    { data: JoinCoupleRequest }
-  > = (props) => {
-    const { data } = props ?? {};
-
-    return confirmInviteCode(data);
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof logout>>, void> = () => {
+    return logout();
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type ConfirmInviteCodeMutationResult = NonNullable<
-  Awaited<ReturnType<typeof confirmInviteCode>>
->;
-export type ConfirmInviteCodeMutationBody = JoinCoupleRequest;
-export type ConfirmInviteCodeMutationError = ApiResponseErrorDetail;
+export type LogoutMutationResult = NonNullable<Awaited<ReturnType<typeof logout>>>;
+
+export type LogoutMutationError = ApiResponseErrorDetail;
 
 /**
- * @summary 커플 연결 확정
+ * @summary 로그아웃
  */
-export const useConfirmInviteCode = <
-  TError = ApiResponseErrorDetail,
-  TContext = unknown,
->(options?: {
+export const useLogout = <TError = ApiResponseErrorDetail, TContext = unknown>(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof confirmInviteCode>>,
+    Awaited<ReturnType<typeof logout>>,
     TError,
-    { data: JoinCoupleRequest },
+    void,
     TContext
   >;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof confirmInviteCode>>,
-  TError,
-  { data: JoinCoupleRequest },
-  TContext
-> => {
-  const mutationOptions = getConfirmInviteCodeMutationOptions(options);
+}): UseMutationResult<Awaited<ReturnType<typeof logout>>, TError, void, TContext> => {
+  const mutationOptions = getLogoutMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
@@ -1795,6 +1892,88 @@ export const useClearAllCaches = <
 };
 
 /**
+ * 커플의 처음 만난 날짜(기념일)를 수정합니다.
+ * @summary 처음 만난 날짜 수정
+ */
+export const updateFirstMetDate = (
+  updateFirstMetDateRequest: UpdateFirstMetDateRequest,
+) => {
+  return customFetcher<void>({
+    url: `/couples/me/first-met-date`,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    data: updateFirstMetDateRequest,
+  });
+};
+
+export const getUpdateFirstMetDateMutationOptions = <
+  TError = ApiResponseErrorDetail | void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateFirstMetDate>>,
+    TError,
+    { data: UpdateFirstMetDateRequest },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateFirstMetDate>>,
+  TError,
+  { data: UpdateFirstMetDateRequest },
+  TContext
+> => {
+  const mutationKey = ['updateFirstMetDate'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateFirstMetDate>>,
+    { data: UpdateFirstMetDateRequest }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateFirstMetDate(data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateFirstMetDateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateFirstMetDate>>
+>;
+export type UpdateFirstMetDateMutationBody = UpdateFirstMetDateRequest;
+export type UpdateFirstMetDateMutationError = ApiResponseErrorDetail | void;
+
+/**
+ * @summary 처음 만난 날짜 수정
+ */
+export const useUpdateFirstMetDate = <
+  TError = ApiResponseErrorDetail | void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateFirstMetDate>>,
+    TError,
+    { data: UpdateFirstMetDateRequest },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateFirstMetDate>>,
+  TError,
+  { data: UpdateFirstMetDateRequest },
+  TContext
+> => {
+  const mutationOptions = getUpdateFirstMetDateMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+/**
  * 앨범을 삭제합니다.
  * @summary 앨범 삭제
  */
@@ -2016,6 +2195,59 @@ export function useGetPhotos<
   return query;
 }
 
+export const getGetPhotosSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPhotos>>,
+  TError = ApiResponseErrorDetail,
+>(
+  albumId: number,
+  options?: {
+    query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPhotos>>, TError, TData>;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPhotosQueryKey(albumId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPhotos>>> = ({ signal }) =>
+    getPhotos(albumId, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getPhotos>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPhotosSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPhotos>>
+>;
+export type GetPhotosSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 사진 목록 조회
+ */
+
+export function useGetPhotosSuspense<
+  TData = Awaited<ReturnType<typeof getPhotos>>,
+  TError = ApiResponseErrorDetail,
+>(
+  albumId: number,
+  options?: {
+    query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getPhotos>>, TError, TData>;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPhotosSuspenseQueryOptions(albumId, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
 /**
  * 내 정보와 상대방 정보, 커플 D+일수, 커플 전체 사진 수를 조회합니다.
  * @summary 마이페이지 조회
@@ -2066,6 +2298,53 @@ export function useGetMyPage<
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
   };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetMyPageSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyPage>>,
+  TError = ApiResponseErrorDetail | MyPageResponse,
+>(options?: {
+  query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyPageQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyPage>>> = ({ signal }) =>
+    getMyPage(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getMyPage>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMyPageSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMyPage>>
+>;
+export type GetMyPageSuspenseQueryError = ApiResponseErrorDetail | MyPageResponse;
+
+/**
+ * @summary 마이페이지 조회
+ */
+
+export function useGetMyPageSuspense<
+  TData = Awaited<ReturnType<typeof getMyPage>>,
+  TError = ApiResponseErrorDetail | MyPageResponse,
+>(options?: {
+  query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyPage>>, TError, TData>;
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMyPageSuspenseQueryOptions(options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
 
   query.queryKey = queryOptions.queryKey;
 
@@ -2147,6 +2426,67 @@ export function useSearchPlaces<
   return query;
 }
 
+export const getSearchPlacesSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof searchPlaces>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params: SearchPlacesParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof searchPlaces>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getSearchPlacesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof searchPlaces>>> = ({ signal }) =>
+    searchPlaces(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof searchPlaces>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type SearchPlacesSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof searchPlaces>>
+>;
+export type SearchPlacesSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 장소 검색
+ */
+
+export function useSearchPlacesSuspense<
+  TData = Awaited<ReturnType<typeof searchPlaces>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params: SearchPlacesParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof searchPlaces>>,
+      TError,
+      TData
+    >;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getSearchPlacesSuspenseQueryOptions(params, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
 /**
  * 
             홈 정보와 지도 사진을 한 번에 조회합니다.
@@ -2209,6 +2549,59 @@ export function useGetMapMe<
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
   };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetMapMeSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMapMe>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params: GetMapMeParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMapMe>>, TError, TData>;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMapMeQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMapMe>>> = ({ signal }) =>
+    getMapMe(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getMapMe>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMapMeSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMapMe>>
+>;
+export type GetMapMeSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 지도 ME 조회 (홈 + 사진 조회 통합)
+ */
+
+export function useGetMapMeSuspense<
+  TData = Awaited<ReturnType<typeof getMapMe>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params: GetMapMeParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMapMe>>, TError, TData>;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMapMeSuspenseQueryOptions(params, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
 
   query.queryKey = queryOptions.queryKey;
 
@@ -2291,6 +2684,68 @@ export function useGetLocationInfo<
   return query;
 }
 
+export const getGetLocationInfoSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getLocationInfo>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params: GetLocationInfoParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getLocationInfo>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetLocationInfoQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getLocationInfo>>> = ({
+    signal,
+  }) => getLocationInfo(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getLocationInfo>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetLocationInfoSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getLocationInfo>>
+>;
+export type GetLocationInfoSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 위치 정보 조회
+ */
+
+export function useGetLocationInfoSuspense<
+  TData = Awaited<ReturnType<typeof getLocationInfo>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params: GetLocationInfoParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getLocationInfo>>,
+      TError,
+      TData
+    >;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetLocationInfoSuspenseQueryOptions(params, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
 /**
  * 
             클러스터 ID를 기반으로 해당 그리드 셀 영역 내의 모든 사진을 조회합니다.
@@ -2361,6 +2816,68 @@ export function useGetClusterPhotos<
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
   };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetClusterPhotosSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getClusterPhotos>>,
+  TError = ApiResponseErrorDetail,
+>(
+  clusterId: string,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getClusterPhotos>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetClusterPhotosQueryKey(clusterId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getClusterPhotos>>> = ({
+    signal,
+  }) => getClusterPhotos(clusterId, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getClusterPhotos>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetClusterPhotosSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getClusterPhotos>>
+>;
+export type GetClusterPhotosSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 클러스터 내 사진 목록 조회
+ */
+
+export function useGetClusterPhotosSuspense<
+  TData = Awaited<ReturnType<typeof getClusterPhotos>>,
+  TError = ApiResponseErrorDetail,
+>(
+  clusterId: string,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getClusterPhotos>>,
+      TError,
+      TData
+    >;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetClusterPhotosSuspenseQueryOptions(clusterId, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
 
   query.queryKey = queryOptions.queryKey;
 
@@ -2441,6 +2958,68 @@ export function useGetAlbumMapInfo<
   return query;
 }
 
+export const getGetAlbumMapInfoSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAlbumMapInfo>>,
+  TError = ApiResponseErrorDetail,
+>(
+  albumId: number,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getAlbumMapInfo>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetAlbumMapInfoQueryKey(albumId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAlbumMapInfo>>> = ({
+    signal,
+  }) => getAlbumMapInfo(albumId, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getAlbumMapInfo>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetAlbumMapInfoSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAlbumMapInfo>>
+>;
+export type GetAlbumMapInfoSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 앨범 지도 정보 조회
+ */
+
+export function useGetAlbumMapInfoSuspense<
+  TData = Awaited<ReturnType<typeof getAlbumMapInfo>>,
+  TError = ApiResponseErrorDetail,
+>(
+  albumId: number,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getAlbumMapInfo>>,
+      TError,
+      TData
+    >;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetAlbumMapInfoSuspenseQueryOptions(albumId, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
 /**
  * 현재 로그인 사용자의 커플 연결 상태를 조회합니다.
  * @summary 내 커플 상태 조회
@@ -2495,6 +3074,53 @@ export function useGetMyStatus<
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
   };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetMyStatusSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMyStatus>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyStatus>>, TError, TData>;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMyStatusQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyStatus>>> = ({ signal }) =>
+    getMyStatus(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getMyStatus>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMyStatusSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMyStatus>>
+>;
+export type GetMyStatusSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 내 커플 상태 조회
+ */
+
+export function useGetMyStatusSuspense<
+  TData = Awaited<ReturnType<typeof getMyStatus>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyStatus>>, TError, TData>;
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMyStatusSuspenseQueryOptions(options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
 
   query.queryKey = queryOptions.queryKey;
 
@@ -2566,6 +3192,68 @@ export function useKakaoAuthorize<
   return query;
 }
 
+export const getKakaoAuthorizeSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof kakaoAuthorize>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params?: KakaoAuthorizeParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof kakaoAuthorize>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getKakaoAuthorizeQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof kakaoAuthorize>>> = ({
+    signal,
+  }) => kakaoAuthorize(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof kakaoAuthorize>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type KakaoAuthorizeSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof kakaoAuthorize>>
+>;
+export type KakaoAuthorizeSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 카카오 로그인 페이지로 리다이렉트
+ */
+
+export function useKakaoAuthorizeSuspense<
+  TData = Awaited<ReturnType<typeof kakaoAuthorize>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params?: KakaoAuthorizeParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof kakaoAuthorize>>,
+      TError,
+      TData
+    >;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getKakaoAuthorizeSuspenseQueryOptions(params, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
 /**
  * 사용자가 선택할 수 있는 앨범 목록을 조회합니다.
  * @summary 선택 가능한 앨범 조회
@@ -2629,6 +3317,62 @@ export function useGetSelectableAlbums<
   return query;
 }
 
+export const getGetSelectableAlbumsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getSelectableAlbums>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getSelectableAlbums>>,
+    TError,
+    TData
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetSelectableAlbumsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getSelectableAlbums>>> = ({
+    signal,
+  }) => getSelectableAlbums(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getSelectableAlbums>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetSelectableAlbumsSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getSelectableAlbums>>
+>;
+export type GetSelectableAlbumsSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 선택 가능한 앨범 조회
+ */
+
+export function useGetSelectableAlbumsSuspense<
+  TData = Awaited<ReturnType<typeof getSelectableAlbums>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getSelectableAlbums>>,
+    TError,
+    TData
+  >;
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetSelectableAlbumsSuspenseQueryOptions(options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
 /**
  * DB에 저장된 사용자 ID/이메일 목록을 조회합니다.
  * @summary 전체 사용자 목록 조회
@@ -2683,6 +3427,53 @@ export function useGetUsers<
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
   };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetUsersSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUsers>>,
+  TError = ApiResponseErrorDetail | void,
+>(options?: {
+  query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetUsersQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getUsers>>> = ({ signal }) =>
+    getUsers(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getUsers>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetUsersSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUsers>>
+>;
+export type GetUsersSuspenseQueryError = ApiResponseErrorDetail | void;
+
+/**
+ * @summary 전체 사용자 목록 조회
+ */
+
+export function useGetUsersSuspense<
+  TData = Awaited<ReturnType<typeof getUsers>>,
+  TError = ApiResponseErrorDetail | void,
+>(options?: {
+  query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getUsers>>, TError, TData>;
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetUsersSuspenseQueryOptions(options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
 
   query.queryKey = queryOptions.queryKey;
 
@@ -3170,30 +3961,6 @@ export const getRefreshInviteResponseMock = (
   ...overrideResponse,
 });
 
-export const getConfirmInviteCodeResponseMock = (
-  overrideResponse: Partial<CoupleStatusResponse> = {},
-): CoupleStatusResponse => ({
-  partnerSummary: faker.helpers.arrayElement([
-    {
-      userId: faker.helpers.arrayElement([
-        faker.number.int({ min: undefined, max: undefined }),
-        undefined,
-      ]),
-      nickname: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      profileImageUrl: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-    },
-    undefined,
-  ]),
-  isCoupled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  ...overrideResponse,
-});
-
 export const getCreate1ResponseMock = (
   overrideResponse: Partial<IdResponse> = {},
 ): IdResponse => ({
@@ -3362,6 +4129,10 @@ export const getGetPhotosResponseMock = (
 export const getGetMyPageResponseMock = (
   overrideResponse: Partial<MyPageResponse> = {},
 ): MyPageResponse => ({
+  myEmail: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
   myName: faker.helpers.arrayElement([
     faker.string.alpha({ length: { min: 10, max: 20 } }),
     undefined,
@@ -3376,6 +4147,10 @@ export const getGetMyPageResponseMock = (
   ]),
   partnerProfileImageUrl: faker.helpers.arrayElement([
     faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
+  firstMetDate: faker.helpers.arrayElement([
+    faker.date.past().toISOString().split('T')[0],
     undefined,
   ]),
   coupledDay: faker.helpers.arrayElement([
@@ -4157,29 +4932,20 @@ export const getRefreshInviteMockHandler = (
   );
 };
 
-export const getConfirmInviteCodeMockHandler = (
+export const getLogoutMockHandler = (
   overrideResponse?:
-    | CoupleStatusResponse
-    | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) => Promise<CoupleStatusResponse> | CoupleStatusResponse),
+    | void
+    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
   options?: RequestHandlerOptions,
 ) => {
   return http.post(
-    '*/couples/invites/confirm',
+    '*/auth/logout',
     async (info) => {
       await delay(1000);
-
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getConfirmInviteCodeResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      );
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info);
+      }
+      return new HttpResponse(null, { status: 204 });
     },
     options,
   );
@@ -4292,6 +5058,25 @@ export const getClearAllCachesMockHandler = (
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       );
+    },
+    options,
+  );
+};
+
+export const getUpdateFirstMetDateMockHandler = (
+  overrideResponse?:
+    | void
+    | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions,
+) => {
+  return http.patch(
+    '*/couples/me/first-met-date',
+    async (info) => {
+      await delay(1000);
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info);
+      }
+      return new HttpResponse(null, { status: 204 });
     },
     options,
   );
@@ -4730,11 +5515,12 @@ export const getLokitAPIMock = () => [
   getCreateInviteMockHandler(),
   getVerifyInviteCodeMockHandler(),
   getRefreshInviteMockHandler(),
-  getConfirmInviteCodeMockHandler(),
+  getLogoutMockHandler(),
   getCreate1MockHandler(),
   getCreateCouplePartnerMockHandler(),
   getMigratePreviousCoupleDataMockHandler(),
   getClearAllCachesMockHandler(),
+  getUpdateFirstMetDateMockHandler(),
   getDelete1MockHandler(),
   getUpdateTitleMockHandler(),
   getGetPhotosMockHandler(),

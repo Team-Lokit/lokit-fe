@@ -115,4 +115,3 @@ export const PhotoCount = styled.span`
   ${({ theme }) => theme.typography.body14Semibold}
   color: ${({ theme }) => theme.colors.gray[400]};
 `;
-
