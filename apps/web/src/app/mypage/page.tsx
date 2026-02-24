@@ -4,7 +4,7 @@ import { QueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query
 import {
   getGetMyPageQueryKey,
   getMyPageServer,
-  type MyPageResponse,
+  getMyStatusServer,
 } from '@repo/api-client';
 import HeaderClient from './_clientBoundary/HeaderClient/HeaderClient';
 import CoupleInfoContainer from './_components/CoupleInfoContainer/CoupleInfoContainer';
@@ -27,8 +27,10 @@ export default async function MyPage() {
       console.error('[MyPage] prefetch failed:', error);
     });
 
-  const myPageData = queryClient.getQueryData<MyPageResponse>(getGetMyPageQueryKey());
-  const hasDday = myPageData?.coupledDay != null;
+  const coupleStatus = await getMyStatusServer().catch((error) => {
+    console.error('[MyPage] getMyStatus failed:', error);
+    return null;
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
@@ -36,15 +38,15 @@ export default async function MyPage() {
         <h1 className={styles.srOnly}>{PAGE_TITLE}</h1>
         <HeaderClient />
         <div className={styles.coupleInfo}>
-          <CoupleInfoContainer />
+          <CoupleInfoContainer isCoupled={coupleStatus?.isCoupled ?? false} />
         </div>
         <div className={styles.banner}>
-          <BannerContainer hasDday={hasDday} />
+          <BannerContainer />
         </div>
         <div className={styles.divider}>
           <Divider />
         </div>
-        <MenuContainer />
+        <MenuContainer isCoupled={coupleStatus?.isCoupled ?? false} />
         <div className={styles.footer}>
           <Footer />
         </div>
