@@ -21,11 +21,15 @@ export const API_URL = {
   },
   COUPLES: {
     STATUS: '/couples/me/status',
+    FIRST_MET_DATE: '/couples/me/first-met-date',
   },
   MY_PAGE: {
     BASE: '/my-page',
     NICKNAME: '/my-page/nickname',
     PROFILE_IMAGE: '/my-page/profile-image',
+  },
+  USERS: {
+    ME: '/users/me',
   },
   PHOTOS: {
     BASE: '/photos',
