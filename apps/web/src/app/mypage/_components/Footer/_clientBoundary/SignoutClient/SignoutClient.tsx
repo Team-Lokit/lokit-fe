@@ -10,11 +10,11 @@ import * as S from './SignoutClient.styles';
 
 export default function SignoutClient() {
   const router = useRouter();
-  const { data: coupleStatus, isPending, isError } = useGetMyStatus();
+  const { data: coupleStatus, isLoading, isError } = useGetMyStatus();
   const { isOpen, handleOpen, handleClose } = usePopup();
 
   const handleClick = () => {
-    if (isPending || isError) return;
+    if (isLoading || isError) return;
 
     if (coupleStatus?.isCoupled) {
       handleOpen();
@@ -43,8 +43,7 @@ export default function SignoutClient() {
             <TextButton
               text="이동하기"
               variant="negative"
-              // TODO: 연결 끊기 화면으로 이동하도록 변경
-              onClick={() => router.push(ROUTES.SIGNOUT)}
+              onClick={() => router.push(ROUTES.DISCONNECT)}
               style={{ flex: 1 }}
             />
           </Modal.Footer>
