@@ -38,6 +38,7 @@ const usePhotoSlider = ({
     if (photos.length > 0 && initialPhotoId) {
       const index = photos.findIndex((p) => p.id === initialPhotoId);
       if (index !== -1) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- 외부 데이터(photos) 로드 완료 시 인덱스 동기화
         setCurrentPhotoIndex(index);
       }
     }

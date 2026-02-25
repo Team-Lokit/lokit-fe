@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs -- 로딩/무효 상태에서 이전 데이터를 유지하기 위해 의도적으로 렌더 중 ref를 캐시로 사용 */
 import { getMapMe, getGetMapMeQueryKey, type AlbumThumbnails } from '@repo/api-client';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useMemo, useRef } from 'react';

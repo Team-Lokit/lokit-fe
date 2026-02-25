@@ -20,26 +20,30 @@ interface UseMapRouteSheetContextReturn {
  */
 export const useMapRouteSheetContext = (): UseMapRouteSheetContextReturn => {
   const pathname = usePathname();
-  const [sheetContext, setSheetContext] = useState<SheetContext>({
-    type: SHEET_CONTEXT_TYPE.HOME,
-  });
-
   // URL 경로에서 앨범 ID 추출
   const albumIdFromPath = useMemo(() => {
     return extractAlbumIdFromPath(pathname);
   }, [pathname]);
 
+  // 초기 상태를 URL 경로 기반으로 설정
+  const [sheetContext, setSheetContext] = useState<SheetContext>(() => {
+    if (albumIdFromPath) {
+      return { type: SHEET_CONTEXT_TYPE.ALBUM_DETAIL, albumId: albumIdFromPath };
+    }
+    return { type: SHEET_CONTEXT_TYPE.HOME };
+  });
+
   // 경로가 변경되었을 때 바텀시트 상태 동기화
   useEffect(() => {
     if (albumIdFromPath) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- 경로 변경 시 바텀시트 상태 동기화
       setSheetContext({
         type: SHEET_CONTEXT_TYPE.ALBUM_DETAIL,
         albumId: albumIdFromPath,
       });
-      return;
+    } else {
+      setSheetContext({ type: SHEET_CONTEXT_TYPE.HOME });
     }
-
-    setSheetContext({ type: SHEET_CONTEXT_TYPE.HOME });
   }, [albumIdFromPath]);
 
   // 선택된 앨범 ID 계산
