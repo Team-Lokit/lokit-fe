@@ -1,0 +1,22 @@
+import styled from '@emotion/styled';
+
+export const Wrapper = styled.div`
+  width: 100%;
+  height: 100dvh;
+  position: relative;
+`;
+
+export const HeaderContainer = styled.div`
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 1010;
+`;
+
+export const FloatingButtonWrapper = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 54px;
+  transform: translateX(-50%);
+  z-index: 999;
+`;

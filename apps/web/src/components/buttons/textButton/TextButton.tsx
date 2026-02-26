@@ -1,0 +1,39 @@
+import { TextButtonVariant } from '@/types/button.type';
+import * as S from './TextButton.styles';
+
+interface TextButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** 버튼 텍스트 */
+  text: string;
+  /** 클릭 이벤트 */
+  onClick: () => void;
+  /** 버튼 variant */
+  variant?: TextButtonVariant;
+  /** 버튼 활성화 여부 */
+  disabled?: boolean;
+  /** 텍스트 정렬 */
+  textAlign?: 'left' | 'center';
+}
+
+const TextButton = ({
+  text,
+  onClick,
+  variant = 'default',
+  disabled = false,
+  textAlign = 'center',
+  ...rest
+}: TextButtonProps) => {
+  return (
+    <S.Wrapper
+      type="button"
+      onClick={onClick}
+      variant={variant}
+      disabled={disabled}
+      textAlign={textAlign}
+      {...rest}
+    >
+      {text}
+    </S.Wrapper>
+  );
+};
+
+export default TextButton;

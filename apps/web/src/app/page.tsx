@@ -1,10 +1,10 @@
-import { ExampleCard } from '@/components/ExampleCard';
-import styles from './page.module.css';
+import { Suspense } from 'react';
+import MapRoute from './_components/MapRoute';
 
 export default function Home() {
   return (
-    <section className={styles.page}>
-      <ExampleCard />
-    </section>
+    <Suspense>
+      <MapRoute />
+    </Suspense>
   );
 }

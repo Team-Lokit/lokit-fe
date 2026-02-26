@@ -1,0 +1,13 @@
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 160%;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-align: center;
+}
+
+.inlineSkeleton {
+  display: inline-block;
+  vertical-align: middle;
+}

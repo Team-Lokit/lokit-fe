@@ -1,8 +1,8 @@
 import { defineConfig } from 'orval';
 
 export default defineConfig({
-  demoApi: {
-    input: './apis/openapi.yaml',
+  lokitApi: {
+    input: 'https://develop-api.lokit.co.kr/api/docs',
     output: {
       target: './packages/api-client/src/generated.ts',
       schemas: './packages/api-client/src/model',
@@ -11,8 +11,11 @@ export default defineConfig({
       mode: 'single',
       override: {
         mutator: {
-          path: './packages/api-client/src/fetcher.ts',
+          path: './packages/api-client/src/customFetcher.ts',
           name: 'customFetcher',
+        },
+        query: {
+          useSuspenseQuery: true,
         },
       },
     },
