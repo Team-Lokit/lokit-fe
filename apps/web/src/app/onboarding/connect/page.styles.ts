@@ -25,7 +25,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  min-height: 100dvh;
+  min-height: 100vh;
   padding: 0;
   background-color: ${({ theme }) => theme.colors.gray[1000]};
   overflow: hidden;

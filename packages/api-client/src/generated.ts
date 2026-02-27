@@ -3730,7 +3730,6 @@ export const getGetPhotoDetailResponseMock = (
     faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
     undefined,
   ]),
-  editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   ...overrideResponse,
 });
@@ -3819,12 +3818,10 @@ export const getGetCommentsResponseMock = (
               undefined,
             ]),
             reacted: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-            editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
             isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
           })),
           undefined,
         ]),
-        editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
         isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
       }),
     ),
@@ -4112,12 +4109,10 @@ export const getGetPhotosResponseMock = (
               `${faker.date.past().toISOString().split('.')[0]}Z`,
               undefined,
             ]),
-            editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
             isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
           })),
           undefined,
         ]),
-        editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
         isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
       }),
     ),
@@ -4159,6 +4154,14 @@ export const getGetMyPageResponseMock = (
   ]),
   couplePhotoCount: faker.helpers.arrayElement([
     faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  defaultAlbumId: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  backgroundImageUrl: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
     undefined,
   ]),
   ...overrideResponse,
@@ -4316,6 +4319,10 @@ export const getGetMapMeResponseMock = (
     ),
     undefined,
   ]),
+  profileImageUrl: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -4450,7 +4457,6 @@ export const getGetSelectableAlbumsResponseMock = (
           faker.string.alpha({ length: { min: 10, max: 20 } }),
           undefined,
         ]),
-        editable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
         isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
       }),
     ),

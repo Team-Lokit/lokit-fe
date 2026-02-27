@@ -11,6 +11,8 @@ export const 마이페이지_조회_성공: MyPageResponse = {
   firstMetDate: '2024-11-09',
   coupledDay: 365,
   couplePhotoCount: 42,
+  defaultAlbumId: 100,
+  backgroundImageUrl: 'https://picsum.photos/id/1018/400/400',
 };
 
 export const 마이페이지_조회_미연결: MyPageResponse = {
@@ -23,4 +25,5 @@ export const 마이페이지_조회_미연결: MyPageResponse = {
   firstMetDate: undefined,
   coupledDay: undefined,
   couplePhotoCount: 0,
+  defaultAlbumId: 100,
 };

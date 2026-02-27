@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { ROUTES } from '@/constants/routes';
+import { ACCESS_TOKEN_COOKIE, COUPLE_STATUS_COOKIE } from '@/constants/cookie';
 import { COUPLE_STATUS } from '@/constants/coupleStatus';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const accessToken = request.cookies.get('accessToken')?.value;
-  const coupleStatus = request.cookies.get('coupleStatus')?.value;
+  const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
+  const coupleStatus = request.cookies.get(COUPLE_STATUS_COOKIE)?.value;
   const isLoginPage = pathname.startsWith(ROUTES.LOGIN);
 
   // 미인증 → 로그인만 허용
@@ -19,7 +20,7 @@ export function middleware(request: NextRequest) {
 
   // 인증됨 → 로그인 접근 불가
   if (isLoginPage) {
-    return NextResponse.redirect(new URL(ROUTES.HOME, request.url));
+    return NextResponse.redirect(new URL(ROUTES.ONBOARDING.START, request.url));
   }
 
   const isOnboarding = pathname.startsWith(ROUTES.ONBOARDING.START);
@@ -60,7 +61,10 @@ export function middleware(request: NextRequest) {
       break;
 
     default:
-      // coupleStatus 쿠키 없음 → 통과 (fallback)
+      // coupleStatus 쿠키 없음 → NOT_COUPLED으로 간주
+      if (!isOnboarding) {
+        return NextResponse.redirect(new URL(ROUTES.ONBOARDING.START, request.url));
+      }
       break;
   }
 
