@@ -2,30 +2,27 @@
 
 import { useRouter } from 'next/navigation';
 import { useGetMyPageSuspense } from '@repo/api-client';
-import { useQueryClient } from '@tanstack/react-query';
-import { type AlbumThumbnails } from '@repo/api-client';
 import { ROUTES } from '@/constants';
-import { DEFAULT_ALBUM_TITLE } from '@/constants/album';
-import { getMapMeAlbumsQueryKey } from '@/hooks/queries/useMapMeAlbums';
 import ChevronRightIcon from '@/assets/images/chevronRight.svg';
 import * as S from './TotalPhotoCountBannerClient.styles';
 
 export default function TotalPhotoCountBannerClient() {
   const { data } = useGetMyPageSuspense();
   const router = useRouter();
-  const queryClient = useQueryClient();
   const totalPhotoCount = data.couplePhotoCount ?? 0;
+  const defaultAlbumId = data.defaultAlbumId;
+  const backgroundImage = data.backgroundImageUrl;
 
   const handleBannerClick = () => {
-    const albumList =
-      queryClient.getQueryData<AlbumThumbnails[]>(getMapMeAlbumsQueryKey()) ?? [];
-    const allPhotosAlbum = albumList.find((album) => album.title === DEFAULT_ALBUM_TITLE);
-    if (!allPhotosAlbum?.id) return;
-    router.push(`${ROUTES.ALBUM.DETAIL(allPhotosAlbum.id)}?expand=true`);
+    if (defaultAlbumId === null || defaultAlbumId === undefined) {
+      return;
+    }
+    router.push(`${ROUTES.ALBUM.DETAIL(defaultAlbumId)}?expand=true`);
   };
 
   return (
     <S.Wrapper
+      $backgroundImage={backgroundImage}
       role="button"
       tabIndex={0}
       onClick={handleBannerClick}
