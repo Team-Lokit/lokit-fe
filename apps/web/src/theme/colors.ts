@@ -73,7 +73,7 @@ export const colors = {
     bg5: 'rgba(226,230,255,0.05)',
     bg8: 'rgba(226,230,255,0.08)',
     bg20: 'rgba(226,230,255,0.2)',
-    border10: 'rgba(226,230,255,0.05)',
+    border10: 'rgba(226,230,255,0.10)',
   },
 
   status: {
