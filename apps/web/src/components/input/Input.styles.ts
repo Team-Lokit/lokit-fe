@@ -30,8 +30,7 @@ export const InputWrapper = styled.div<{ isError: boolean }>`
   padding: ${SPACING.PADDING_VERTICAL}px ${SPACING.PADDING_HORIZONTAL}px;
   background: ${({ theme }) => theme.colors.blueWhite.bg5};
   border: 1px solid
-    ${({ theme, isError }) =>
-      isError ? theme.colors.status.red[200] : theme.colors.blueWhite.border10};
+    ${({ theme, isError }) => (isError ? theme.colors.status.red[200] : 'transparent')};
   border-radius: ${SIZES.BORDER_RADIUS}px;
 
   &:focus-within {
