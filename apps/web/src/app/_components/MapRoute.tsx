@@ -8,6 +8,8 @@ import MapView from '@/components/map/MapView';
 import Sidebar from '@/components/sidebar/Sidebar';
 import ViewSwitcher from '@/components/viewSwitcher/ViewSwitcher';
 import FloatingButton from '@/components/buttons/floatingButton/FloatingButton';
+import PhotoGridContainer from '@/components/photoGridContainer/PhotoGridContainer';
+import PhotoGridItem from '@/components/photoGridItem/PhotoGridItem';
 import CrossHairIcon from '@/assets/images/crossHair.svg';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import AddIcon from '@/assets/images/add.svg';
@@ -71,7 +73,7 @@ export default function MapRoute() {
   });
 
   // Pending 사진 merge (앨범 리스트 + 앨범 상세)
-  const { albumList: mergedAlbumList } = usePendingPhotosViewModel(
+  const { albumList: mergedAlbumList, displayPhotos } = usePendingPhotosViewModel(
     albumList,
     albumDetail,
   );
@@ -195,18 +197,6 @@ export default function MapRoute() {
     router.push(`/album/${albumId}`);
   };
 
-  const handleCloseAlbumDetail = () => {
-    router.back();
-  };
-
-  const handleOpenAlbumRename = () => {
-    setIsRenameModalOpen(true);
-  };
-
-  const handleOpenAlbumDelete = () => {
-    setIsDeleteModalOpen(true);
-  };
-
   const handleCloseRenameModal = () => {
     setIsRenameModalOpen(false);
     setMenuAlbumId(undefined);
@@ -229,15 +219,11 @@ export default function MapRoute() {
           sheetContext={sheetContext}
           selectedAlbumTitle={selectedAlbumTitle}
           address={address}
-          profileImageUrl={profileImageUrl}
-          onCloseAlbumDetail={handleCloseAlbumDetail}
-          onOpenAlbumRename={handleOpenAlbumRename}
-          onOpenAlbumDelete={handleOpenAlbumDelete}
           onOpenSidebar={() => setIsSidebarOpen(true)}
         />
       </S.HeaderContainer>
 
-      {viewState && (
+      {activeView === 'map' && viewState && (
         <MapView
           ref={mapViewRef}
           locationState={viewState}
@@ -245,6 +231,36 @@ export default function MapRoute() {
           onPinClick={handlePinClick}
           onViewStateChange={handleViewStateChange}
         />
+      )}
+
+      {activeView === 'grid' && (
+        <S.GridViewContainer>
+          <PhotoGridContainer>
+            {displayPhotos.map((photo) =>
+              photo.kind === 'pending' ? (
+                <PhotoGridItem
+                  key={photo.pendingId}
+                  src={photo.url}
+                  date={photo.takenAt}
+                  onClick={() => {}}
+                  progress={photo.progress}
+                  hasError={photo.status === 'error'}
+                />
+              ) : (
+                <PhotoGridItem
+                  key={photo.id}
+                  src={photo.url ?? ''}
+                  date={photo.takenAt}
+                  onClick={() => {
+                    if (photo.id) {
+                      router.push(ROUTES.PHOTO.VIEW(photo.id));
+                    }
+                  }}
+                />
+              ),
+            )}
+          </PhotoGridContainer>
+        </S.GridViewContainer>
       )}
 
       <S.ActionColumn>

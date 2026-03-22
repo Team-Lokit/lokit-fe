@@ -31,6 +31,13 @@ export const ActionColumn = styled.div`
   z-index: 1001;
 `;
 
+export const GridViewContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding-top: 100px;
+`;
+
 export const ViewSwitcherWrapper = styled.div`
   position: absolute;
   bottom: 24px;
