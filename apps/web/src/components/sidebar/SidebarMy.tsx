@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import HeartIcon from '@/assets/images/heart.svg';
+import HeartSmallIcon from '@/assets/images/heartSmall.svg';
 import DefaultProfileIcon from '@/assets/images/defaultProfile.svg';
 
 interface SidebarMyProps {
@@ -22,9 +22,9 @@ const SidebarMy = ({ nickname, dDay, profileImageUrl, onClick }: SidebarMyProps)
       <InfoGroup>
         <Nickname>{nickname}</Nickname>
         <DdayBadge>
-          <HeartIconWrapper>
-            <HeartIcon />
-          </HeartIconWrapper>
+          <HeartSmallIconWrapper>
+            <HeartSmallIcon />
+          </HeartSmallIconWrapper>
           <DdayText>{dDay}일</DdayText>
         </DdayBadge>
       </InfoGroup>
@@ -91,15 +91,10 @@ const DdayBadge = styled.div`
   background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
 `;
 
-const HeartIconWrapper = styled.div`
+const HeartSmallIconWrapper = styled.div`
   width: 12px;
   height: 12px;
   flex-shrink: 0;
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
 `;
 
 const DdayText = styled.span`
