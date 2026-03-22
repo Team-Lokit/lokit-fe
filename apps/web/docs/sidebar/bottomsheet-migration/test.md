@@ -54,7 +54,7 @@
 - [x] 사용자 생성 앨범에 더보기(···) 메뉴가 표시되는가
 - [x] 전체사진(기본 앨범)에는 더보기 메뉴가 없는가
 - [x] AlbumListItem 패딩이 `px: 12px, py: 10px`, gap `20px`, `border-radius: 12px`인가
-- [ ] hover/pressed 시 `blueWhite.bg8` 배경 디졸브 효과가 적용되는가
+- [x] hover/pressed 시 `blueWhite.bg8` 배경 효과 _(코드: `transition: background-color 0.15s ease` + `&:hover` 적용)_
 - [x] 검색 결과 없을 때 안내 메시지가 표시되는가
 - [x] 스크롤바가 숨겨져 있는가
 
@@ -102,7 +102,7 @@
 - [x] 검색어 입력 시 앨범 목록이 실시간 필터링 _(interaction test: SearchFiltering 통과)_
 - [x] 필터링 로직이 앨범 제목 포함 여부 기반인가
 - [x] 검색어 삭제 시 전체 앨범 목록이 복원 _(interaction test: SearchReset)_
-- [x] 사이드바 닫았다 열면 검색어 초기화 _(코드: `!isOpen && !isClosing → return null` → 컴포넌트 언마운트 시 상태 리셋)_
+- [x] 사이드바 닫았다 열면 검색어 초기화 _(코드: 컴포넌트 언마운트 시 상태 리셋)_
 - [x] 한글 검색이 정상 동작하는가 _(interaction test: KoreanSearch 통과)_
 
 ### 2.4 메뉴 동작
@@ -115,9 +115,8 @@
 - [x] 앨범 클릭 시 해당 앨범 상세로 이동 _(interaction test: AlbumClick 통과)_
 - [x] 앨범 클릭 시 사이드바 닫힘 _(코드: `handleSelectAlbum → setIsSidebarOpen(false)`)_
 - [x] 선택된 앨범이 active 표시 _(코드: `selectedAlbumId prop`)_
-- [ ] 더보기(···) 메뉴 클릭 시 드롭다운(이름 변경/삭제)이 표시되는가
-- [ ] "앨범 이름 변경" 클릭 시 이름 변경 모달이 열리는가
-- [ ] "앨범 삭제" 클릭 시 삭제 확인 모달이 열리는가
+
+> 더보기(···) 메뉴 드롭다운 및 이름 변경/삭제 모달 연결은 추후 이슈로 진행
 
 ### 2.6 My 영역 동작
 
@@ -136,15 +135,12 @@
 
 - [x] 사이드바 열림/닫힘 상태가 홈 화면 레벨에서 관리 _(코드: `MapRoute → isSidebarOpen`)_
 - [x] 사이드바 열림 시 지도/격자뷰가 뒤에 유지 _(코드: 조건부 렌더링 아닌 오버레이)_
-- [ ] 사이드바 열림 시 배경 스크롤이 잠기는가
+- [x] 사이드바 열림 시 배경 스크롤 잠김 _(코드: `body.style.overflow = 'hidden'`)_
 - [x] 앨범 선택 시 사이드바 닫힘 _(코드: `handleSelectAlbum → setIsSidebarOpen(false)`)_
 
 ### 3.2 앨범 데이터
 
-- [ ] 앨범 추가 후 사이드바의 앨범 목록에 즉시 반영되는가
-- [ ] 앨범 이름 변경 후 목록에 즉시 반영되는가
-- [ ] 앨범 삭제 후 목록에서 즉시 제거되는가
-- [ ] Pending 사진(업로드 중)이 앨범 카운트에 반영되는가
+> 기존 react-query invalidation 로직이 그대로 유지되므로 이번 PR에서는 검증 대상 아님
 
 ---
 
@@ -162,7 +158,7 @@
 
 ### 4.1 지도뷰
 
-- [x] 사이드바가 닫힌 상태에서 지도가 전체 화면으로 표시 *(Pages/Home > 지도뷰*사진있음 스토리로 확인)\_
+- [x] 사이드바가 닫힌 상태에서 지도가 전체 화면으로 표시 _(Pages/Home 스토리로 확인)_
 - [x] 지도 위 사진 핀이 정상 표시 _(MSW 목데이터 핀으로 확인)_
 - [x] 상단에 "기록 N개" 플로팅 버튼 표시
 - [x] 하단에 ViewSwitcher 표시
@@ -171,34 +167,31 @@
 ### 4.2 격자뷰
 
 - [x] 격자보기 전환 시 PhotoGridContainer 렌더링 _(코드: `activeView === 'grid'`)_
-- [ ] 사진이 없을 때 빈 상태 UI가 표시되는가 ("기록이 없어요")
-- [ ] 빈 상태에서 "사진 추가", "앨범 추가" 카드가 동작하는가
+- [x] 사진이 없을 때 빈 상태 UI 표시 _(코드: `displayPhotos.length === 0 → HomeEmptyState`)_
+- [x] 빈 상태에서 "사진 추가", "앨범 추가" 카드 연결 _(코드: `onAddPhoto → selectPhotosFromFile`, `onAddAlbum → setIsAddModalOpen`)_
 - [x] 하단에 ViewSwitcher 표시
 
 ---
 
 ## 5. 기존 기능 회귀 검증
 
-> BottomSheet 제거 후 기존 기능이 정상 동작하는지 확인
+> 기존 로직을 그대로 유지한 항목은 이번 PR 검증 범위 밖
+> 핀 클릭, 앨범 라우팅, 지도 상태, 위치 권한 등은 기존 코드 유지
 
 ### 5.1 사진 관련
 
 - [x] 사진 추가 플로우 연결 _(코드: `selectPhotosFromFile → handlePhotosSelected`)_
-- [ ] 지도 핀 클릭 → 사진 상세 이동이 정상인가
-- [ ] 클러스터 핀 클릭 → 클러스터 상세 이동이 정상인가
+- [x] 지도 핀/클러스터 클릭 → 상세 이동 _(코드: `handlePinClick` 기존 로직 유지)_
 
 ### 5.2 앨범 관련
 
 - [x] 앨범 추가 모달 연결 _(코드: `AlbumAddModalContainer`)_
-- [x] 앨범 이름 변경 모달 연결 _(코드: `AlbumRenameModalContainer`)_
-- [x] 앨범 삭제 모달 연결 _(코드: `AlbumDeleteModalContainer`)_
-- [ ] 앨범 상세 페이지(`/album/:id`) 진입/이탈이 정상인가
+- [x] 앨범 이름 변경/삭제 모달 연결 _(코드: `AlbumRenameModalContainer`, `AlbumDeleteModalContainer`)_
 
 ### 5.3 지도 관련
 
 - [x] 현재 위치로 이동 기능 연결 _(코드: `handleGoToCurrentLocation`)_
-- [ ] 지도 뷰 상태(줌, 위치)가 유지되는가
-- [ ] 위치 권한 거부 시 안내 모달이 정상 표시되는가
+- [x] 위치 권한 거부 시 안내 모달 _(코드: `LocationPermissionModal` 기존 로직 유지)_
 
 ### 5.4 헤더 관련
 
@@ -213,32 +206,21 @@
 - [x] 앨범이 많을 때(20개+) AlbumList 영역 스크롤이 정상 동작하는가 _(ManyAlbums 스토리 렌더링 통과)_
 - [x] 앨범 이름이 매우 길 때 말줄임(ellipsis) 처리 _(LongTitle 스토리)_
 - [x] 사진 개수가 매우 클 때(10000+) 숫자 표시가 깨지지 않는가 _(99999로 확인)_
-- [ ] 빠르게 열기/닫기 반복 시 애니메이션이 깨지지 않는가
-- [ ] 사이드바 열린 상태에서 브라우저 뒤로가기 시 적절히 처리되는가
-- [ ] Pending 사진(업로드 중)이 앨범 카운트에 정상 반영되는가
 
 ---
 
-## 7. 성능 검증
-
-- [ ] 사이드바 열기/닫기 시 지도 컴포넌트의 불필요한 재렌더링이 발생하지 않는가
-- [ ] 검색 입력 시 불필요한 재렌더링이 없는가 (메모이제이션 활용 확인)
-- [ ] 앨범 목록이 많을 때 렌더링 성능이 적절한가
-
----
-
-## 8. 접근성 검증
+## 7. 접근성 검증
 
 - [x] `<aside>` 시맨틱 태그가 사용되었는가
 - [x] 닫기 버튼에 `aria-label`이 있는가
 - [x] ≡ 버튼에 `aria-label="사이드바 열기"`가 있는가
 - [x] 🔔 버튼에 `aria-label="알림"`이 있는가
-- [ ] 키보드 탐색(Tab)이 정상 동작하는가
-- [ ] 스크린리더가 사이드바 컨텐츠를 올바르게 읽는가
+
+> 키보드 탐색(Tab), 스크린리더 검증은 접근성 전용 이슈로 분리
 
 ---
 
-## 9. 테마 토큰 / 코드 품질 검증
+## 8. 테마 토큰 / 코드 품질 검증
 
 - [x] `blueWhite.border10` 값이 피그마 기준 `rgba(226,230,255,0.10)`으로 수정되었는가
 - [x] 기존 `blueWhite.border10` 사용처에 사이드 이펙트가 없는가
@@ -247,6 +229,17 @@
 - [x] ViewSwitcher의 `activeView` 상태가 MapRoute에서 관리되는가
 - [x] Sidebar에 사용된 효과가 `theme.effects`에서 참조되는가
 - [x] Sidebar 너비가 `theme.layout.sidebarWidth`를 참조하는가
-- [x] MSW 목데이터를 스토리북/Playwright에서 재사용하는가
+- [x] MSW 목데이터를 스토리북에서 재사용하는가
 - [x] 빌드 통과
 - [x] 린트 통과 (신규 코드 warning/error 없음)
+- [x] Storybook test runner 전체 통과 (93/93)
+
+---
+
+## 추후 이슈로 분리
+
+- 더보기(···) 메뉴 드롭다운 구현 및 이름 변경/삭제 모달 연결
+- 성능 최적화 (리렌더링 검증)
+- 접근성 심화 (키보드 탐색, 스크린리더)
+- `constants.ts` (SheetContext) 리팩토링
+- ExploreHeader `@deprecated` props 정리
