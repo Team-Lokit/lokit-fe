@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { getGetClusterPhotosQueryOptions } from '@repo/api-client';
+import { getGetClusterPhotosQueryOptions, useGetMyPage } from '@repo/api-client';
 import MapView from '@/components/map/MapView';
 import Sidebar from '@/components/sidebar/Sidebar';
 import ViewSwitcher from '@/components/viewSwitcher/ViewSwitcher';
@@ -43,6 +43,10 @@ export default function MapRoute() {
 
   // 사이드바 상태
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeView, setActiveView] = useState<'map' | 'grid'>('map');
+
+  // 사용자 프로필 데이터
+  const { data: myPageData } = useGetMyPage();
 
   // 상태 관리
   const { viewState, mapViewRef, handleViewStateChange, handleGoToCurrentLocation } =
@@ -274,16 +278,16 @@ export default function MapRoute() {
 
       <S.BottomCenter>
         <FloatingButton text={`기록 ${photoCount}개`} />
-        <ViewSwitcher activeView="map" onChangeView={() => {}} />
+        <ViewSwitcher activeView={activeView} onChangeView={setActiveView} />
       </S.BottomCenter>
 
       <Sidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         albums={mergedAlbumList}
-        nickname="김로킷"
-        dDay={66}
-        profileImageUrl={profileImageUrl}
+        nickname={myPageData?.myName ?? ''}
+        dDay={myPageData?.coupledDay ?? 0}
+        profileImageUrl={myPageData?.myProfileImageUrl ?? profileImageUrl}
         onExplore={() => router.push(ROUTES.EXPLORE)}
         onNewAlbum={() => setIsAddModalOpen(true)}
         onSelectAlbum={handleSelectAlbum}
