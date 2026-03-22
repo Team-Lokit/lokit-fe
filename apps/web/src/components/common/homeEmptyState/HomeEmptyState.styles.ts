@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  padding: 8px 20px;
+  padding: 8px 32px;
 `;
 
 export const TextSection = styled.div`
@@ -22,7 +22,7 @@ export const Title = styled.h2`
 `;
 
 export const Subtitle = styled.p`
-  ${({ theme }) => theme.typography.body14Regular};
+  ${({ theme }) => theme.typography.body15Regular};
   color: ${({ theme }) => theme.colors.gray[400]};
   margin: 0;
 `;
@@ -37,9 +37,9 @@ export const Card = styled.button`
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 18px;
   background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
+  border: none;
   border-radius: 16px;
   cursor: pointer;
   overflow: hidden;
