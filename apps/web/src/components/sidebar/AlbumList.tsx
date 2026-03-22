@@ -1,17 +1,15 @@
 import styled from '@emotion/styled';
 import type { AlbumThumbnails } from '@repo/api-client';
-import { useMemo, useState } from 'react';
-import Input from '@/components/input/Input';
+import { useMemo } from 'react';
 import AlbumListItem from './AlbumListItem';
 
 interface AlbumListProps {
   albums: AlbumThumbnails[];
+  searchValue: string;
   onSelectAlbum: (albumId: number) => void;
 }
 
-const AlbumList = ({ albums, onSelectAlbum }: AlbumListProps) => {
-  const [searchValue, setSearchValue] = useState('');
-
+const AlbumList = ({ albums, searchValue, onSelectAlbum }: AlbumListProps) => {
   const filteredAlbums = useMemo(() => {
     const keyword = searchValue.trim();
     if (!keyword) return albums;
@@ -20,30 +18,19 @@ const AlbumList = ({ albums, onSelectAlbum }: AlbumListProps) => {
 
   return (
     <Container>
-      <SearchSection>
-        <Input
-          type="search"
-          value={searchValue}
-          onChange={setSearchValue}
-          placeholder="앨범을 검색해보세요..."
-          showCharCount={false}
-        />
-      </SearchSection>
-      <Section>
-        <SectionLabel>앨범</SectionLabel>
-        <List>
-          {filteredAlbums.map((album, index) => (
-            <AlbumListItem
-              key={album.id}
-              title={album.title ?? ''}
-              totalCount={album.photoCount ?? 0}
-              isSelected={index === 0}
-              showMenu={index !== 0}
-              onClick={() => onSelectAlbum(album.id ?? 0)}
-            />
-          ))}
-        </List>
-      </Section>
+      <SectionLabel>앨범</SectionLabel>
+      <List>
+        {filteredAlbums.map((album, index) => (
+          <AlbumListItem
+            key={album.id}
+            title={album.title ?? ''}
+            totalCount={album.photoCount ?? 0}
+            isSelected={index === 0}
+            showMenu={index !== 0}
+            onClick={() => onSelectAlbum(album.id ?? 0)}
+          />
+        ))}
+      </List>
     </Container>
   );
 };
@@ -51,18 +38,6 @@ const AlbumList = ({ albums, onSelectAlbum }: AlbumListProps) => {
 export default AlbumList;
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  flex: 1;
-  overflow: hidden;
-`;
-
-const SearchSection = styled.div`
-  padding: 0 12px;
-`;
-
-const Section = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;

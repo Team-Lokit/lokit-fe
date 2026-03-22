@@ -95,6 +95,11 @@ const HeartIconWrapper = styled.div`
   width: 12px;
   height: 12px;
   flex-shrink: 0;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const DdayText = styled.span`

@@ -55,6 +55,19 @@ export const Content = styled.div`
   padding-top: 48px;
 `;
 
+export const Section = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 12px;
+`;
+
+export const SearchWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
 export const Footer = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
   padding: 8px;

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import type { AlbumThumbnails } from '@repo/api-client';
+import Input from '@/components/input/Input';
 import * as S from './Sidebar.styles';
 import SidebarHeader from './SidebarHeader';
 import SidebarMenu from './SidebarMenu';
@@ -34,6 +35,7 @@ const Sidebar = ({
   onMyPage,
 }: SidebarProps) => {
   const [isClosing, setIsClosing] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
 
   const handleClose = useCallback(() => {
     setIsClosing(true);
@@ -63,20 +65,24 @@ const Sidebar = ({
       <S.Backdrop $isOpen={isOpen} $isClosing={isClosing} onClick={handleClose} />
       <S.Container $isOpen={isOpen} $isClosing={isClosing} aria-label="사이드바">
         <S.Content>
-          <div style={{ padding: '0 12px' }}>
+          <S.Section>
             <SidebarHeader onClose={handleClose} />
-          </div>
-          <div
-            style={{
-              padding: '0 12px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '8px',
-            }}
-          >
+            <S.SearchWrapper>
+              <Input
+                type="search"
+                value={searchValue}
+                onChange={setSearchValue}
+                placeholder="앨범을 검색해보세요..."
+                showCharCount={false}
+              />
+            </S.SearchWrapper>
             <SidebarMenu onExplore={onExplore} onNewAlbum={onNewAlbum} />
-          </div>
-          <AlbumList albums={albums} onSelectAlbum={onSelectAlbum} />
+          </S.Section>
+          <AlbumList
+            albums={albums}
+            searchValue={searchValue}
+            onSelectAlbum={onSelectAlbum}
+          />
         </S.Content>
         <S.Footer>
           <SidebarMy
