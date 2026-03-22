@@ -31,14 +31,10 @@ export const ActionColumn = styled.div`
   z-index: 1001;
 `;
 
-export const BottomCenter = styled.div`
+export const ViewSwitcherWrapper = styled.div`
   position: absolute;
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
   z-index: 999;
 `;

@@ -276,10 +276,13 @@ export default function MapRoute() {
         </CircleButton>
       </S.ActionColumn>
 
-      <S.BottomCenter>
+      <S.FloatingButtonWrapper>
         <FloatingButton text={`기록 ${photoCount}개`} />
+      </S.FloatingButtonWrapper>
+
+      <S.ViewSwitcherWrapper>
         <ViewSwitcher activeView={activeView} onChangeView={setActiveView} />
-      </S.BottomCenter>
+      </S.ViewSwitcherWrapper>
 
       <Sidebar
         isOpen={isSidebarOpen}
