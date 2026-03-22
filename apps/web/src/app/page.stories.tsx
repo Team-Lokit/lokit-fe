@@ -126,7 +126,7 @@ function HomeMapViewEmpty() {
         <ExploreHeader title="대한민국" onClickMenu={() => setIsSidebarOpen(true)} />
       </HeaderArea>
 
-      <MapPlaceholder>지도 영역 (사진 없음)</MapPlaceholder>
+      <MapView locationState={KOREA_CENTER} pins={[]} onPinClick={fn()} />
 
       <ActionArea>
         <CircleButton onClick={fn()} aria-label="추가">
@@ -274,6 +274,46 @@ export const 지도뷰_빈상태: Story = {
 
 export const 지도뷰_사진있음: Story = {
   render: () => <HomeMapViewWithPhotos />,
+};
+
+export const 격자뷰_빈상태: Story = {
+  render: () => {
+    const EmptyState = styled.div`
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 8px;
+      padding-top: 100px;
+    `;
+    const EmptyTitle = styled.h2`
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+    `;
+    const EmptyDesc = styled.p`
+      font-size: 16px;
+      color: #8d8c8f;
+    `;
+    return (
+      <ScreenWrapper>
+        <HeaderArea>
+          <ExploreHeader title="전체사진" onClickMenu={fn()} />
+        </HeaderArea>
+        <EmptyState>
+          <EmptyTitle>기록이 없어요</EmptyTitle>
+          <EmptyDesc>함께 기록을 추가해볼까요?</EmptyDesc>
+        </EmptyState>
+        <FloatingButtonArea>
+          <FloatingButton text="기록 0개" />
+        </FloatingButtonArea>
+        <ViewSwitcherArea>
+          <ViewSwitcher activeView="grid" onChangeView={fn()} />
+        </ViewSwitcherArea>
+      </ScreenWrapper>
+    );
+  },
 };
 
 export const 사이드바_열림: Story = {

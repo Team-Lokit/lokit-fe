@@ -145,3 +145,43 @@ export const MyPageClick: Story = {
     expect(args.onMyPage).toHaveBeenCalled();
   },
 };
+
+export const SearchInputFocus: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement.ownerDocument.body);
+    const searchInput = canvas.getByPlaceholderText('앨범을 검색해보세요...');
+
+    await userEvent.click(searchInput);
+    expect(searchInput).toHaveFocus();
+
+    await userEvent.type(searchInput, 'hello');
+    expect(searchInput).toHaveValue('hello');
+  },
+};
+
+export const KoreanSearch: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement.ownerDocument.body);
+    const searchInput = canvas.getByPlaceholderText('앨범을 검색해보세요...');
+
+    await userEvent.type(searchInput, '한강');
+
+    await waitFor(() => {
+      expect(searchInput).toHaveValue('한강');
+      expect(canvas.getByText('검색 결과가 없습니다')).toBeInTheDocument();
+    });
+  },
+};
+
+export const RapidOpenClose: Story = {
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement.ownerDocument.body);
+
+    for (let i = 0; i < 5; i++) {
+      const closeButton = canvas.getByLabelText('사이드바 닫기');
+      await userEvent.click(closeButton);
+    }
+
+    expect(args.onClose).toHaveBeenCalledTimes(5);
+  },
+};

@@ -235,31 +235,38 @@ export default function MapRoute() {
 
       {activeView === 'grid' && (
         <S.GridViewContainer>
-          <PhotoGridContainer>
-            {displayPhotos.map((photo) =>
-              photo.kind === 'pending' ? (
-                <PhotoGridItem
-                  key={photo.pendingId}
-                  src={photo.url}
-                  date={photo.takenAt}
-                  onClick={() => {}}
-                  progress={photo.progress}
-                  hasError={photo.status === 'error'}
-                />
-              ) : (
-                <PhotoGridItem
-                  key={photo.id}
-                  src={photo.url ?? ''}
-                  date={photo.takenAt}
-                  onClick={() => {
-                    if (photo.id) {
-                      router.push(ROUTES.PHOTO.VIEW(photo.id));
-                    }
-                  }}
-                />
-              ),
-            )}
-          </PhotoGridContainer>
+          {displayPhotos.length === 0 ? (
+            <S.EmptyState>
+              <S.EmptyTitle>기록이 없어요</S.EmptyTitle>
+              <S.EmptyDescription>함께 기록을 추가해볼까요?</S.EmptyDescription>
+            </S.EmptyState>
+          ) : (
+            <PhotoGridContainer>
+              {displayPhotos.map((photo) =>
+                photo.kind === 'pending' ? (
+                  <PhotoGridItem
+                    key={photo.pendingId}
+                    src={photo.url}
+                    date={photo.takenAt}
+                    onClick={() => {}}
+                    progress={photo.progress}
+                    hasError={photo.status === 'error'}
+                  />
+                ) : (
+                  <PhotoGridItem
+                    key={photo.id}
+                    src={photo.url ?? ''}
+                    date={photo.takenAt}
+                    onClick={() => {
+                      if (photo.id) {
+                        router.push(ROUTES.PHOTO.VIEW(photo.id));
+                      }
+                    }}
+                  />
+                ),
+              )}
+            </PhotoGridContainer>
+          )}
         </S.GridViewContainer>
       )}
 
