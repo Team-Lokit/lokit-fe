@@ -20,3 +20,25 @@ export const FloatingButtonWrapper = styled.div`
   transform: translateX(-50%);
   z-index: 999;
 `;
+
+export const ActionColumn = styled.div`
+  position: absolute;
+  right: 12px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 1001;
+`;
+
+export const BottomCenter = styled.div`
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 999;
+`;

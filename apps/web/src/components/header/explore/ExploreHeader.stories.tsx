@@ -17,16 +17,7 @@ type Story = StoryObj<typeof ExploreHeader>;
 export const Default: Story = {
   args: {
     title: '서울특별시 강남구',
-    onClickProfile: () => console.log('프로필'),
-    onClickExplore: () => console.log('탐험'),
-  },
-};
-
-export const WithProfileImage: Story = {
-  args: {
-    title: '서울특별시 강남구',
-    profileImageSrc: 'https://picsum.photos/200',
-    onClickProfile: () => console.log('프로필'),
-    onClickExplore: () => console.log('탐험'),
+    onClickMenu: () => console.log('사이드바 열기'),
+    onClickAlarm: () => console.log('알림'),
   },
 };

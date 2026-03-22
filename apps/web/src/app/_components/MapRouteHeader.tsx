@@ -1,12 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import {
   SHEET_CONTEXT_TYPE,
   type SheetContext,
 } from '@/components/bottomSheet/constants';
 import { ExploreHeader, MenuHeader } from '@/components/header';
-import { DEFAULT_ALBUM_TITLE, ROUTES } from '@/constants';
+import { DEFAULT_ALBUM_TITLE } from '@/constants';
 
 interface MapRouteHeaderProps {
   sheetContext: SheetContext;
@@ -16,24 +15,18 @@ interface MapRouteHeaderProps {
   onCloseAlbumDetail: () => void;
   onOpenAlbumRename: () => void;
   onOpenAlbumDelete: () => void;
+  onOpenSidebar: () => void;
 }
 
-/**
- * 지도 페이지의 헤더를 렌더링하는 컴포넌트
- * - 앨범 상세: 앨범 제목과 메뉴 (이름변경, 삭제)
- * - 클러스터 상세: 위치 정보
- * - 기본 상태: 사용자의 현재 주소
- */
 export const MapRouteHeader = ({
   sheetContext,
   selectedAlbumTitle,
   address,
-  profileImageUrl,
   onCloseAlbumDetail,
   onOpenAlbumRename,
   onOpenAlbumDelete,
+  onOpenSidebar,
 }: MapRouteHeaderProps) => {
-  const router = useRouter();
   if (sheetContext.type === SHEET_CONTEXT_TYPE.ALBUM_DETAIL) {
     const isDefaultAlbum = selectedAlbumTitle === DEFAULT_ALBUM_TITLE;
     return (
@@ -55,11 +48,6 @@ export const MapRouteHeader = ({
   }
 
   return (
-    <ExploreHeader
-      title={address || '위치 정보 로딩 중'}
-      onClickProfile={() => router.push(ROUTES.MYPAGE)}
-      onClickExplore={() => router.push(ROUTES.EXPLORE)}
-      profileImageSrc={profileImageUrl}
-    />
+    <ExploreHeader title={address || '위치 정보 로딩 중'} onClickMenu={onOpenSidebar} />
   );
 };
