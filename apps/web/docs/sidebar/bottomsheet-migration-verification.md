@@ -7,6 +7,12 @@
 
 ## 1. 컴포넌트 렌더링 검증
 
+> **검증 방법**: `pnpm storybook` 실행 후 각 컴포넌트 스토리에서 확인
+>
+> - `Components > Sidebar` — Sidebar 전체 (Default, EmptyAlbums, ManyAlbums)
+> - `Components > Sidebar > AlbumListItem` — 개별 아이템 (Default, Selected, WithMenu, LongTitle)
+> - `Components > ViewSwitcher` — 뷰 전환 토글 (MapView, GridView)
+
 ### 1.1 Sidebar 구조
 
 - [ ] Sidebar가 화면 좌측에 오버레이로 표시되는가
