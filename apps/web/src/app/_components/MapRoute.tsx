@@ -307,6 +307,7 @@ export default function MapRoute() {
         nickname={myPageData?.myName ?? ''}
         dDay={myPageData?.coupledDay ?? 0}
         profileImageUrl={myPageData?.myProfileImageUrl ?? profileImageUrl}
+        selectedAlbumId={selectedAlbumId}
         onExplore={() => router.push(ROUTES.EXPLORE)}
         onNewAlbum={() => setIsAddModalOpen(true)}
         onSelectAlbum={handleSelectAlbum}

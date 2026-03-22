@@ -11,12 +11,14 @@ import CrossHairIcon from '@/assets/images/crossHair.svg';
 import AddIcon from '@/assets/images/add.svg';
 import { ExploreHeader } from '@/components/header';
 import type { MapPin } from '@/types/map.type';
+import {
+  지도_ME_조회_성공,
+  지도_ME_조회_사진없음,
+} from '@/mocks/handlers/map/getMapMe/mockData';
+import { 마이페이지_조회_성공 } from '@/mocks/handlers/mypage/getMyPage/mockData';
 
-const mockAlbums = [
-  { id: 0, title: '전체사진', photoCount: 55, thumbnailUrls: [] },
-  { id: 1, title: '일이삼사오육칠팔구십', photoCount: 11, thumbnailUrls: [] },
-  { id: 2, title: '제주도', photoCount: 22, thumbnailUrls: [] },
-];
+const mockAlbums = 지도_ME_조회_성공.albums ?? [];
+const mockAlbumsEmpty = [{ id: 0, title: '전체사진', photoCount: 0, thumbnailUrls: [] }];
 
 const ScreenWrapper = styled.div`
   width: 375px;
@@ -103,8 +105,8 @@ function HomeMapView() {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         albums={mockAlbums}
-        nickname="찬혁"
-        dDay={365}
+        nickname={마이페이지_조회_성공.myName ?? ''}
+        dDay={마이페이지_조회_성공.coupledDay ?? 0}
         onExplore={fn()}
         onNewAlbum={fn()}
         onSelectAlbum={fn()}
@@ -146,9 +148,9 @@ function HomeMapViewEmpty() {
       <Sidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
-        albums={[{ id: 0, title: '전체사진', photoCount: 0, thumbnailUrls: [] }]}
-        nickname="찬혁"
-        dDay={365}
+        albums={mockAlbumsEmpty}
+        nickname={마이페이지_조회_성공.myName ?? ''}
+        dDay={마이페이지_조회_성공.coupledDay ?? 0}
         onExplore={fn()}
         onNewAlbum={fn()}
         onSelectAlbum={fn()}
@@ -171,8 +173,8 @@ function SidebarOpenView() {
         isOpen={true}
         onClose={fn()}
         albums={mockAlbums}
-        nickname="찬혁"
-        dDay={365}
+        nickname={마이페이지_조회_성공.myName ?? ''}
+        dDay={마이페이지_조회_성공.coupledDay ?? 0}
         onExplore={fn()}
         onNewAlbum={fn()}
         onSelectAlbum={fn()}
@@ -182,57 +184,30 @@ function SidebarOpenView() {
   );
 }
 
+const mockMapData = 지도_ME_조회_성공;
 const mockPins: MapPin[] = [
-  {
-    id: 1,
+  ...(mockMapData.photos ?? []).map((p) => ({
+    id: p.id ?? 0,
     albumId: 0,
-    latitude: 37.56,
-    longitude: 126.97,
-    imageUrl: 'https://picsum.photos/200',
+    latitude: p.latitude ?? 0,
+    longitude: p.longitude ?? 0,
+    imageUrl: p.thumbnailUrl ?? '',
     imageCount: 1,
     isCluster: false,
-  },
-  {
-    id: 2,
+  })),
+  ...(mockMapData.clusters ?? []).map((c) => ({
+    id: 0,
     albumId: 0,
-    latitude: 35.87,
-    longitude: 128.6,
-    imageUrl: 'https://picsum.photos/201',
-    imageCount: 15,
+    latitude: c.latitude ?? 0,
+    longitude: c.longitude ?? 0,
+    imageUrl: c.thumbnailUrl ?? '',
+    imageCount: c.count ?? 0,
     isCluster: true,
-    clusterId: 'c1',
-  },
-  {
-    id: 3,
-    albumId: 0,
-    latitude: 35.15,
-    longitude: 129.06,
-    imageUrl: 'https://picsum.photos/202',
-    imageCount: 4,
-    isCluster: true,
-    clusterId: 'c2',
-  },
-  {
-    id: 4,
-    albumId: 1,
-    latitude: 33.45,
-    longitude: 126.57,
-    imageUrl: 'https://picsum.photos/203',
-    imageCount: 1,
-    isCluster: false,
-  },
-  {
-    id: 5,
-    albumId: 0,
-    latitude: 36.35,
-    longitude: 127.38,
-    imageUrl: 'https://picsum.photos/204',
-    imageCount: 1,
-    isCluster: false,
-  },
+    clusterId: c.clusterId,
+  })),
 ];
 
-const KOREA_CENTER = { latitude: 36.5, longitude: 127.5, zoom: 6.5 };
+const KOREA_CENTER = { latitude: 37.5665, longitude: 126.978, zoom: 13 };
 
 function HomeMapViewWithPhotos() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -267,8 +242,8 @@ function HomeMapViewWithPhotos() {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         albums={mockAlbums}
-        nickname="찬혁"
-        dDay={365}
+        nickname={마이페이지_조회_성공.myName ?? ''}
+        dDay={마이페이지_조회_성공.coupledDay ?? 0}
         onExplore={fn()}
         onNewAlbum={fn()}
         onSelectAlbum={fn()}

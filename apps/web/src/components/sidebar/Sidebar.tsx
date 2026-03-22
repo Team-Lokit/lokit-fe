@@ -18,6 +18,7 @@ interface SidebarProps {
   profileImageUrl?: string;
   onExplore: () => void;
   onNewAlbum: () => void;
+  selectedAlbumId?: number | null;
   onSelectAlbum: (albumId: number) => void;
   onMyPage: () => void;
 }
@@ -29,6 +30,7 @@ const Sidebar = ({
   nickname,
   dDay,
   profileImageUrl,
+  selectedAlbumId,
   onExplore,
   onNewAlbum,
   onSelectAlbum,
@@ -81,6 +83,7 @@ const Sidebar = ({
           <AlbumList
             albums={albums}
             searchValue={searchValue}
+            selectedAlbumId={selectedAlbumId}
             onSelectAlbum={onSelectAlbum}
           />
         </S.Content>
