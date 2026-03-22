@@ -1,6 +1,6 @@
 import AlarmIcon from '@/assets/images/alarm.svg';
 import LocationIcon from '@/assets/images/location.svg';
-import MenuIcon from '@/assets/images/menu.svg';
+import HamburgerIcon from '@/assets/images/hamburger.svg';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import CrossfadeText from '@/components/common/crossfadeText/CrossfadeText';
 import { BUTTON_SIZE, ICON_SIZE } from '../base/Header.constants';
@@ -31,7 +31,7 @@ const ExploreHeader = ({ title, onClickMenu, onClickAlarm }: ExploreHeaderProps)
           aria-label="사이드바 열기"
           style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
         >
-          <MenuIcon width={ICON_SIZE} height={ICON_SIZE} />
+          <HamburgerIcon width={ICON_SIZE} height={ICON_SIZE} />
         </CircleButton>
       }
       center={
