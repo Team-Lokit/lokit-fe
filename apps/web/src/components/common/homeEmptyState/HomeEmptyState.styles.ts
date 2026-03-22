@@ -34,7 +34,8 @@ export const CardRow = styled.div`
 `;
 
 export const Card = styled.button`
-  flex: 1;
+  width: 142px;
+  height: 180px;
   display: flex;
   flex-direction: column;
   padding: 18px;
@@ -43,7 +44,6 @@ export const Card = styled.button`
   border-radius: 16px;
   cursor: pointer;
   overflow: hidden;
-  min-height: 180px;
   text-align: left;
 `;
 
