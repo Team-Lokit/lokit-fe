@@ -48,6 +48,11 @@ const Container = styled.div`
   padding: 0 12px;
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const SectionLabel = styled.div`
