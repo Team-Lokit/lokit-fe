@@ -57,7 +57,9 @@ test.describe('Sidebar', () => {
 
   test('마이페이지 이동', async ({ page }) => {
     await page.getByLabel('사이드바 열기').click();
-    await page.getByText(/김/).click();
+    // mock 데이터 기준 닉네임: '찬혁'
+    const mySection = page.locator('[class*="Footer"]');
+    await mySection.click();
     await expect(page).toHaveURL(/\/mypage/);
   });
 });

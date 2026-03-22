@@ -8,7 +8,7 @@ export default defineConfig({
     headless: true,
   },
   webServer: {
-    command: 'pnpm dev',
+    command: 'pnpm dev:mock',
     port: 3000,
     reuseExistingServer: true,
   },
