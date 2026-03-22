@@ -25,7 +25,7 @@
 
 ### 1.2 Header
 
-- [ ] "LOKIT" 워드마크 SVG(`lokitWordmark.svg`)가 좌측에 `primary.400` (`#6EEAE4`) 색상으로 표시되는가
+- [ ] "LOKIT" 워드마크 SVG(`lokitWordmark.svg`)가 좌측에 흰색(`gray[0]`, `#FFFFFF`)으로 표시되는가
 - [ ] 워드마크 크기가 60×14px인가
 - [ ] ✕ 닫기 버튼(`close.svg`, 20×20px)이 우측에 표시되는가
 - [ ] 패딩이 `pl: 12px, py: 8px`인가

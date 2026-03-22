@@ -81,7 +81,7 @@ Sidebar
 
 ### 4.2 Header
 
-- 좌측: "LOKIT" 워드마크 SVG (`lokitWordmark.svg`, 60×14px, `color: primary.400`)
+- 좌측: "LOKIT" 워드마크 SVG (`lokitWordmark.svg`, 60×14px, `color: gray[0]` 흰색)
 - 우측: ✕ 닫기 버튼 (`close.svg`, 20×20px)
 - 패딩: `pl: 12px, py: 8px`
 - `onClose` 클릭 시 사이드바 닫힘
