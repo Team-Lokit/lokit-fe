@@ -6,10 +6,14 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3000',
     headless: true,
+    screenshot: 'only-on-failure',
   },
+  retries: 1,
+  workers: 1,
   webServer: {
     command: 'pnpm dev:mock',
     port: 3000,
     reuseExistingServer: true,
+    timeout: 60000,
   },
 });
