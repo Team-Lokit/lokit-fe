@@ -10,6 +10,7 @@ import ViewSwitcher from '@/components/viewSwitcher/ViewSwitcher';
 import FloatingButton from '@/components/buttons/floatingButton/FloatingButton';
 import PhotoGridContainer from '@/components/photoGridContainer/PhotoGridContainer';
 import PhotoGridItem from '@/components/photoGridItem/PhotoGridItem';
+import HomeEmptyState from '@/components/common/homeEmptyState/HomeEmptyState';
 import CrossHairIcon from '@/assets/images/crossHair.svg';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import AddIcon from '@/assets/images/add.svg';
@@ -237,8 +238,10 @@ export default function MapRoute() {
         <S.GridViewContainer>
           {displayPhotos.length === 0 ? (
             <S.EmptyState>
-              <S.EmptyTitle>기록이 없어요</S.EmptyTitle>
-              <S.EmptyDescription>함께 기록을 추가해볼까요?</S.EmptyDescription>
+              <HomeEmptyState
+                onAddPhoto={() => selectPhotosFromFile()}
+                onAddAlbum={() => setIsAddModalOpen(true)}
+              />
             </S.EmptyState>
           ) : (
             <PhotoGridContainer>

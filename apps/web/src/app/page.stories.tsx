@@ -10,6 +10,7 @@ import MapView from '@/components/map/MapView';
 import CrossHairIcon from '@/assets/images/crossHair.svg';
 import AddIcon from '@/assets/images/add.svg';
 import { ExploreHeader } from '@/components/header';
+import HomeEmptyState from '@/components/common/homeEmptyState/HomeEmptyState';
 import type { MapPin } from '@/types/map.type';
 import {
   지도_ME_조회_성공,
@@ -71,50 +72,6 @@ const MapPlaceholder = styled.div`
   color: #525156;
   font-size: 14px;
 `;
-
-function HomeMapView() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeView, setActiveView] = useState<'map' | 'grid'>('map');
-
-  return (
-    <ScreenWrapper>
-      <HeaderArea>
-        <ExploreHeader title="대한민국" onClickMenu={() => setIsSidebarOpen(true)} />
-      </HeaderArea>
-
-      <MapPlaceholder>지도 영역</MapPlaceholder>
-
-      <ActionArea>
-        <CircleButton onClick={fn()} aria-label="추가">
-          <AddIcon />
-        </CircleButton>
-        <CircleButton onClick={fn()} aria-label="현재 위치로 이동">
-          <CrossHairIcon />
-        </CircleButton>
-      </ActionArea>
-
-      <FloatingButtonArea>
-        <FloatingButton text="기록 55개" />
-      </FloatingButtonArea>
-
-      <ViewSwitcherArea>
-        <ViewSwitcher activeView={activeView} onChangeView={setActiveView} />
-      </ViewSwitcherArea>
-
-      <Sidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-        albums={mockAlbums}
-        nickname={마이페이지_조회_성공.myName ?? ''}
-        dDay={마이페이지_조회_성공.coupledDay ?? 0}
-        onExplore={fn()}
-        onNewAlbum={fn()}
-        onSelectAlbum={fn()}
-        onMyPage={fn()}
-      />
-    </ScreenWrapper>
-  );
-}
 
 function HomeMapViewEmpty() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -264,10 +221,6 @@ export default meta;
 
 type Story = StoryObj;
 
-export const 지도뷰: Story = {
-  render: () => <HomeMapView />,
-};
-
 export const 지도뷰_빈상태: Story = {
   render: () => <HomeMapViewEmpty />,
 };
@@ -278,33 +231,21 @@ export const 지도뷰_사진있음: Story = {
 
 export const 격자뷰_빈상태: Story = {
   render: () => {
-    const EmptyState = styled.div`
+    const EmptyWrapper = styled.div`
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100%;
-      gap: 8px;
       padding-top: 100px;
-    `;
-    const EmptyTitle = styled.h2`
-      font-size: 20px;
-      font-weight: 700;
-      color: #ffffff;
-    `;
-    const EmptyDesc = styled.p`
-      font-size: 16px;
-      color: #8d8c8f;
     `;
     return (
       <ScreenWrapper>
         <HeaderArea>
           <ExploreHeader title="전체사진" onClickMenu={fn()} />
         </HeaderArea>
-        <EmptyState>
-          <EmptyTitle>기록이 없어요</EmptyTitle>
-          <EmptyDesc>함께 기록을 추가해볼까요?</EmptyDesc>
-        </EmptyState>
+        <EmptyWrapper>
+          <HomeEmptyState onAddPhoto={fn()} onAddAlbum={fn()} />
+        </EmptyWrapper>
         <FloatingButtonArea>
           <FloatingButton text="기록 0개" />
         </FloatingButtonArea>

@@ -40,21 +40,9 @@ export const GridViewContainer = styled.div`
 
 export const EmptyState = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
-  gap: 8px;
-`;
-
-export const EmptyTitle = styled.h2`
-  ${({ theme }) => theme.typography.heading20Bold};
-  color: ${({ theme }) => theme.colors.gray[0]};
-`;
-
-export const EmptyDescription = styled.p`
-  ${({ theme }) => theme.typography.body16Regular};
-  color: ${({ theme }) => theme.colors.gray[400]};
 `;
 
 export const ViewSwitcherWrapper = styled.div`
