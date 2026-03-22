@@ -13,4 +13,3 @@ dist
 apps/mobile/android/app/build
 apps/mobile/ios/build
 apps/mobile/ios/Pods
-test-results/
