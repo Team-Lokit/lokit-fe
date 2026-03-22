@@ -20,16 +20,20 @@ const AlbumList = ({ albums, searchValue, onSelectAlbum }: AlbumListProps) => {
     <Container>
       <SectionLabel>앨범</SectionLabel>
       <List>
-        {filteredAlbums.map((album, index) => (
-          <AlbumListItem
-            key={album.id}
-            title={album.title ?? ''}
-            totalCount={album.photoCount ?? 0}
-            isSelected={index === 0}
-            showMenu={index !== 0}
-            onClick={() => onSelectAlbum(album.id ?? 0)}
-          />
-        ))}
+        {filteredAlbums.length === 0 && searchValue.trim() ? (
+          <EmptyMessage>검색 결과가 없습니다</EmptyMessage>
+        ) : (
+          filteredAlbums.map((album, index) => (
+            <AlbumListItem
+              key={album.id}
+              title={album.title ?? ''}
+              totalCount={album.photoCount ?? 0}
+              isSelected={index === 0}
+              showMenu={index !== 0}
+              onClick={() => onSelectAlbum(album.id ?? 0)}
+            />
+          ))
+        )}
       </List>
     </Container>
   );
@@ -55,4 +59,11 @@ const SectionLabel = styled.div`
 const List = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const EmptyMessage = styled.div`
+  ${({ theme }) => theme.typography.body14Regular};
+  color: ${({ theme }) => theme.colors.gray[400]};
+  padding: 12px;
+  text-align: center;
 `;

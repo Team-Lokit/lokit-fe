@@ -13,7 +13,7 @@ const SPACING = {
 const SIZES = {
   BORDER_RADIUS: 8,
   INPUT_HEIGHT: 26,
-  SEARCH_ICON: 20,
+  SEARCH_ICON: 16,
   RESET_ICON: 16,
 } as const;
 
@@ -57,6 +57,7 @@ const baseInputStyles = (theme: Theme) => css`
 export const StyledInput = styled.input`
   ${({ theme }) => baseInputStyles(theme)}
   height: ${SIZES.INPUT_HEIGHT}px;
+  min-width: 0;
 `;
 
 export const SearchIconWrapper = styled.div`
