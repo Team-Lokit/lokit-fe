@@ -95,6 +95,7 @@ const HeartSmallIconWrapper = styled.div`
   width: 12px;
   height: 12px;
   flex-shrink: 0;
+  color: ${({ theme }) => theme.colors.gray[400]};
 `;
 
 const DdayText = styled.span`
