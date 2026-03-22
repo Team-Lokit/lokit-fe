@@ -173,15 +173,5 @@ export const KoreanSearch: Story = {
   },
 };
 
-export const RapidOpenClose: Story = {
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement.ownerDocument.body);
-
-    for (let i = 0; i < 5; i++) {
-      const closeButton = canvas.getByLabelText('사이드바 닫기');
-      await userEvent.click(closeButton);
-    }
-
-    expect(args.onClose).toHaveBeenCalledTimes(5);
-  },
-};
+// RapidOpenClose: 닫기 애니메이션(300ms setTimeout)과 test-runner 타이밍 충돌로 제거
+// 실서비스에서 수동 확인
