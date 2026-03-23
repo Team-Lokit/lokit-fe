@@ -33,11 +33,6 @@ export const ToastContainer = styled.div`
   flex-direction: column;
   gap: 8px;
   pointer-events: none;
-  align-items: center;
-  width: 430px;
-  max-width: 100vw;
-  padding: 0 20px;
-  box-sizing: border-box;
 `;
 
 export const ToastItem = styled.div<{
@@ -65,5 +60,5 @@ export const ToastIcon = styled.div`
 export const ToastText = styled.span`
   ${({ theme }) => theme.typography.body15Medium};
   color: ${({ theme }) => theme.colors.gray[100]};
-  word-break: keep-all;
+  white-space: nowrap;
 `;
