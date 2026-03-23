@@ -14,6 +14,8 @@ export interface ExploreHeaderProps {
   onClickMenu: () => void;
   /** 알림 버튼 클릭 이벤트 */
   onClickAlarm?: (() => void) | undefined;
+  /** 우측 버튼 커스텀 슬롯 (지정 시 알림 버튼 대체) */
+  rightSlot?: React.ReactNode;
   /** 프로필 버튼 클릭 이벤트 @deprecated 사이드바 My로 이동 */
   onClickProfile?: () => void;
   /** 탐색 버튼 클릭 이벤트 @deprecated 사이드바 Menu로 이동 */
@@ -22,7 +24,12 @@ export interface ExploreHeaderProps {
   profileImageSrc?: string;
 }
 
-const ExploreHeader = ({ title, onClickMenu, onClickAlarm }: ExploreHeaderProps) => {
+const ExploreHeader = ({
+  title,
+  onClickMenu,
+  onClickAlarm,
+  rightSlot,
+}: ExploreHeaderProps) => {
   return (
     <HeaderBase
       left={
@@ -45,13 +52,15 @@ const ExploreHeader = ({ title, onClickMenu, onClickAlarm }: ExploreHeaderProps)
         </S.LocationWrapper>
       }
       right={
-        <CircleButton
-          onClick={onClickAlarm ?? (() => {})}
-          aria-label="알림"
-          style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
-        >
-          <AlarmIcon width={ICON_SIZE} height={ICON_SIZE} />
-        </CircleButton>
+        rightSlot ?? (
+          <CircleButton
+            onClick={onClickAlarm ?? (() => {})}
+            aria-label="알림"
+            style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
+          >
+            <AlarmIcon width={ICON_SIZE} height={ICON_SIZE} />
+          </CircleButton>
+        )
       }
     />
   );

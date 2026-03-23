@@ -221,6 +221,23 @@ export default function MapRoute() {
           selectedAlbumTitle={selectedAlbumTitle}
           address={address}
           onOpenSidebar={() => setIsSidebarOpen(true)}
+          onRenameAlbum={
+            selectedAlbumId != null && selectedAlbumId !== mergedAlbumList[0]?.id
+              ? () => {
+                  setMenuAlbumId(selectedAlbumId);
+                  setMenuAlbumTitle(selectedAlbumTitle ?? '');
+                  setIsRenameModalOpen(true);
+                }
+              : undefined
+          }
+          onDeleteAlbum={
+            selectedAlbumId != null && selectedAlbumId !== mergedAlbumList[0]?.id
+              ? () => {
+                  setMenuAlbumId(selectedAlbumId);
+                  setIsDeleteModalOpen(true);
+                }
+              : undefined
+          }
         />
       </S.HeaderContainer>
 

@@ -6,9 +6,13 @@ import * as S from './AlbumMenu.styles';
 interface AlbumMenuProps {
   onRename: () => void;
   onDelete: () => void;
+  trigger?: (
+    ref: React.RefObject<HTMLButtonElement | null>,
+    onClick: (e: React.MouseEvent) => void,
+  ) => React.ReactNode;
 }
 
-const AlbumMenu = ({ onRename, onDelete }: AlbumMenuProps) => {
+const AlbumMenu = ({ onRename, onDelete, trigger }: AlbumMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -45,9 +49,13 @@ const AlbumMenu = ({ onRename, onDelete }: AlbumMenuProps) => {
 
   return (
     <S.Wrapper>
-      <S.Button ref={buttonRef} onClick={handleToggle}>
-        <MenuIcon width={16} height={16} />
-      </S.Button>
+      {trigger ? (
+        trigger(buttonRef, handleToggle)
+      ) : (
+        <S.Button ref={buttonRef} onClick={handleToggle}>
+          <MenuIcon width={16} height={16} />
+        </S.Button>
+      )}
       {isOpen &&
         createPortal(
           <>

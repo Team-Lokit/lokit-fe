@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import * as S from './CircleButton.styles';
 
 interface CircleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -7,12 +8,16 @@ interface CircleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
   onClick: () => void;
 }
 
-const CircleButton = ({ children, onClick, ...rest }: CircleButtonProps) => {
-  return (
-    <S.Wrapper type="button" onClick={onClick} {...rest}>
-      {children}
-    </S.Wrapper>
-  );
-};
+const CircleButton = forwardRef<HTMLButtonElement, CircleButtonProps>(
+  ({ children, onClick, ...rest }, ref) => {
+    return (
+      <S.Wrapper ref={ref} type="button" onClick={onClick} {...rest}>
+        {children}
+      </S.Wrapper>
+    );
+  },
+);
+
+CircleButton.displayName = 'CircleButton';
 
 export default CircleButton;
