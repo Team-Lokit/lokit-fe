@@ -42,8 +42,8 @@ export const EmptyState = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  margin-top: -100px;
+  position: absolute;
+  inset: 0;
 `;
 
 export const ViewSwitcherWrapper = styled.div`
