@@ -9,4 +9,5 @@ export const Container = styled.main`
   background: ${({ theme }) => theme.colors.gray[1000]};
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
