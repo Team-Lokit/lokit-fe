@@ -321,6 +321,16 @@ export default function MapRoute() {
         onExplore={() => router.push(ROUTES.EXPLORE)}
         onNewAlbum={() => setIsAddModalOpen(true)}
         onSelectAlbum={handleSelectAlbum}
+        onRenameAlbum={(albumId) => {
+          const album = mergedAlbumList.find((a) => a.id === albumId);
+          setMenuAlbumId(albumId);
+          setMenuAlbumTitle(album?.title ?? '');
+          setIsRenameModalOpen(true);
+        }}
+        onDeleteAlbum={(albumId) => {
+          setMenuAlbumId(albumId);
+          setIsDeleteModalOpen(true);
+        }}
         onMyPage={() => router.push(ROUTES.MYPAGE)}
       />
 

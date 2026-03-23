@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import MenuIcon from '@/assets/images/menu.svg';
+import AlbumMenu from '@/components/album-container/albumMenu/AlbumMenu';
 import type { ReactNode } from 'react';
 
 interface AlbumListItemProps {
@@ -9,6 +9,8 @@ interface AlbumListItemProps {
   showMenu?: boolean;
   isSelected?: boolean;
   onClick?: () => void;
+  onRename?: () => void;
+  onDelete?: () => void;
 }
 
 const AlbumListItem = ({
@@ -18,23 +20,18 @@ const AlbumListItem = ({
   showMenu = false,
   isSelected = false,
   onClick,
+  onRename,
+  onDelete,
 }: AlbumListItemProps) => {
   return (
-    <Container $isSelected={isSelected} onClick={onClick}>
+    <Container $isSelected={isSelected} onClick={onClick} data-album-list-item>
       {icon && <IconWrapper>{icon}</IconWrapper>}
       <TextGroup>
         <Title>{title}</Title>
         {totalCount !== undefined && <Count>{totalCount}</Count>}
       </TextGroup>
-      {showMenu && (
-        <MenuButton
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          aria-label="더보기 메뉴"
-        >
-          <MenuIcon />
-        </MenuButton>
+      {showMenu && onRename && onDelete && (
+        <AlbumMenu onRename={onRename} onDelete={onDelete} />
       )}
     </Container>
   );
@@ -85,15 +82,4 @@ const Count = styled.span`
   ${({ theme }) => theme.typography.body16Medium};
   color: ${({ theme }) => theme.colors.gray[400]};
   flex-shrink: 0;
-`;
-
-const MenuButton = styled.button`
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  color: ${({ theme }) => theme.colors.gray[400]};
 `;

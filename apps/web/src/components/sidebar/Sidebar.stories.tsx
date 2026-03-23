@@ -22,6 +22,8 @@ const meta: Meta<typeof Sidebar> = {
     onExplore: fn(),
     onNewAlbum: fn(),
     onSelectAlbum: fn(),
+    onRenameAlbum: fn(),
+    onDeleteAlbum: fn(),
     onMyPage: fn(),
   },
   argTypes: {

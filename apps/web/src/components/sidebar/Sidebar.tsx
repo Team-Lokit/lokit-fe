@@ -20,6 +20,8 @@ interface SidebarProps {
   onNewAlbum: () => void;
   selectedAlbumId?: number | null;
   onSelectAlbum: (albumId: number) => void;
+  onRenameAlbum: (albumId: number) => void;
+  onDeleteAlbum: (albumId: number) => void;
   onMyPage: () => void;
 }
 
@@ -34,6 +36,8 @@ const Sidebar = ({
   onExplore,
   onNewAlbum,
   onSelectAlbum,
+  onRenameAlbum,
+  onDeleteAlbum,
   onMyPage,
 }: SidebarProps) => {
   const [isClosing, setIsClosing] = useState(false);
@@ -89,6 +93,8 @@ const Sidebar = ({
             searchValue={searchValue}
             selectedAlbumId={selectedAlbumId}
             onSelectAlbum={onSelectAlbum}
+            onRenameAlbum={onRenameAlbum}
+            onDeleteAlbum={onDeleteAlbum}
           />
         </S.Content>
         <S.Footer>

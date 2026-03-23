@@ -8,6 +8,8 @@ interface AlbumListProps {
   searchValue: string;
   selectedAlbumId?: number | null;
   onSelectAlbum: (albumId: number) => void;
+  onRenameAlbum: (albumId: number) => void;
+  onDeleteAlbum: (albumId: number) => void;
 }
 
 const AlbumList = ({
@@ -15,6 +17,8 @@ const AlbumList = ({
   searchValue,
   selectedAlbumId,
   onSelectAlbum,
+  onRenameAlbum,
+  onDeleteAlbum,
 }: AlbumListProps) => {
   const filteredAlbums = useMemo(() => {
     const keyword = searchValue.trim();
@@ -39,6 +43,8 @@ const AlbumList = ({
               }
               showMenu={index !== 0}
               onClick={() => onSelectAlbum(album.id ?? 0)}
+              onRename={() => onRenameAlbum(album.id ?? 0)}
+              onDelete={() => onDeleteAlbum(album.id ?? 0)}
             />
           ))
         )}

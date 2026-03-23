@@ -111,6 +111,8 @@ function HomeMapViewEmpty() {
         onExplore={fn()}
         onNewAlbum={fn()}
         onSelectAlbum={fn()}
+        onRenameAlbum={fn()}
+        onDeleteAlbum={fn()}
         onMyPage={fn()}
       />
     </ScreenWrapper>
@@ -135,6 +137,8 @@ function SidebarOpenView() {
         onExplore={fn()}
         onNewAlbum={fn()}
         onSelectAlbum={fn()}
+        onRenameAlbum={fn()}
+        onDeleteAlbum={fn()}
         onMyPage={fn()}
       />
     </ScreenWrapper>
@@ -204,6 +208,8 @@ function HomeMapViewWithPhotos() {
         onExplore={fn()}
         onNewAlbum={fn()}
         onSelectAlbum={fn()}
+        onRenameAlbum={fn()}
+        onDeleteAlbum={fn()}
         onMyPage={fn()}
       />
     </ScreenWrapper>
