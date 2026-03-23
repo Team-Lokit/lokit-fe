@@ -116,7 +116,11 @@
 - [x] 앨범 클릭 시 사이드바 닫힘 _(코드: `handleSelectAlbum → setIsSidebarOpen(false)`)_
 - [x] 선택된 앨범이 active 표시 _(코드: `selectedAlbumId prop`)_
 
-> 더보기(···) 메뉴 드롭다운 및 이름 변경/삭제 모달 연결은 추후 이슈로 진행
+- [x] 더보기(···) 클릭 시 드롭다운(앨범 이름 변경 / 앨범 삭제) 표시 _(AlbumMenu Portal 렌더링)_
+- [x] 앨범 이름 변경 클릭 시 이름 변경 모달 열림 _(코드: `setIsRenameModalOpen(true)`)_
+- [x] 앨범 삭제 클릭 시 삭제 확인 모달 열림 _(코드: `setIsDeleteModalOpen(true)`)_
+- [x] 앨범 상세 헤더에서도 ··· 메뉴 버튼 표시 (전체사진 제외) _(코드: `MapRouteHeader rightSlot`)_
+- [x] 전체사진 앨범 상세에서는 알림 버튼 유지
 
 ### 2.6 My 영역 동작
 
@@ -238,8 +242,9 @@
 
 ## 추후 이슈로 분리
 
-- 더보기(···) 메뉴 드롭다운 구현 및 이름 변경/삭제 모달 연결
+- ~~더보기(···) 메뉴 드롭다운 구현 및 이름 변경/삭제 모달 연결~~ → 완료
 - 성능 최적화 (리렌더링 검증)
 - 접근성 심화 (키보드 탐색, 스크린리더)
 - ~~`constants.ts` (SheetContext) 리팩토링~~ → `constants/viewContext.ts`로 리네이밍 완료
 - ExploreHeader `@deprecated` props 정리
+- 모달/토스트 모바일 해상도 제한 → 완료 (Popup Root, Toast max-width 430px)
