@@ -22,7 +22,7 @@ const fadeOut = keyframes`
 `;
 
 export const Backdrop = styled.div<{ $isOpen: boolean; $isClosing: boolean }>`
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: ${({ theme }) => theme.zIndex.overlay - 1};
   background: rgba(0, 0, 0, 0.4);
@@ -31,11 +31,11 @@ export const Backdrop = styled.div<{ $isOpen: boolean; $isClosing: boolean }>`
 `;
 
 export const Container = styled.aside<{ $isOpen: boolean; $isClosing: boolean }>`
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: ${({ theme }) => theme.layout.sidebarWidth};
-  height: 100vh;
+  height: 100%;
   background-color: ${({ theme }) => theme.colors.gray.a80};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
   border-right: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};

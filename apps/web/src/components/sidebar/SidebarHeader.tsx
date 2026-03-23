@@ -25,7 +25,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px 8px 12px;
+  padding: 8px 12px;
 `;
 
 const Logo = styled.div`
@@ -41,5 +41,5 @@ const CloseButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 0;
-  color: ${({ theme }) => theme.colors.gray[300]};
+  color: ${({ theme }) => theme.colors.gray[200]};
 `;
