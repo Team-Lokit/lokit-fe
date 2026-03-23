@@ -64,6 +64,7 @@ const SectionLabel = styled.div`
 const List = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 4px;
 `;
 
 const EmptyMessage = styled.div`

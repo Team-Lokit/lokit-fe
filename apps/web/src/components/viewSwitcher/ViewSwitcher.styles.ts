@@ -32,7 +32,7 @@ export const Tab = styled.button<{ $isActive: boolean }>`
       : `
         background: none;
         width: 36px;
-        padding: 8px;
+        padding: 10px;
       `}
 `;
 
@@ -41,7 +41,7 @@ export const TabIcon = styled.div<{ $isActive: boolean }>`
   height: 16px;
   flex-shrink: 0;
   color: ${({ $isActive, theme }) =>
-    $isActive ? theme.colors.gray[900] : theme.colors.gray[100]};
+    $isActive ? theme.colors.gray[1000] : theme.colors.gray[100]};
 `;
 
 export const TabLabel = styled.span`
