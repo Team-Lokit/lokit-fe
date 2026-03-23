@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  padding: 8px 32px;
+  padding: 0 32px;
 `;
 
 export const TextSection = styled.div`
