@@ -219,16 +219,16 @@ Sidebar 루트가 열림/닫힘 상태, CSS transition 애니메이션, ESC/back
 
 ### 6.2 기존 BottomSheet 상태와의 관계
 
-기존 `SheetContext` 타입의 전환 매핑:
+기존 `SheetContext` → `ViewContext`로 리네이밍 완료 (`constants/viewContext.ts`).
 
-| 기존 SheetContext | 사이드바 전환 후                                                                                          |
-| ----------------- | --------------------------------------------------------------------------------------------------------- |
-| `HOME`            | 사이드바 닫힌 상태의 지도뷰/격자뷰                                                                        |
-| `ALBUM_LIST`      | 사이드바 열린 상태 (AlbumList 표시)                                                                       |
-| `ALBUM_DETAIL`    | `/album/:id` 라우트 유지. 사이드바에서 앨범 클릭 시 해당 라우트로 이동, 홈 레이아웃 내에서 사진 목록 갱신 |
-| `CLUSTER_DETAIL`  | 유지 (클러스터 상세는 사이드바와 무관)                                                                    |
+| 기존 SheetContext | 리네이밍 후 ViewContext | 사이드바 전환 후                                                                                          |
+| ----------------- | ----------------------- | --------------------------------------------------------------------------------------------------------- |
+| `HOME`            | `HOME`                  | 사이드바 닫힌 상태의 지도뷰/격자뷰                                                                        |
+| `ALBUM_LIST`      | `ALBUM_LIST`            | 사이드바 열린 상태 (AlbumList 표시)                                                                       |
+| `ALBUM_DETAIL`    | `ALBUM_DETAIL`          | `/album/:id` 라우트 유지. 사이드바에서 앨범 클릭 시 해당 라우트로 이동, 홈 레이아웃 내에서 사진 목록 갱신 |
+| `CLUSTER_DETAIL`  | `CLUSTER_DETAIL`        | 유지 (클러스터 상세는 사이드바와 무관)                                                                    |
 
-> 사이드바 도입 후 `SHEET_CONTEXT_TYPE.ALBUM_LIST`는 사이드바 open 상태로 대체될 수 있으며, SheetContext 정리가 필요할 수 있음.
+> `VIEW_CONTEXT_TYPE.ALBUM_LIST`는 사이드바 open 상태로 대체될 수 있음.
 
 ### 6.3 검색 상태
 
@@ -288,15 +288,15 @@ Sidebar 루트가 열림/닫힘 상태, CSS transition 애니메이션, ESC/back
 
 ### 8.1 삭제/대체 대상
 
-| 기존 파일                                                   | 변경                            |
-| ----------------------------------------------------------- | ------------------------------- |
-| `components/bottomSheet/BottomSheet.tsx`                    | Sidebar로 대체                  |
-| `components/bottomSheet/BottomSheet.styles.ts`              | Sidebar 스타일로 대체           |
-| `components/bottomSheet/_hooks/useBottomSheetController.ts` | 삭제 (드래그 로직 불필요)       |
-| `components/bottomSheet/constants.ts`                       | SheetContext 타입 정리 필요     |
-| `components/bottomSheet/albumRow/AlbumRow.tsx`              | AlbumListItem으로 대체          |
-| `components/bottomSheet/albumGrid/AlbumGrid.tsx`            | 검색/필터 로직만 Sidebar로 이동 |
-| `components/bottomSheet/HomeEmptyState.tsx`                 | 격자뷰 빈 상태로 이동 또는 유지 |
+| 기존 파일                                                   | 변경                                               |
+| ----------------------------------------------------------- | -------------------------------------------------- |
+| `components/bottomSheet/BottomSheet.tsx`                    | Sidebar로 대체                                     |
+| `components/bottomSheet/BottomSheet.styles.ts`              | Sidebar 스타일로 대체                              |
+| `components/bottomSheet/_hooks/useBottomSheetController.ts` | 삭제 (드래그 로직 불필요)                          |
+| `components/bottomSheet/constants.ts`                       | `constants/viewContext.ts`로 이동 및 리네이밍 완료 |
+| `components/bottomSheet/albumRow/AlbumRow.tsx`              | AlbumListItem으로 대체                             |
+| `components/bottomSheet/albumGrid/AlbumGrid.tsx`            | 검색/필터 로직만 Sidebar로 이동                    |
+| `components/bottomSheet/HomeEmptyState.tsx`                 | 격자뷰 빈 상태로 이동 또는 유지                    |
 
 ### 8.2 신규 생성
 

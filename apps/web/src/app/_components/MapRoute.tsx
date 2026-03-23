@@ -18,10 +18,10 @@ import MenuButton from '@/components/buttons/menuButton/MenuButton';
 import TextButton from '@/components/buttons/textButton/TextButton';
 import { MapPin } from '@/types/map.type';
 import { ROUTES } from '@/constants/routes';
-import { SHEET_CONTEXT_TYPE } from '@/components/bottomSheet/constants';
+import { VIEW_CONTEXT_TYPE } from '@/constants/viewContext';
 import * as S from '../page.styles';
 import { useMapRouteViewState } from '../_hooks/useMapRouteViewState';
-import { useMapRouteSheetContext } from '../_hooks/useMapRouteSheetContext';
+import { useMapRouteViewContext } from '../_hooks/useMapRouteViewContext';
 import { useMapRouteData } from '../_hooks/useMapRouteData';
 import { usePendingPhotosViewModel } from '@/hooks/usePendingPhotosViewModel';
 import {
@@ -55,7 +55,7 @@ export default function MapRoute() {
   const { viewState, mapViewRef, handleViewStateChange, handleGoToCurrentLocation } =
     useMapRouteViewState();
 
-  const { sheetContext, setSheetContext, selectedAlbumId } = useMapRouteSheetContext();
+  const { viewContext, setViewContext, selectedAlbumId } = useMapRouteViewContext();
 
   // 데이터 페칭
   const {
@@ -69,7 +69,7 @@ export default function MapRoute() {
     clusterExpansionData,
   } = useMapRouteData({
     viewState,
-    sheetContext,
+    viewContext,
     selectedAlbumId,
   });
 
@@ -90,8 +90,8 @@ export default function MapRoute() {
         setSelectedPhoto(newPhotos[0]);
         resetPhotoNoteState(newPhotos[0]);
         const albumId =
-          sheetContext.type === SHEET_CONTEXT_TYPE.ALBUM_DETAIL
-            ? sheetContext.albumId
+          viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL
+            ? viewContext.albumId
             : null;
         setInitialAlbumId(albumId);
         router.push(ROUTES.PHOTO.NOTE.ADD);
@@ -103,7 +103,7 @@ export default function MapRoute() {
       resetPhotoNoteState,
       setInitialAlbumId,
       router,
-      sheetContext,
+      viewContext,
     ],
   );
 
@@ -158,8 +158,8 @@ export default function MapRoute() {
 
   // 계산된 데이터
   const photoCount = useMemo(() => {
-    return calculatePhotoCount(sheetContext, albumDetail, 0, totalHistoryCount);
-  }, [sheetContext, albumDetail, totalHistoryCount]);
+    return calculatePhotoCount(viewContext, albumDetail, 0, totalHistoryCount);
+  }, [viewContext, albumDetail, totalHistoryCount]);
 
   const selectedAlbumTitle = albumDetail?.title;
 
@@ -193,7 +193,7 @@ export default function MapRoute() {
   };
 
   const handleSelectAlbum = (albumId: number) => {
-    setSheetContext({ type: SHEET_CONTEXT_TYPE.ALBUM_DETAIL, albumId });
+    setViewContext({ type: VIEW_CONTEXT_TYPE.ALBUM_DETAIL, albumId });
     setIsSidebarOpen(false);
     router.push(`/album/${albumId}`);
   };
@@ -217,7 +217,7 @@ export default function MapRoute() {
     <S.Wrapper>
       <S.HeaderContainer>
         <MapRouteHeader
-          sheetContext={sheetContext}
+          viewContext={viewContext}
           selectedAlbumTitle={selectedAlbumTitle}
           address={address}
           onOpenSidebar={() => setIsSidebarOpen(true)}

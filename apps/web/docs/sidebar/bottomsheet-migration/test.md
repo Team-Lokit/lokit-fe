@@ -241,5 +241,5 @@
 - 더보기(···) 메뉴 드롭다운 구현 및 이름 변경/삭제 모달 연결
 - 성능 최적화 (리렌더링 검증)
 - 접근성 심화 (키보드 탐색, 스크린리더)
-- `constants.ts` (SheetContext) 리팩토링
+- ~~`constants.ts` (SheetContext) 리팩토링~~ → `constants/viewContext.ts`로 리네이밍 완료
 - ExploreHeader `@deprecated` props 정리
