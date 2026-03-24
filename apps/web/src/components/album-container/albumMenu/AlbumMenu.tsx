@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+/* eslint-disable react-hooks/refs -- AlbumMenu는 트리거 요소에 ref를 주입하는 구조상 렌더 중 ref 전달이 불가피 */
+import { cloneElement, isValidElement, useCallback, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import MenuIcon from '@/assets/images/menu.svg';
 import * as S from './AlbumMenu.styles';
@@ -6,16 +7,20 @@ import * as S from './AlbumMenu.styles';
 interface AlbumMenuProps {
   onRename: () => void;
   onDelete: () => void;
-  trigger?: (
-    ref: React.RefObject<HTMLButtonElement | null>,
-    onClick: (e: React.MouseEvent) => void,
-  ) => React.ReactNode;
+  triggerElement?: React.ReactElement<{
+    ref?: React.Ref<HTMLButtonElement>;
+    onClick?: (e: React.MouseEvent) => void;
+  }>;
 }
 
-const AlbumMenu = ({ onRename, onDelete, trigger }: AlbumMenuProps) => {
+const AlbumMenu = ({ onRename, onDelete, triggerElement }: AlbumMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  const setButtonRef = useCallback((node: HTMLButtonElement | null) => {
+    buttonRef.current = node;
+  }, []);
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -49,10 +54,13 @@ const AlbumMenu = ({ onRename, onDelete, trigger }: AlbumMenuProps) => {
 
   return (
     <S.Wrapper>
-      {trigger ? (
-        trigger(buttonRef, handleToggle)
+      {triggerElement && isValidElement(triggerElement) ? (
+        cloneElement(triggerElement, {
+          ref: setButtonRef,
+          onClick: handleToggle,
+        })
       ) : (
-        <S.Button ref={buttonRef} onClick={handleToggle}>
+        <S.Button ref={setButtonRef} onClick={handleToggle}>
           <MenuIcon width={16} height={16} />
         </S.Button>
       )}

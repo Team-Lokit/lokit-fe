@@ -38,16 +38,14 @@ export const MapRouteHeader = ({
           <AlbumMenu
             onRename={onRenameAlbum}
             onDelete={onDeleteAlbum}
-            trigger={(ref, onClick) => (
+            triggerElement={
               <CircleButton
-                ref={ref as React.Ref<HTMLButtonElement>}
-                onClick={onClick as unknown as () => void}
                 aria-label="앨범 메뉴"
                 style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
               >
                 <MenuIcon width={ICON_SIZE} height={ICON_SIZE} />
               </CircleButton>
-            )}
+            }
           />
         ) : undefined
       }
