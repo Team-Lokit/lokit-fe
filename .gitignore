@@ -5,6 +5,7 @@ node_modules
 .yarn/install-state.gz
 .pnp.*
 .DS_Store
+.claude/
 .next
 .expo
 .turbo
