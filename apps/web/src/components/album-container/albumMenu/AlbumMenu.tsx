@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/refs -- AlbumMenu는 트리거 요소에 ref를 주입하는 구조상 렌더 중 ref 전달이 불가피 */
-import { cloneElement, isValidElement, useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import MenuIcon from '@/assets/images/menu.svg';
 import * as S from './AlbumMenu.styles';
@@ -7,30 +6,23 @@ import * as S from './AlbumMenu.styles';
 interface AlbumMenuProps {
   onRename: () => void;
   onDelete: () => void;
-  triggerElement?: React.ReactElement<{
-    ref?: React.Ref<HTMLButtonElement>;
-    onClick?: (e: React.MouseEvent) => void;
-  }>;
+  triggerElement?: React.ReactNode;
 }
 
 const AlbumMenu = ({ onRename, onDelete, triggerElement }: AlbumMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 });
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
-
-  const setButtonRef = useCallback((node: HTMLButtonElement | null) => {
-    buttonRef.current = node;
-  }, []);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (buttonRef.current) {
-      const btnRect = buttonRef.current.getBoundingClientRect();
-      const parentEl = buttonRef.current.closest('[data-album-list-item]');
+    if (wrapperRef.current) {
+      const rect = wrapperRef.current.getBoundingClientRect();
+      const parentEl = wrapperRef.current.closest('[data-album-list-item]');
       const right = parentEl
         ? window.innerWidth - parentEl.getBoundingClientRect().right
-        : window.innerWidth - btnRect.right;
-      setDropdownPos({ top: btnRect.bottom + 4, right });
+        : window.innerWidth - rect.right;
+      setDropdownPos({ top: rect.bottom + 4, right });
     }
     setIsOpen((prev) => !prev);
   };
@@ -53,14 +45,9 @@ const AlbumMenu = ({ onRename, onDelete, triggerElement }: AlbumMenuProps) => {
   };
 
   return (
-    <S.Wrapper>
-      {triggerElement && isValidElement(triggerElement) ? (
-        cloneElement(triggerElement, {
-          ref: setButtonRef,
-          onClick: handleToggle,
-        })
-      ) : (
-        <S.Button ref={setButtonRef} onClick={handleToggle}>
+    <S.Wrapper ref={wrapperRef} onClick={handleToggle}>
+      {triggerElement ?? (
+        <S.Button>
           <MenuIcon width={16} height={16} />
         </S.Button>
       )}
