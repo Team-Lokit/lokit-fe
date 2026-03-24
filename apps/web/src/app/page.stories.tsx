@@ -12,10 +12,7 @@ import AddIcon from '@/assets/images/add.svg';
 import { ExploreHeader } from '@/components/header';
 import HomeEmptyState from '@/components/common/homeEmptyState/HomeEmptyState';
 import type { MapPin } from '@/types/map.type';
-import {
-  지도_ME_조회_성공,
-  지도_ME_조회_사진없음,
-} from '@/mocks/handlers/map/getMapMe/mockData';
+import { 지도_ME_조회_성공 } from '@/mocks/handlers/map/getMapMe/mockData';
 import { 마이페이지_조회_성공 } from '@/mocks/handlers/mypage/getMyPage/mockData';
 
 const mockAlbums = 지도_ME_조회_성공.albums ?? [];

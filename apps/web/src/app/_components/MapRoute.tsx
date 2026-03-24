@@ -163,6 +163,9 @@ export default function MapRoute() {
 
   const selectedAlbumTitle = albumDetail?.title;
 
+  const isCustomAlbumSelected =
+    selectedAlbumId != null && selectedAlbumId !== mergedAlbumList[0]?.id;
+
   const handlePinClick = async (pin: MapPin) => {
     if (!pin.isCluster) {
       router.push(ROUTES.PHOTO.VIEW(pin.id));
@@ -222,7 +225,7 @@ export default function MapRoute() {
           address={address}
           onOpenSidebar={() => setIsSidebarOpen(true)}
           onRenameAlbum={
-            selectedAlbumId != null && selectedAlbumId !== mergedAlbumList[0]?.id
+            isCustomAlbumSelected
               ? () => {
                   setMenuAlbumId(selectedAlbumId);
                   setMenuAlbumTitle(selectedAlbumTitle ?? '');
@@ -231,7 +234,7 @@ export default function MapRoute() {
               : undefined
           }
           onDeleteAlbum={
-            selectedAlbumId != null && selectedAlbumId !== mergedAlbumList[0]?.id
+            isCustomAlbumSelected
               ? () => {
                   setMenuAlbumId(selectedAlbumId);
                   setIsDeleteModalOpen(true);
