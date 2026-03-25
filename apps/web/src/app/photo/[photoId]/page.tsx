@@ -4,11 +4,8 @@ import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 // TODO: 2차 MVP에서 반영 예정
 // import CommentIcon from '@/assets/images/comment.svg';
 import DateIcon from '@/assets/images/date.svg';
-import MapPin from '@/assets/images/mapPin.svg';
 import Chip from '@/components/buttons/chip/Chip';
-import FloatingButton from '@/components/buttons/floatingButton/FloatingButton';
 import MenuHeader from '@/components/header/menu/MenuHeader';
-import { ROUTES } from '@/constants/routes';
 import { usePendingPhotoDetail } from '@/hooks/usePendingPhotosViewModel';
 import { formatDate } from '@/utils/formatDate';
 import { getGetPhotoDetailQueryOptions, useGetPhotoDetail } from '@repo/api-client';
@@ -143,10 +140,6 @@ export default function PhotoViewPage() {
       setActivePendingId(null);
       router.back();
     }
-  };
-
-  const handleMoveToMapView = () => {
-    router.push(ROUTES.HOME);
   };
 
   // Pending 사진이 외부에서 제거된 경우 (자동 정리 등) 뒤로 이동
@@ -318,16 +311,6 @@ export default function PhotoViewPage() {
                   ))}
                 </S.ThumbnailSlider>
               </S.SliderWrapper>
-            )}
-
-            {!isPendingMode && !albumIdFromQuery && (
-              <S.MapPreviewButtonWrapper>
-                <FloatingButton
-                  text="지도뷰로 보기"
-                  icon={<MapPin width={16} height={16} />}
-                  onClick={handleMoveToMapView}
-                />
-              </S.MapPreviewButtonWrapper>
             )}
           </S.BottomOverlay>
         </>
