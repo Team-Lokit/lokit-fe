@@ -6,7 +6,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { getGetClusterPhotosQueryOptions, useGetMyPage } from '@repo/api-client';
 import MapView from '@/components/map/MapView';
 import Sidebar from '@/components/sidebar/Sidebar';
-import ViewSwitcher from '@/components/viewSwitcher/ViewSwitcher';
+import ViewSwitcher, {
+  VIEW_TYPE,
+  type ViewType,
+} from '@/components/viewSwitcher/ViewSwitcher';
 import FloatingButton from '@/components/buttons/floatingButton/FloatingButton';
 import PhotoGridContainer from '@/components/photoGridContainer/PhotoGridContainer';
 import PhotoGridItem from '@/components/photoGridItem/PhotoGridItem';
@@ -46,7 +49,7 @@ export default function MapRoute() {
 
   // 사이드바 상태
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeView, setActiveView] = useState<'map' | 'grid'>('map');
+  const [activeView, setActiveView] = useState<ViewType>(VIEW_TYPE.MAP);
 
   // 사용자 프로필 데이터
   const { data: myPageData } = useGetMyPage();
@@ -201,6 +204,18 @@ export default function MapRoute() {
     router.push(`/album/${albumId}`);
   };
 
+  const handleRenameAlbum = (albumId: number) => {
+    const album = mergedAlbumList.find((a) => a.id === albumId);
+    setMenuAlbumId(albumId);
+    setMenuAlbumTitle(album?.title ?? '');
+    setIsRenameModalOpen(true);
+  };
+
+  const handleDeleteAlbum = (albumId: number) => {
+    setMenuAlbumId(albumId);
+    setIsDeleteModalOpen(true);
+  };
+
   const handleCloseRenameModal = () => {
     setIsRenameModalOpen(false);
     setMenuAlbumId(undefined);
@@ -225,26 +240,15 @@ export default function MapRoute() {
           address={address}
           onOpenSidebar={() => setIsSidebarOpen(true)}
           onRenameAlbum={
-            isCustomAlbumSelected
-              ? () => {
-                  setMenuAlbumId(selectedAlbumId);
-                  setMenuAlbumTitle(selectedAlbumTitle ?? '');
-                  setIsRenameModalOpen(true);
-                }
-              : undefined
+            isCustomAlbumSelected ? () => handleRenameAlbum(selectedAlbumId) : undefined
           }
           onDeleteAlbum={
-            isCustomAlbumSelected
-              ? () => {
-                  setMenuAlbumId(selectedAlbumId);
-                  setIsDeleteModalOpen(true);
-                }
-              : undefined
+            isCustomAlbumSelected ? () => handleDeleteAlbum(selectedAlbumId) : undefined
           }
         />
       </S.HeaderContainer>
 
-      {activeView === 'map' && viewState && (
+      {activeView === VIEW_TYPE.MAP && viewState && (
         <MapView
           ref={mapViewRef}
           locationState={viewState}
@@ -254,7 +258,7 @@ export default function MapRoute() {
         />
       )}
 
-      {activeView === 'grid' && (
+      {activeView === VIEW_TYPE.GRID && (
         <S.GridViewContainer>
           {displayPhotos.length === 0 ? (
             <S.EmptyState>
@@ -280,11 +284,7 @@ export default function MapRoute() {
                     key={photo.id}
                     src={photo.url ?? ''}
                     date={photo.takenAt}
-                    onClick={() => {
-                      if (photo.id) {
-                        router.push(ROUTES.PHOTO.VIEW(photo.id));
-                      }
-                    }}
+                    onClick={() => router.push(ROUTES.PHOTO.VIEW(photo.id!))}
                   />
                 ),
               )}
@@ -341,16 +341,8 @@ export default function MapRoute() {
         onExplore={() => router.push(ROUTES.EXPLORE)}
         onNewAlbum={() => setIsAddModalOpen(true)}
         onSelectAlbum={handleSelectAlbum}
-        onRenameAlbum={(albumId) => {
-          const album = mergedAlbumList.find((a) => a.id === albumId);
-          setMenuAlbumId(albumId);
-          setMenuAlbumTitle(album?.title ?? '');
-          setIsRenameModalOpen(true);
-        }}
-        onDeleteAlbum={(albumId) => {
-          setMenuAlbumId(albumId);
-          setIsDeleteModalOpen(true);
-        }}
+        onRenameAlbum={handleRenameAlbum}
+        onDeleteAlbum={handleDeleteAlbum}
         onMyPage={() => router.push(ROUTES.MYPAGE)}
       />
 
