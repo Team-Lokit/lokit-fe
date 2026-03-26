@@ -92,7 +92,7 @@ export const MemoAlbumOverlay = styled.div`
 `;
 
 export const BottomContainer = styled.div`
-  padding: 12px 20px 33px;
+  padding: 12px 16px 57px;
   background-color: ${({ theme }) => theme.colors.gray[1000]};
 `;
 
