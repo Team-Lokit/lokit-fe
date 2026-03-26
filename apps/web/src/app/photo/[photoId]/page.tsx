@@ -180,7 +180,15 @@ export default function PhotoViewPage() {
 
   return (
     <S.Container {...longPressHandlers}>
-      <S.PhotoBackground $url={resolvedPhotoUrl || ''} />
+      <S.PhotoSection>
+        <S.PhotoBlurBackground>
+          <img src={resolvedPhotoUrl || ''} alt="" />
+        </S.PhotoBlurBackground>
+
+        <S.PhotoMain>
+          <img src={resolvedPhotoUrl || ''} alt={`photo-${resolvedDetail?.id}`} />
+        </S.PhotoMain>
+      </S.PhotoSection>
 
       {!isPendingMode && photos.length > 1 && (
         <>

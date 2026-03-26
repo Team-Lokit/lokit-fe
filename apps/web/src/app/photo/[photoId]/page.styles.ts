@@ -9,16 +9,54 @@ export const Container = styled.div`
   user-select: none;
 `;
 
-export const PhotoBackground = styled.div<{ $url: string }>`
+export const PhotoSection = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
+  overflow: hidden;
+`;
+
+export const PhotoFrame = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
-  background-image: url(${({ $url }) => $url});
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #000;
+  pointer-events: none;
+`;
+
+export const PhotoBlurBackground = styled.div`
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(50px);
+    opacity: 0.8;
+    transform: scale(1.08);
+  }
+`;
+
+export const PhotoMain = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 1;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
 `;
 
 export const TouchAreaLeft = styled.div`
@@ -54,7 +92,7 @@ export const BottomOverlay = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 115px 16px calc(40px + env(safe-area-inset-bottom, 0px));
+  padding: 115px 16px 0;
   background: ${({ theme }) => theme.colors.gradient.black2};
   z-index: 10;
 `;
@@ -130,9 +168,9 @@ export const ContainerB = styled.div`
 `;
 
 export const SliderWrapper = styled.div`
-  margin-top: 16px;
-  margin-left: -16px;
-  margin-right: -16px;
+  padding: 8px 0 calc(40px + env(safe-area-inset-bottom, 0px)) 0;
+  margin: 16px -16px 0 -16px;
+  background: ${({ theme }) => theme.colors.overlay[100]};
 `;
 
 export const MapPreviewButtonWrapper = styled.div`
@@ -144,7 +182,7 @@ export const MapPreviewButtonWrapper = styled.div`
 export const ThumbnailSlider = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   gap: 8px;
   padding: 0 16px;
   overflow-x: auto;
