@@ -24,25 +24,31 @@ export const PhotoFrame = styled.div`
   aspect-ratio: 9 / 16;
   overflow: hidden;
   border-radius: 12px;
-  background: #000;
+  background-color: ${({ theme }) => theme.colors.overlay[100]};
 `;
 
 export const PhotoBlurBackground = styled.div`
   position: absolute;
   inset: 0;
   pointer-events: none;
+  overflow: hidden;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: blur(24px);
     transform: scale(1.08);
-    opacity: 0.75;
-    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #00000033;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
   }
 `;
-
 export const PhotoMain = styled.div`
   position: relative;
   width: 100%;

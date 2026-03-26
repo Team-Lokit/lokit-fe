@@ -18,25 +18,32 @@ export const PhotoSection = styled.div`
 export const PhotoFrame = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 9 / 16;
   overflow: hidden;
   border-radius: 12px;
-  background: #000;
-  pointer-events: none;
+  background-color: ${({ theme }) => theme.colors.overlay[100]};
 `;
 
 export const PhotoBlurBackground = styled.div`
   position: absolute;
   inset: 0;
+  pointer-events: none;
   overflow: hidden;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: blur(50px);
-    opacity: 0.8;
     transform: scale(1.08);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #00000033;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
   }
 `;
 
