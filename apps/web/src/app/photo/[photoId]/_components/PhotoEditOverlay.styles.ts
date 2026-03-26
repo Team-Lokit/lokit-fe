@@ -4,6 +4,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: ${({ theme }) => theme.layout.maxWidth};
   height: 100dvh;
   background-color: ${({ theme }) => theme.colors.gray[1000]};
   border-top-left-radius: 20px;
@@ -17,17 +18,46 @@ export const PhotoSection = styled.div`
   overflow: hidden;
 `;
 
-export const PhotoBackground = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
+export const PhotoFrame = styled.div`
+  position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #000;
+`;
+
+export const PhotoBlurBackground = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: blur(24px);
+    transform: scale(1.08);
+    opacity: 0.75;
+    pointer-events: none;
+  }
+`;
+
+export const PhotoMain = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+
+  img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+    pointer-events: none;
   }
 `;
 
