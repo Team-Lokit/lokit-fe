@@ -20,3 +20,36 @@ export const FloatingButtonWrapper = styled.div`
   transform: translateX(-50%);
   z-index: 999;
 `;
+
+export const ActionColumn = styled.div`
+  position: absolute;
+  right: 12px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 1001;
+`;
+
+export const GridViewContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding-top: 106px;
+`;
+
+export const EmptyState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  inset: 0;
+`;
+
+export const ViewSwitcherWrapper = styled.div`
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+`;

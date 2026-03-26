@@ -6,10 +6,20 @@ import AlbumListItem from './AlbumListItem';
 interface AlbumListProps {
   albums: AlbumThumbnails[];
   searchValue: string;
+  selectedAlbumId?: number | null;
   onSelectAlbum: (albumId: number) => void;
+  onRenameAlbum: (albumId: number) => void;
+  onDeleteAlbum: (albumId: number) => void;
 }
 
-const AlbumList = ({ albums, searchValue, onSelectAlbum }: AlbumListProps) => {
+const AlbumList = ({
+  albums,
+  searchValue,
+  selectedAlbumId,
+  onSelectAlbum,
+  onRenameAlbum,
+  onDeleteAlbum,
+}: AlbumListProps) => {
   const filteredAlbums = useMemo(() => {
     const keyword = searchValue.trim();
     if (!keyword) return albums;
@@ -28,9 +38,13 @@ const AlbumList = ({ albums, searchValue, onSelectAlbum }: AlbumListProps) => {
               key={album.id}
               title={album.title ?? ''}
               totalCount={album.photoCount ?? 0}
-              isSelected={index === 0}
+              isSelected={
+                selectedAlbumId != null ? album.id === selectedAlbumId : index === 0
+              }
               showMenu={index !== 0}
               onClick={() => onSelectAlbum(album.id ?? 0)}
+              onRename={() => onRenameAlbum(album.id ?? 0)}
+              onDelete={() => onDeleteAlbum(album.id ?? 0)}
             />
           ))
         )}

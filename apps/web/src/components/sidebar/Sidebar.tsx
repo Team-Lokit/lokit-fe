@@ -18,7 +18,10 @@ interface SidebarProps {
   profileImageUrl?: string;
   onExplore: () => void;
   onNewAlbum: () => void;
+  selectedAlbumId?: number | null;
   onSelectAlbum: (albumId: number) => void;
+  onRenameAlbum: (albumId: number) => void;
+  onDeleteAlbum: (albumId: number) => void;
   onMyPage: () => void;
 }
 
@@ -29,9 +32,12 @@ const Sidebar = ({
   nickname,
   dDay,
   profileImageUrl,
+  selectedAlbumId,
   onExplore,
   onNewAlbum,
   onSelectAlbum,
+  onRenameAlbum,
+  onDeleteAlbum,
   onMyPage,
 }: SidebarProps) => {
   const [isClosing, setIsClosing] = useState(false);
@@ -55,7 +61,11 @@ const Sidebar = ({
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
   }, [isOpen, handleClose]);
 
   if (!isOpen && !isClosing) return null;
@@ -81,7 +91,10 @@ const Sidebar = ({
           <AlbumList
             albums={albums}
             searchValue={searchValue}
+            selectedAlbumId={selectedAlbumId}
             onSelectAlbum={onSelectAlbum}
+            onRenameAlbum={onRenameAlbum}
+            onDeleteAlbum={onDeleteAlbum}
           />
         </S.Content>
         <S.Footer>

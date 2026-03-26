@@ -2,6 +2,10 @@
 import type { StorybookConfig } from '@storybook/nextjs';
 
 const config: StorybookConfig = {
+  env: (config) => ({
+    ...config,
+    NEXT_PUBLIC_MAPBOX_TOKEN: process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '',
+  }),
   stories: ['../src/**/*.stories.@(ts|tsx|mdx)'],
   framework: {
     name: '@storybook/nextjs',

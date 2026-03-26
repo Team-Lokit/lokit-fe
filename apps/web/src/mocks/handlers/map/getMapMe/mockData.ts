@@ -53,6 +53,12 @@ export const 지도_ME_조회_성공: MapMeResponse = {
       photoCount: 6,
       thumbnailUrls: ['https://picsum.photos/id/1063/200/200'],
     },
+    {
+      id: 4,
+      title: '새 앨범',
+      photoCount: 0,
+      thumbnailUrls: [],
+    },
   ],
   clusters: [
     {

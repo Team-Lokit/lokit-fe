@@ -1,65 +1,54 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import {
-  SHEET_CONTEXT_TYPE,
-  type SheetContext,
-} from '@/components/bottomSheet/constants';
-import { ExploreHeader, MenuHeader } from '@/components/header';
-import { DEFAULT_ALBUM_TITLE, ROUTES } from '@/constants';
+import { VIEW_CONTEXT_TYPE, type ViewContext } from '@/constants/viewContext';
+import { ExploreHeader } from '@/components/header';
+import AlbumMenu from '@/components/album-container/albumMenu/AlbumMenu';
+import CircleButton from '@/components/buttons/circleButton/CircleButton';
+import MenuIcon from '@/assets/images/menu.svg';
+import { BUTTON_SIZE, ICON_SIZE } from '@/components/header/base/Header.constants';
 
 interface MapRouteHeaderProps {
-  sheetContext: SheetContext;
+  viewContext: ViewContext;
   selectedAlbumTitle: string | undefined;
   address: string | null;
-  profileImageUrl: string | undefined;
-  onCloseAlbumDetail: () => void;
-  onOpenAlbumRename: () => void;
-  onOpenAlbumDelete: () => void;
+  onOpenSidebar: () => void;
+  onRenameAlbum?: () => void;
+  onDeleteAlbum?: () => void;
 }
 
-/**
- * 지도 페이지의 헤더를 렌더링하는 컴포넌트
- * - 앨범 상세: 앨범 제목과 메뉴 (이름변경, 삭제)
- * - 클러스터 상세: 위치 정보
- * - 기본 상태: 사용자의 현재 주소
- */
 export const MapRouteHeader = ({
-  sheetContext,
+  viewContext,
   selectedAlbumTitle,
   address,
-  profileImageUrl,
-  onCloseAlbumDetail,
-  onOpenAlbumRename,
-  onOpenAlbumDelete,
+  onOpenSidebar,
+  onRenameAlbum,
+  onDeleteAlbum,
 }: MapRouteHeaderProps) => {
-  const router = useRouter();
-  if (sheetContext.type === SHEET_CONTEXT_TYPE.ALBUM_DETAIL) {
-    const isDefaultAlbum = selectedAlbumTitle === DEFAULT_ALBUM_TITLE;
-    return (
-      <MenuHeader
-        title={selectedAlbumTitle ?? '앨범'}
-        onClickBack={onCloseAlbumDetail}
-        showMenu={!isDefaultAlbum}
-      >
-        {!isDefaultAlbum && (
-          <MenuHeader.Menu>
-            <MenuHeader.Item onClick={onOpenAlbumRename}>앨범 이름 변경</MenuHeader.Item>
-            <MenuHeader.Item variant="danger" onClick={onOpenAlbumDelete}>
-              앨범 삭제
-            </MenuHeader.Item>
-          </MenuHeader.Menu>
-        )}
-      </MenuHeader>
-    );
-  }
+  const isAlbumDetail = viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL;
+  const title = isAlbumDetail
+    ? (selectedAlbumTitle ?? '앨범')
+    : address || '위치 정보 로딩 중';
 
   return (
     <ExploreHeader
-      title={address || '위치 정보 로딩 중'}
-      onClickProfile={() => router.push(ROUTES.MYPAGE)}
-      onClickExplore={() => router.push(ROUTES.EXPLORE)}
-      profileImageSrc={profileImageUrl}
+      title={title}
+      onClickMenu={onOpenSidebar}
+      rightSlot={
+        isAlbumDetail && onRenameAlbum && onDeleteAlbum ? (
+          <AlbumMenu
+            onRename={onRenameAlbum}
+            onDelete={onDeleteAlbum}
+            triggerElement={
+              <CircleButton
+                aria-label="앨범 메뉴"
+                style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
+              >
+                <MenuIcon width={ICON_SIZE} height={ICON_SIZE} />
+              </CircleButton>
+            }
+          />
+        ) : undefined
+      }
     />
   );
 };

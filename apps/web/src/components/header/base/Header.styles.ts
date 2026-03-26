@@ -4,7 +4,7 @@ export const Container = styled.header<{ transparent?: boolean }>`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 56px;
+  height: 60px;
   padding: 0 16px;
   background: ${({ theme, transparent }) =>
     transparent ? 'transparent' : theme.colors.gradient.black1};

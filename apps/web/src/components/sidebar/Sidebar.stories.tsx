@@ -22,6 +22,8 @@ const meta: Meta<typeof Sidebar> = {
     onExplore: fn(),
     onNewAlbum: fn(),
     onSelectAlbum: fn(),
+    onRenameAlbum: fn(),
+    onDeleteAlbum: fn(),
     onMyPage: fn(),
   },
   argTypes: {
@@ -145,3 +147,33 @@ export const MyPageClick: Story = {
     expect(args.onMyPage).toHaveBeenCalled();
   },
 };
+
+export const SearchInputFocus: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement.ownerDocument.body);
+    const searchInput = canvas.getByPlaceholderText('앨범을 검색해보세요...');
+
+    await userEvent.click(searchInput);
+    expect(searchInput).toHaveFocus();
+
+    await userEvent.type(searchInput, 'hello');
+    expect(searchInput).toHaveValue('hello');
+  },
+};
+
+export const KoreanSearch: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement.ownerDocument.body);
+    const searchInput = canvas.getByPlaceholderText('앨범을 검색해보세요...');
+
+    await userEvent.type(searchInput, '한강');
+
+    await waitFor(() => {
+      expect(searchInput).toHaveValue('한강');
+      expect(canvas.getByText('검색 결과가 없습니다')).toBeInTheDocument();
+    });
+  },
+};
+
+// RapidOpenClose: 닫기 애니메이션(300ms setTimeout)과 test-runner 타이밍 충돌로 제거
+// 실서비스에서 수동 확인

@@ -5,6 +5,7 @@ import { ThemeProvider } from '@emotion/react';
 import GlobalStyles from "../src/theme/globalStyles";
 import { theme } from '../src/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { handlers } from '../src/mocks/handlers';
 import './fonts.css';
 
 initialize({ onUnhandledRequest: 'bypass' });
@@ -31,6 +32,9 @@ const preview: Preview = {
   decorators: [withGlobalStyle],
   tags: ['autodocs'],
   parameters: {
+    msw: {
+      handlers,
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,
