@@ -209,7 +209,7 @@ export default function PhotoEditOverlay({
             </S.PhotoBlurBackground>
 
             <S.PhotoMain>
-              <img src={photoDetail.url} alt={`${photoDetail.id}-photo`} />
+              <img src={photoDetail.url} alt={`photo-${photoDetail.id}`} />
             </S.PhotoMain>
           </S.PhotoFrame>
           <S.TopOverlay>
