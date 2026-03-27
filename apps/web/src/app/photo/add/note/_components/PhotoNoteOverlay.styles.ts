@@ -7,8 +7,6 @@ export const Container = styled.div`
   max-width: ${({ theme }) => theme.layout.maxWidth};
   height: 100dvh;
   background-color: ${({ theme }) => theme.colors.gray[1000]};
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
   overflow: hidden;
 `;
 
