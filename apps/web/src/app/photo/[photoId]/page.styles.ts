@@ -9,16 +9,61 @@ export const Container = styled.div`
   user-select: none;
 `;
 
-export const PhotoBackground = styled.div<{ $url: string }>`
+export const PhotoSection = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
+  overflow: hidden;
+`;
+
+export const PhotoFrame = styled.div`
+  position: relative;
   width: 100%;
-  height: 100%;
-  background-image: url(${({ $url }) => $url});
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: ${({ theme }) => theme.colors.overlay[100]};
+`;
+
+export const PhotoBlurBackground = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.08);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #00000033;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+  }
+`;
+
+export const PhotoMain = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 1;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
 `;
 
 export const TouchAreaLeft = styled.div`
@@ -54,8 +99,7 @@ export const BottomOverlay = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 115px 16px calc(40px + env(safe-area-inset-bottom, 0px));
-  background: ${({ theme }) => theme.colors.gradient.black2};
+  padding: 0 16px;
   z-index: 10;
 `;
 
@@ -130,9 +174,9 @@ export const ContainerB = styled.div`
 `;
 
 export const SliderWrapper = styled.div`
-  margin-top: 16px;
-  margin-left: -16px;
-  margin-right: -16px;
+  padding: 8px 0 calc(37px + env(safe-area-inset-bottom, 0px)) 0;
+  margin: 16px -16px 0 -16px;
+  background: ${({ theme }) => theme.colors.overlay[100]};
 `;
 
 export const MapPreviewButtonWrapper = styled.div`
@@ -144,7 +188,7 @@ export const MapPreviewButtonWrapper = styled.div`
 export const ThumbnailSlider = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   gap: 8px;
   padding: 0 16px;
   overflow-x: auto;
@@ -228,4 +272,12 @@ export const LoadingContainer = styled.div`
   height: 100%;
   ${({ theme }) => theme.typography.body16Regular}
   color: ${({ theme }) => theme.colors.gray[400]};
+`;
+
+export const EmptySlider = styled.div`
+  padding: 8px 0 calc(37px + env(safe-area-inset-bottom, 0px)) 0;
+  margin: 16px -16px 0 -16px;
+  height: 60px;
+  box-sizing: content-box;
+  background: ${({ theme }) => theme.colors.overlay[100]};
 `;

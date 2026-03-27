@@ -1,33 +1,69 @@
 import styled from '@emotion/styled';
 
 export const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: ${({ theme }) => theme.layout.maxWidth};
   height: 100dvh;
   background-color: ${({ theme }) => theme.colors.gray[1000]};
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
   overflow: hidden;
 `;
 
 export const PhotoSection = styled.div`
-  position: relative;
-  flex: 1;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
 `;
 
-export const PhotoBackground = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
+export const PhotoFrame = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: ${({ theme }) => theme.colors.overlay[100]};
+`;
+
+export const PhotoBlurBackground = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transform: scale(1.08);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #00000033;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+  }
+`;
+export const PhotoMain = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 `;
 
@@ -56,8 +92,13 @@ export const MemoAlbumOverlay = styled.div`
 `;
 
 export const BottomContainer = styled.div`
-  padding: 12px 20px 33px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 16px 57px;
   background-color: ${({ theme }) => theme.colors.gray[1000]};
+  z-index: 20;
 `;
 
 export const TooltipWrapper = styled.div`

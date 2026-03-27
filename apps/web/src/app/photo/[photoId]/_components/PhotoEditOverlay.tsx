@@ -193,9 +193,9 @@ export default function PhotoEditOverlay({
       transition={{ duration: 0.2 }}
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        inset: 0,
         height: '100dvh',
         zIndex: 100,
         overflow: 'hidden',
@@ -203,10 +203,15 @@ export default function PhotoEditOverlay({
     >
       <S.Container>
         <S.PhotoSection>
-          <S.PhotoBackground>
-            <img src={photoDetail.url} alt="" />
-          </S.PhotoBackground>
+          <S.PhotoFrame>
+            <S.PhotoBlurBackground>
+              <img src={photoDetail.url} alt="" />
+            </S.PhotoBlurBackground>
 
+            <S.PhotoMain>
+              <img src={photoDetail.url} alt={`photo-${photoDetail.id}`} />
+            </S.PhotoMain>
+          </S.PhotoFrame>
           <S.TopOverlay>
             <PhotoAddHeader
               left={

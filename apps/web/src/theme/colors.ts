@@ -76,6 +76,12 @@ export const colors = {
     border10: 'rgba(226,230,255,0.10)',
   },
 
+  overlay: {
+    50: 'rgba(0,0,0,0.5)',
+    80: 'rgba(0,0,0,0.8)',
+    100: '#000000',
+  },
+
   status: {
     red: {
       50: '#FFF3F4',
