@@ -305,7 +305,7 @@ export default function PhotoViewPage() {
             )}
 
             {/* 서버 모드: 썸네일 슬라이더 */}
-            {!isPendingMode && photos.length > 1 && (
+            {!isPendingMode && photos.length > 1 ? (
               <S.SliderWrapper>
                 <S.ThumbnailSlider ref={thumbnailContainerRef}>
                   {photos.map((photo, index) => (
@@ -319,6 +319,8 @@ export default function PhotoViewPage() {
                   ))}
                 </S.ThumbnailSlider>
               </S.SliderWrapper>
+            ) : (
+              <S.EmptySlider />
             )}
           </S.BottomOverlay>
         </>

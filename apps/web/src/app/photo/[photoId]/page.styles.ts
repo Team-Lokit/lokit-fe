@@ -273,3 +273,11 @@ export const LoadingContainer = styled.div`
   ${({ theme }) => theme.typography.body16Regular}
   color: ${({ theme }) => theme.colors.gray[400]};
 `;
+
+export const EmptySlider = styled.div`
+  padding: 8px 0 calc(37px + env(safe-area-inset-bottom, 0px)) 0;
+  margin: 16px -16px 0 -16px;
+  height: 60px;
+  box-sizing: content-box;
+  background: ${({ theme }) => theme.colors.overlay[100]};
+`;
