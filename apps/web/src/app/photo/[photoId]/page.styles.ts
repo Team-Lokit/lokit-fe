@@ -99,8 +99,7 @@ export const BottomOverlay = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 115px 16px 0;
-  background: ${({ theme }) => theme.colors.gradient.black2};
+  padding: 0 16px;
   z-index: 10;
 `;
 
