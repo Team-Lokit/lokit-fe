@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 export const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -13,14 +14,15 @@ export const Container = styled.div`
 `;
 
 export const PhotoSection = styled.div`
-  position: relative;
-  flex: 1;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
 `;
 
 export const PhotoFrame = styled.div`
   position: relative;
   width: 100%;
+  height: 100%;
   aspect-ratio: 9 / 16;
   overflow: hidden;
   border-radius: 12px;
@@ -50,20 +52,20 @@ export const PhotoBlurBackground = styled.div`
   }
 `;
 export const PhotoMain = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
+  padding: 0;
 
   img {
     width: 100%;
-    height: auto;
-    max-height: 100%;
+    height: 100%;
     object-fit: contain;
-    pointer-events: none;
+    object-position: center;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 `;
 
@@ -92,8 +94,13 @@ export const MemoAlbumOverlay = styled.div`
 `;
 
 export const BottomContainer = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   padding: 12px 16px 57px;
   background-color: ${({ theme }) => theme.colors.gray[1000]};
+  z-index: 20;
 `;
 
 export const TooltipWrapper = styled.div`
