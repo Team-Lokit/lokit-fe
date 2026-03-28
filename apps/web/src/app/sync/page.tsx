@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { saveCoupleStatusCookie } from '@repo/api-client';
 import { ROUTES } from '@/constants/routes';
 
-export default function SyncPage() {
+function SyncContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -26,4 +26,12 @@ export default function SyncPage() {
   }, [router, searchParams]);
 
   return null;
+}
+
+export default function SyncPage() {
+  return (
+    <Suspense>
+      <SyncContent />
+    </Suspense>
+  );
 }
