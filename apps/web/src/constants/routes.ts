@@ -26,4 +26,5 @@ export const ROUTES = {
   RECONNECT: '/reconnect',
   DISCONNECT: '/disconnect',
   SIGNOUT: '/signout',
+  SYNC: '/sync',
 } as const;
