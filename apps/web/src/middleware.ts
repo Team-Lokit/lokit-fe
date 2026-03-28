@@ -24,6 +24,17 @@ export function middleware(request: NextRequest) {
   }
 
   const isOnboarding = pathname.startsWith(ROUTES.ONBOARDING.START);
+  const isSyncPage = pathname === ROUTES.SYNC;
+
+  // coupleStatus 쿠키 없음 → /sync에서 쿠키 동기화 후 원래 경로로 복귀
+  if (!coupleStatus) {
+    if (isSyncPage) {
+      return NextResponse.next();
+    }
+    const syncUrl = new URL(ROUTES.SYNC, request.url);
+    syncUrl.searchParams.set('redirect', pathname);
+    return NextResponse.redirect(syncUrl);
+  }
 
   switch (coupleStatus) {
     case COUPLE_STATUS.COUPLED:
@@ -63,7 +74,7 @@ export function middleware(request: NextRequest) {
       break;
 
     default:
-      // coupleStatus 쿠키 없음 → NOT_COUPLED으로 간주
+      // /sync에서 쿠키 동기화 실패 시 fallback → NOT_COUPLED로 간주
       if (!isOnboarding) {
         return NextResponse.redirect(new URL(ROUTES.ONBOARDING.START, request.url));
       }
