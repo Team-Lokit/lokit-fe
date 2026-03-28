@@ -23,7 +23,6 @@ export const PhotoFrame = styled.div`
   height: 100%;
   aspect-ratio: 9 / 16;
   overflow: hidden;
-  border-radius: 12px;
   background-color: ${({ theme }) => theme.colors.overlay[100]};
 `;
 
