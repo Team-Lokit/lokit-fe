@@ -11,7 +11,13 @@ export const Container = styled.div`
 
 export const PhotoSection = styled.div`
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 100px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
 `;
 
@@ -48,8 +54,9 @@ export const PhotoBlurBackground = styled.div`
 `;
 
 export const PhotoMain = styled.div`
-  position: absolute;
-  inset: 0;
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,6 +106,7 @@ export const BottomOverlay = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
+  background: ${({ theme }) => theme.colors.gradient.black2};
   padding: 0 16px;
   z-index: 10;
 `;
