@@ -9,10 +9,14 @@ const variantStyles = {
   black: (theme: Theme) => css`
     background: ${theme.colors.gray.a80};
     color: ${theme.colors.text.primary};
+    backdrop-filter: ${theme.effects.backdropBlur[5]};
+    -webkit-backdrop-filter: ${theme.effects.backdropBlur[5]};
   `,
   white: (theme: Theme) => css`
     background: ${theme.colors.blueWhite.bg5};
     color: ${theme.colors.gray[0]};
+    backdrop-filter: ${theme.effects.backdropBlur[25]};
+    -webkit-backdrop-filter: ${theme.effects.backdropBlur[25]};
   `,
 };
 
