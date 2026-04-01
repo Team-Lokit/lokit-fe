@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
-import TotalPhotoCountBannerClient from './_clientBoundary/TotalPhotoCountBannerClient/TotalPhotoCountBannerClient';
 import BannerFallback from './_components/BannerFallback/BannerFallback';
 import styles from './BannerContainer.module.css';
 import DdayBannerContainer from '@/app/mypage/_components/BannerContainer/_clientBoundary/DdayBannerContainer/DdayBannerContainer';
+import TotalPhotoCountBannerContainer from '@/app/mypage/_components/BannerContainer/_clientBoundary/TotalPhotoCountBannerContainer/TotalPhotoCountBannerContainer';
 
 export default function BannerContainer() {
   return (
@@ -11,7 +11,7 @@ export default function BannerContainer() {
         <DdayBannerContainer />
       </Suspense>
       <Suspense fallback={<BannerFallback />}>
-        <TotalPhotoCountBannerClient />
+        <TotalPhotoCountBannerContainer />
       </Suspense>
     </section>
   );

@@ -6,6 +6,7 @@ export const Wrapper = styled.div<{ $backgroundImage?: string }>`
   justify-content: space-between;
   padding: 8px 16px;
   border-radius: 12px;
+  height: 81px;
   overflow: hidden;
   border: 1px solid rgba(226, 230, 255, 0.1);
   background: ${({ $backgroundImage }) =>
@@ -24,12 +25,22 @@ export const Content = styled.div`
 
 export const Caption = styled.span`
   ${({ theme }) => theme.typography.caption12Regular}
-  color: ${({ theme }) => theme.colors.gray[200]};
+  color: ${({ theme }) => theme.colors.gray[100]};
 `;
 
 export const CountRow = styled.span`
   ${({ theme }) => theme.typography.heading24Bold}
   color: ${({ theme }) => theme.colors.gray[0]};
+`;
+
+export const EmptyCaption = styled.span`
+  ${({ theme }) => theme.typography.caption12Regular}
+  color: ${({ theme }) => theme.colors.gray[300]};
+`;
+
+export const EmptyText = styled.span`
+  ${({ theme }) => theme.typography.body18Semibold}
+  color: ${({ theme }) => theme.colors.gray[300]};
 `;
 
 export const ChevronIcon = styled.span`
