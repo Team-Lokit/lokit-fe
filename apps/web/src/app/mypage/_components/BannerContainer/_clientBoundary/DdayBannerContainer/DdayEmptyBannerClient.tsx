@@ -1,5 +1,3 @@
-'use client';
-
 import { useGetMyPageSuspense } from '@repo/api-client';
 import usePopup from '@/hooks/usePopup';
 import ChevronRightIcon from '@/assets/images/chevronRight.svg';
