@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 export const Wrapper = styled.div<{ $backgroundImage?: string }>`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -17,7 +18,18 @@ export const Wrapper = styled.div<{ $backgroundImage?: string }>`
   cursor: pointer;
 `;
 
+export const BackgroundIcon = styled.div`
+  position: absolute;
+  right: -30px;
+  bottom: -120px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+`;
+
 export const Content = styled.div`
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   padding: 4px;
@@ -44,6 +56,9 @@ export const EmptyText = styled.span`
 `;
 
 export const ChevronIcon = styled.span`
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   color: ${({ theme }) => theme.colors.gray[200]};
