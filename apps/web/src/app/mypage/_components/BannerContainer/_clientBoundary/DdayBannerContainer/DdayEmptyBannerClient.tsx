@@ -28,7 +28,11 @@ export default function DdayEmptyBannerClient() {
           <ChevronRightIcon width={22} height={22} />
         </S.ChevronIcon>
       </S.Wrapper>
-      <DdayEditModal isOpen={isOpen} onClose={handleClose} />
+      <DdayEditModal
+        isOpen={isOpen}
+        onClose={handleClose}
+        initialDate={data.joinedDate}
+      />
     </>
   );
 }

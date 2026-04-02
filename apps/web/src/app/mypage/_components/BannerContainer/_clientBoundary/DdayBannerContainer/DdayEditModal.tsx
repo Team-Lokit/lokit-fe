@@ -21,6 +21,10 @@ export default function DdayEditModal({
   onClose,
   initialDate,
 }: DdayEditModalProps) {
+  const [placeholderYear, placeholderMonth, placeholderDay] = initialDate
+    ? initialDate.split('-')
+    : ['', '', ''];
+
   const [year, setYear] = useState('');
   const [month, setMonth] = useState('');
   const [day, setDay] = useState('');
@@ -30,6 +34,7 @@ export default function DdayEditModal({
 
   // 모달이 열릴 때 초기 날짜로 폼 초기화 (렌더 중 상태 조정 패턴)
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
   if (prevIsOpen !== isOpen) {
     setPrevIsOpen(isOpen);
     if (isOpen && initialDate) {
@@ -110,7 +115,7 @@ export default function DdayEditModal({
             <S.DateInput
               type="text"
               inputMode="numeric"
-              placeholder="2025"
+              placeholder={placeholderYear}
               value={year}
               $charCount={year.length || 4}
               onChange={handleNumericChange(setYear, 4, new Date().getFullYear())}
@@ -121,7 +126,7 @@ export default function DdayEditModal({
             <S.DateInput
               type="text"
               inputMode="numeric"
-              placeholder="12"
+              placeholder={placeholderMonth}
               value={month}
               $charCount={month.length || 2}
               onChange={handleNumericChange(setMonth, 2, 12)}
@@ -132,7 +137,7 @@ export default function DdayEditModal({
             <S.DateInput
               type="text"
               inputMode="numeric"
-              placeholder="17"
+              placeholder={placeholderDay}
               value={day}
               $charCount={day.length || 2}
               onChange={handleNumericChange(setDay, 2, 31)}
