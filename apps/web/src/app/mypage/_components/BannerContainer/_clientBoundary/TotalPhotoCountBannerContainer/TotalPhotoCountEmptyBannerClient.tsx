@@ -2,9 +2,10 @@
 
 import { useRouter } from 'next/navigation';
 import * as S from './TotalPhotoCountBannerClient.styles';
-import Pin3dIcon from '@/assets/images/pin_3d.svg';
+import pin3dPng from '@/assets/images/pin_3d.png';
 import ChevronRightIcon from '@/assets/images/chevronRight.svg';
 import { ROUTES } from '@/constants';
+import Image from 'next/image';
 
 export default function TotalPhotoCountEmptyBannerClient() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function TotalPhotoCountEmptyBannerClient() {
       }}
     >
       <S.BackgroundIcon>
-        <Pin3dIcon />
+        <Image src={pin3dPng} alt="" width={151} height={132} aria-hidden />
       </S.BackgroundIcon>
 
       <S.Content>

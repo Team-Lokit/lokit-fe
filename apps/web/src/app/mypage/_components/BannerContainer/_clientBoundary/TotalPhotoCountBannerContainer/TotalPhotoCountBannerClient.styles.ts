@@ -20,11 +20,11 @@ export const Wrapper = styled.div<{ $backgroundImage?: string }>`
 
 export const BackgroundIcon = styled.div`
   position: absolute;
-  right: -30px;
-  bottom: -120px;
+  right: -10px;
+  bottom: -60px;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.3;
 `;
 
 export const Content = styled.div`
