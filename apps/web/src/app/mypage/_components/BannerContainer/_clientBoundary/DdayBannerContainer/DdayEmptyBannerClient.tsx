@@ -1,3 +1,5 @@
+'use client';
+
 import { useGetMyPageSuspense } from '@repo/api-client';
 import usePopup from '@/hooks/usePopup';
 import folder3dPng from '@/assets/images/folder_3d.png';
@@ -9,8 +11,6 @@ import Image from 'next/image';
 export default function DdayEmptyBannerClient() {
   const { data } = useGetMyPageSuspense();
   const { isOpen, handleOpen, handleClose } = usePopup();
-
-  if (data.coupledDay != null) return null;
 
   return (
     <>
