@@ -10,8 +10,6 @@ export default function DdayBannerClient() {
   const { data } = useGetMyPageSuspense();
   const { isOpen, handleOpen, handleClose } = usePopup();
 
-  if (data.coupledDay == null) return null;
-
   return (
     <>
       <S.Wrapper
