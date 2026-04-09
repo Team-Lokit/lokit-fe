@@ -19,7 +19,6 @@ target 'MobileApp' do
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
@@ -30,5 +29,25 @@ target 'MobileApp' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Workaround for Xcode 26.x + fmt 11.0.2
+    fmt_base = File.join(installer.sandbox.root.to_s, 'fmt', 'include', 'fmt', 'base.h')
+
+    if File.exist?(fmt_base)
+      content = File.read(fmt_base)
+
+      unless content.include?('Xcode 26 workaround')
+        patched = content.gsub(
+          /^(#elif defined\(__cpp_consteval\)\n#  define FMT_USE_CONSTEVAL) 1/,
+          "// Xcode 26 workaround: disable consteval\n\\1 0"
+        )
+
+        if patched != content
+          File.chmod(0644, fmt_base)
+          File.write(fmt_base, patched)
+          Pod::UI.puts 'Patched fmt: disabled FMT_USE_CONSTEVAL for Xcode 26'
+        end
+      end
+    end
   end
 end
