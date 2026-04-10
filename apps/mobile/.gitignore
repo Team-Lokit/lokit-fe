@@ -33,6 +33,7 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+android/app/src/debug/res/raw/mkcert_ca.pem
 .kotlin/
 
 # node.js
