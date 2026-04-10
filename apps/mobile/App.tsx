@@ -1,37 +1,77 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Platform, StyleSheet, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import WebView from 'react-native-webview';
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+      <SafeAreaView style={styles.container} edges={['left', 'right']}>
+        <AppContent />
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 
 function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
+  const webAppUrl = getWebAppUrl();
 
   return (
-    <View style={styles.container}>
-      <NewAppScreen templateFileName="App.tsx" safeAreaInsets={safeAreaInsets} />
+    <View style={styles.content}>
+      <WebView
+        source={{ uri: webAppUrl }}
+        style={styles.webView}
+        injectedJavaScript={`
+          (function() {
+            var s = document.createElement('style');
+            s.textContent = 'html, body, #__next { height: 100vh !important; min-height: 100vh !important; }';
+            document.head.appendChild(s);
+            document.querySelectorAll('[style]').forEach(function(el) {
+              var st = el.getAttribute('style');
+              if (st && st.indexOf('dvh') > -1) {
+                el.setAttribute('style', st.replace(/\\d+dvh/g, function(m) { return m.replace('dvh', 'vh'); }));
+              }
+            });
+            document.querySelectorAll('style').forEach(function(el) {
+              if (el.textContent.indexOf('dvh') > -1) {
+                el.textContent = el.textContent.replace(/\\d+dvh/g, function(m) { return m.replace('dvh', 'vh'); });
+              }
+            });
+          })();
+          true;
+        `}
+        onError={e => {
+          console.log('WebView error', e.nativeEvent);
+        }}
+        onHttpError={e => {
+          console.log('WebView http error', e.nativeEvent);
+        }}
+      />
     </View>
+  );
+}
+
+function getWebAppUrl() {
+  if (!__DEV__) {
+    return 'https://develop.lokit.co.kr';
+  }
+
+  return (
+    Platform.select({
+      ios: 'https://local.lokit.co.kr:3000/',
+      android: 'https://local.lokit.co.kr:3000',
+      default: 'https://develop.lokit.co.kr',
+    }) ?? 'https://develop.lokit.co.kr'
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+  },
+  webView: {
     flex: 1,
   },
 });
