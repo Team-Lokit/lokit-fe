@@ -32,6 +32,7 @@ export const MapRouteHeader = ({
   return (
     <ExploreHeader
       title={title}
+      showLocationIcon={!isAlbumDetail}
       onClickMenu={onOpenSidebar}
       rightSlot={
         isAlbumDetail && onRenameAlbum && onDeleteAlbum ? (

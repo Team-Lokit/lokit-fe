@@ -10,6 +10,8 @@ import * as S from './ExploreHeader.styles';
 export interface ExploreHeaderProps {
   /** 위치 타이틀 */
   title: string;
+  /** 위치 아이콘 표시 여부 */
+  showLocationIcon?: boolean;
   /** ≡ 메뉴(사이드바) 버튼 클릭 이벤트 */
   onClickMenu: () => void;
   /** 알림 버튼 클릭 이벤트 */
@@ -26,6 +28,7 @@ export interface ExploreHeaderProps {
 
 const ExploreHeader = ({
   title,
+  showLocationIcon = true,
   onClickMenu,
   onClickAlarm,
   rightSlot,
@@ -43,9 +46,11 @@ const ExploreHeader = ({
       }
       center={
         <S.LocationWrapper>
-          <S.LocationIconWrapper>
-            <LocationIcon width={16} height={16} />
-          </S.LocationIconWrapper>
+          {showLocationIcon && (
+            <S.LocationIconWrapper>
+              <LocationIcon width={16} height={16} />
+            </S.LocationIconWrapper>
+          )}
           <S.LocationText>
             <CrossfadeText text={title} />
           </S.LocationText>
