@@ -63,6 +63,13 @@ export const Content = styled.div`
   gap: 24px;
 `;
 
+export const HeadingGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+`;
+
 export const BackButton = styled.button`
   align-self: flex-start;
   background: none;
@@ -89,6 +96,7 @@ export const Description = styled.p`
   ${({ theme }) => theme.typography.body18Medium};
   color: ${({ theme }) => theme.colors.text.primary};
   text-align: center;
+  margin: 0;
 `;
 
 export const CodeSection = styled.div`
