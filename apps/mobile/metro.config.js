@@ -15,14 +15,6 @@ const config = {
       path.resolve(workspaceRoot, 'node_modules'),
     ],
     disableHierarchicalLookup: true,
-    extraNodeModules: {
-      react: path.resolve(projectRoot, 'node_modules/react'),
-      'react-native': path.resolve(projectRoot, 'node_modules/react-native'),
-      'react-native-safe-area-context': path.resolve(
-        projectRoot,
-        'node_modules/react-native-safe-area-context',
-      ),
-    },
   },
 };
 
