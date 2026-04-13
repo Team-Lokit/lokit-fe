@@ -137,8 +137,10 @@ export default function ConnectPage() {
     <S.Wrapper>
       <OnboardingHeader />
       <S.Content>
-        <S.Title>함께 사진을 채워봐요</S.Title>
-        <S.Description>로킷을 함께할 파트너를 초대해주세요</S.Description>
+        <S.HeadingGroup>
+          <S.Title>함께 사진을 채워봐요</S.Title>
+          <S.Description>로킷을 함께할 파트너를 초대해주세요</S.Description>
+        </S.HeadingGroup>
 
         <S.CodeSection>
           <S.SectionTitle>내 초대 코드</S.SectionTitle>
