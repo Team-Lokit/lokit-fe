@@ -5,7 +5,7 @@ import WebView from 'react-native-webview';
 function App() {
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['left', 'right']}>
         <AppContent />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -20,6 +20,26 @@ function AppContent() {
       <WebView
         source={{ uri: webAppUrl }}
         style={styles.webView}
+        // dvh 단위가 모바일 웹뷰에서 제대로 작동하지 않는 문제를 해결
+        injectedJavaScript={`
+          (function() {
+            var s = document.createElement('style');
+            s.textContent = 'html, body, #__next { height: 100vh !important; min-height: 100vh !important; }';
+            document.head.appendChild(s);
+            document.querySelectorAll('[style]').forEach(function(el) {
+              var st = el.getAttribute('style');
+              if (st && st.indexOf('dvh') > -1) {
+                el.setAttribute('style', st.replace(/\\d+dvh/g, function(m) { return m.replace('dvh', 'vh'); }));
+              }
+            });
+            document.querySelectorAll('style').forEach(function(el) {
+              if (el.textContent.indexOf('dvh') > -1) {
+                el.textContent = el.textContent.replace(/\\d+dvh/g, function(m) { return m.replace('dvh', 'vh'); });
+              }
+            });
+          })();
+          true;
+        `}
         onError={e => {
           console.log('WebView error', e.nativeEvent);
         }}
@@ -39,7 +59,7 @@ function getWebAppUrl() {
   return (
     Platform.select({
       ios: 'https://local.lokit.co.kr:3000/',
-      android: 'http://10.0.2.2:3000',
+      android: 'https://local.lokit.co.kr:3000',
       default: 'https://develop.lokit.co.kr',
     }) ?? 'https://develop.lokit.co.kr'
   );
