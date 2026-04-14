@@ -20,6 +20,7 @@ function AppContent() {
       <WebView
         source={{ uri: webAppUrl }}
         style={styles.webView}
+        // dvh 단위가 모바일 웹뷰에서 제대로 작동하지 않는 문제를 해결
         injectedJavaScript={`
           (function() {
             var s = document.createElement('style');
