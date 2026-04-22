@@ -70,8 +70,6 @@ export const ChevronIcon = styled.div`
   color: ${({ theme }) => theme.colors.gray[400]};
 
   svg {
-    width: 16px;
-    height: 16px;
     display: block;
     overflow: visible;
   }
