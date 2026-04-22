@@ -5,10 +5,10 @@ export const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 81px;
+  height: 82px;
   overflow: hidden;
-  padding: 8px 16px;
-  border-radius: 12px;
+  padding: 16px 20px;
+  border-radius: 16px;
   border: 1px solid rgba(226, 230, 255, 0.1);
   background: ${({ theme }) => theme.colors.blueWhite.bg5};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
