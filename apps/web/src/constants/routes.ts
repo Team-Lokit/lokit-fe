@@ -23,6 +23,7 @@ export const ROUTES = {
     VERIFY: '/onboarding/verify',
   },
   MYPAGE: '/mypage',
+  POLICIES: '/mypage/policies',
   RECONNECT: '/reconnect',
   DISCONNECT: '/disconnect',
   SIGNOUT: '/signout',
