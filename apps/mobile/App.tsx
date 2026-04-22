@@ -1,8 +1,18 @@
+import { useEffect } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
+import BootSplash from 'react-native-bootsplash';
 
 function App() {
+  useEffect(() => {
+    const hideSplash = async () => {
+      await BootSplash.hide({ fade: true });
+    };
+
+    hideSplash();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container} edges={['left', 'right']}>
@@ -68,6 +78,7 @@ function getWebAppUrl() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0F1014',
   },
   content: {
     flex: 1,
