@@ -47,6 +47,28 @@ export const Button = styled.button`
   }
 `;
 
+export const LinkButton = styled.a`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  width: 100%;
+  height: 46px;
+  border: none;
+  border-radius: 12px;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+  }
+
+  p {
+    margin: 0;
+  }
+`;
+
 export const Icon = styled.div`
   display: flex;
   align-items: center;

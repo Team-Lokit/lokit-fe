@@ -7,6 +7,7 @@ import InstaIcon from '@/assets/images/insta.svg';
 import ChevronRightIcon from '@/assets/images/chevronRight.svg';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants';
+import { SNS_URL } from '@/app/mypage/policies/constants';
 
 export default function CustomerSupportSection() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function CustomerSupportSection() {
             <ChevronRightIcon />
           </S.ChevronIcon>
         </S.Button>
-        <S.Button>
+        <S.LinkButton href={SNS_URL} target="_blank" rel="noopener noreferrer">
           <S.Icon>
             <InstaIcon />
           </S.Icon>
@@ -41,7 +42,7 @@ export default function CustomerSupportSection() {
           <S.ChevronIcon>
             <ChevronRightIcon />
           </S.ChevronIcon>
-        </S.Button>
+        </S.LinkButton>
       </S.ButtonContainer>
     </S.Wrapper>
   );
