@@ -36,33 +36,6 @@ export const TextContainer = styled.div`
   gap: 2px;
 `;
 
-export const Content = styled.div`
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 4px;
-`;
-
-export const Caption = styled.span`
-  ${({ theme }) => theme.typography.caption12Regular}
-  color: ${({ theme }) => theme.colors.gray[200]};
-`;
-
-export const DdayRow = styled.span`
-  ${({ theme }) => theme.typography.heading24Bold}
-  display: flex;
-  gap: 2px;
-`;
-
-export const DdayPrefix = styled.span`
-  color: ${({ theme }) => theme.colors.gray[300]};
-`;
-
-export const DdayNumber = styled.span`
-  color: ${({ theme }) => theme.colors.gray[0]};
-`;
-
 export const Title = styled.span`
   ${({ theme }) => theme.typography.body16Semibold}
   color: ${({ theme }) => theme.colors.gray[200]};
