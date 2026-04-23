@@ -7,7 +7,7 @@ import InstaIcon from '@/assets/images/insta.svg';
 import ChevronRightIcon from '@/assets/images/chevronRight.svg';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants';
-import { SNS_URL } from '@/app/mypage/policies/constants';
+import { INQUIRE_URL, SNS_URL } from '@/app/mypage/policies/constants';
 
 export default function CustomerSupportSection() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function CustomerSupportSection() {
     <S.Wrapper>
       <S.SectionTitle>고객지원</S.SectionTitle>
       <S.ButtonContainer>
-        <S.Button>
+        <S.LinkButton href={INQUIRE_URL} target="_blank" rel="noopener noreferrer">
           <S.Icon>
             <HeadsetIcon />
           </S.Icon>
@@ -24,7 +24,7 @@ export default function CustomerSupportSection() {
           <S.ChevronIcon>
             <ChevronRightIcon />
           </S.ChevronIcon>
-        </S.Button>
+        </S.LinkButton>
         <S.Button onClick={() => router.push(ROUTES.POLICIES)}>
           <S.Icon>
             <InfoLineIcon />
