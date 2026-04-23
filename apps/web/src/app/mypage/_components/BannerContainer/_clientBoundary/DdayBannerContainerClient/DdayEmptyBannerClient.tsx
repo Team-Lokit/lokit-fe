@@ -2,12 +2,10 @@
 
 import { useGetMyPageSuspense } from '@repo/api-client';
 import usePopup from '@/hooks/usePopup';
-import folder3dPng from '@/assets/images/folder_3d.png';
 import ChevronRightIcon from '@/assets/images/chevronRight.svg';
 import DdayEditModal from './DdayEditModal';
 import * as S from './DdayBannerClient.styles';
-import Image from 'next/image';
-
+import CalendarIcon from '@/assets/images/calendar.svg';
 export default function DdayEmptyBannerClient() {
   const { data } = useGetMyPageSuspense();
   const { isOpen, handleOpen, handleClose } = usePopup();
@@ -25,11 +23,15 @@ export default function DdayEmptyBannerClient() {
           }
         }}
       >
-        <S.BackgroundIcon>
-          <Image src={folder3dPng} alt="" width={97} height={85} aria-hidden />
-        </S.BackgroundIcon>
-
-        <S.EmptyText>처음 만난 날이 언제인가요?</S.EmptyText>
+        <S.ContentContainer>
+          <S.CalendarContainer>
+            <CalendarIcon />
+          </S.CalendarContainer>
+          <S.TextContainer>
+            <S.Title>첫 만남은 언제인가요?</S.Title>
+            <S.Description>날짜 설정하고 D-day 확인하기</S.Description>
+          </S.TextContainer>
+        </S.ContentContainer>
         <S.ChevronIcon>
           <ChevronRightIcon width={22} height={22} />
         </S.ChevronIcon>

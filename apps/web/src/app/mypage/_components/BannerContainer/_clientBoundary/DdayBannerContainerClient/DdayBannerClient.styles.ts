@@ -15,13 +15,25 @@ export const Wrapper = styled.div`
   cursor: pointer;
 `;
 
-export const BackgroundIcon = styled.div`
-  position: absolute;
-  right: 15px;
-  bottom: -30px;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.3;
+export const ContentContainer = styled.div`
+  display: flex;
+  gap: 16px;
+  align-items: center;
+`;
+
+export const CalendarContainer = styled.div`
+  padding: 6px;
+  border-radius: 12px;
+  background-color: ${({ theme }) => theme.colors.blueWhite['bg8']};
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+`;
+
+export const TextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 `;
 
 export const Content = styled.div`
@@ -51,10 +63,14 @@ export const DdayNumber = styled.span`
   color: ${({ theme }) => theme.colors.gray[0]};
 `;
 
-export const EmptyText = styled.span`
-  ${({ theme }) => theme.typography.body18Semibold}
-  color: ${({ theme }) => theme.colors.gray[300]};
-  padding: 4px;
+export const Title = styled.span`
+  ${({ theme }) => theme.typography.body16Semibold}
+  color: ${({ theme }) => theme.colors.gray[200]};
+`;
+
+export const Description = styled.p`
+  ${({ theme }) => theme.typography.body14Medium}
+  color: ${({ theme }) => theme.colors.gray[400]};
 `;
 
 export const ChevronIcon = styled.span`
