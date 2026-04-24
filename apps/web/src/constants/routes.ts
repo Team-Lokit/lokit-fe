@@ -24,6 +24,7 @@ export const ROUTES = {
   },
   MYPAGE: '/mypage',
   POLICIES: '/mypage/policies',
+  ACCOUNT: '/mypage/account',
   RECONNECT: '/reconnect',
   DISCONNECT: '/disconnect',
   SIGNOUT: '/signout',
