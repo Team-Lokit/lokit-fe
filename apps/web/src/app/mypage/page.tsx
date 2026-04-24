@@ -1,6 +1,5 @@
 export const dynamic = 'force-dynamic';
 
-import Divider from '@/components/common/divider/Divider';
 import { COUPLE_STATUS_COOKIE } from '@/constants/cookie';
 import { COUPLE_STATUS } from '@/constants/coupleStatus';
 import { getGetMyPageQueryKey, getMyPageServer } from '@repo/api-client';
@@ -10,8 +9,6 @@ import CoupleStatusSyncClient from './_clientBoundary/CoupleStatusSyncClient/Cou
 import HeaderClient from './_clientBoundary/HeaderClient/HeaderClient';
 import BannerContainer from './_components/BannerContainer/BannerContainer';
 import CoupleInfoContainer from './_components/CoupleInfoContainer/CoupleInfoContainer';
-import Footer from './_components/Footer/Footer';
-import MenuContainer from './_components/MenuContainer/MenuContainer';
 import { PAGE_TITLE } from './constants';
 import styles from './page.module.css';
 
@@ -42,13 +39,6 @@ export default async function MyPage() {
         </div>
         <div className={styles.banner}>
           <BannerContainer />
-        </div>
-        <div className={styles.divider}>
-          <Divider />
-        </div>
-        <MenuContainer />
-        <div className={styles.footer}>
-          <Footer />
         </div>
       </main>
     </HydrationBoundary>
