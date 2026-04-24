@@ -1,43 +1,24 @@
-'use client';
+export const dynamic = 'force-dynamic';
 
-import * as S from './page.style';
-import { PAGE_TITLE } from './constants';
-import CoupleStatusSyncClient from '@/app/mypage/_clientBoundary/CoupleStatusSyncClient/CoupleStatusSyncClient';
-import HeaderClient from './_clientBoundary/HeaderClient/HeaderClient';
-import LogoutClient from '@/app/mypage/account/_clientBoundary/LogoutClient/LogoutClient';
-import SignoutClient from '@/app/mypage/account/_clientBoundary/SignoutClient/SignoutClient';
-import { useRouter } from 'next/navigation';
-import ChevronRightIcon from '@/assets/images/chevronRight.svg';
-import { ROUTES } from '@/constants';
-import ProfileClient from '@/app/mypage/account/_clientBoundary/ProfileClient/ProfileClient';
-import { Suspense } from 'react';
-import ProfileFallback from '@/app/mypage/account/_components/ProfileFallback/ProfileFallback';
+import AccountPageClient from '@/app/mypage/account/_clientBoundary/AccountPageClient/AccountPageClient';
+import { getGetMyPageQueryKey, getMyPageServer } from '@repo/api-client';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 
-export default function PoliciesPage() {
-  const router = useRouter();
+export default async function AccountPage() {
+  const queryClient = new QueryClient();
+  await queryClient
+    .prefetchQuery({
+      queryKey: getGetMyPageQueryKey(),
+      queryFn: () => getMyPageServer(),
+      staleTime: 0,
+    })
+    .catch((error) => {
+      console.error('[MyPage] prefetch failed:', error);
+    });
 
   return (
-    <S.Wrapper>
-      <S.SrOnly>{PAGE_TITLE}</S.SrOnly>
-      <CoupleStatusSyncClient />
-      <HeaderClient />
-      <S.ContentLayout>
-        <Suspense fallback={<ProfileFallback />}>
-          <ProfileClient />
-        </Suspense>
-        <S.ButtonWrapper>
-          <S.Button type="button" onClick={() => router.push(ROUTES.DISCONNECT)}>
-            <S.ButtonText>상대방과 연결 끊기</S.ButtonText>
-            <S.ChevronIcon>
-              <ChevronRightIcon />
-            </S.ChevronIcon>
-          </S.Button>
-        </S.ButtonWrapper>
-        <S.ButtonWrapper>
-          <LogoutClient />
-          <SignoutClient />
-        </S.ButtonWrapper>
-      </S.ContentLayout>
-    </S.Wrapper>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <AccountPageClient />;
+    </HydrationBoundary>
   );
 }
