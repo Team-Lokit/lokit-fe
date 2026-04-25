@@ -1,6 +1,6 @@
 'use client';
 
-import * as S from './CustomerSuppertSection.styles';
+import * as S from './CustomerSupportSection.styles';
 import HeadsetIcon from '@/assets/images/headset.svg';
 import InfoLineIcon from '@/assets/images/info-line.svg';
 import InstaIcon from '@/assets/images/insta.svg';
