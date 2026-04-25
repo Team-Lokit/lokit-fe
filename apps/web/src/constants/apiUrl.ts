@@ -2,6 +2,7 @@ export const API_URL = {
   AUTH: {
     LOGIN: '/auth/login',
     KAKAO: '/auth/kakao',
+    APPLE: '/auth/apple',
     REFRESH: '/auth/refresh',
     LOGOUT: '/auth/logout',
   },
