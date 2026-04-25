@@ -2,6 +2,7 @@ import { useGetMyPageSuspense } from '@repo/api-client';
 import * as S from './ProfileClient.style';
 import KakaoIcon from '@/assets/images/kakao.svg';
 
+// TODO: 연결된 계정 및 버전 정보 api 연결 필요
 export default function ProfileClient() {
   const { data } = useGetMyPageSuspense();
 
