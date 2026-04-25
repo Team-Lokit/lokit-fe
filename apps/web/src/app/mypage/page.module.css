@@ -21,23 +21,10 @@
   margin-top: 32px;
 }
 
-.banner {
-  margin-top: 28px;
-}
-
-.accountInfo {
-  margin-top: 28px;
-}
-
-.customerSupport {
-  margin-top: 28px;
-}
-
-.divider {
+.sectionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px;
   margin-top: 32px;
-}
-
-.footer {
-  margin-top: auto;
-  padding-bottom: 22px;
 }

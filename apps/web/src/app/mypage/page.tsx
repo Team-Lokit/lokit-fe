@@ -39,13 +39,9 @@ export default async function MyPage() {
         <div className={styles.coupleInfo}>
           <CoupleInfoContainer isCoupled={isCoupled} />
         </div>
-        <div className={styles.banner}>
+        <div className={styles.sectionContainer}>
           <BannerContainer />
-        </div>
-        <div className={styles.accountInfo}>
           <AccountInfoContainer />
-        </div>
-        <div className={styles.customerSupport}>
           <CustomerSupportContainer />
         </div>
       </main>
