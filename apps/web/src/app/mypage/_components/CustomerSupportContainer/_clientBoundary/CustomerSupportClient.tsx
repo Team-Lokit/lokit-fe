@@ -1,6 +1,6 @@
 'use client';
 
-import * as S from './CustomerSupportSection.styles';
+import * as S from './CustomerSupportClient.styles';
 import HeadsetIcon from '@/assets/images/headset.svg';
 import InfoLineIcon from '@/assets/images/info-line.svg';
 import InstaIcon from '@/assets/images/insta.svg';
@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants';
 import { INQUIRE_URL, SNS_URL } from '@/app/mypage/policies/constants';
 
-export default function CustomerSupportSection() {
+export default function CustomerSupportClient() {
   const router = useRouter();
 
   return (

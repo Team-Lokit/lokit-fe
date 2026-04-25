@@ -1,11 +1,12 @@
 'use client';
 
-import * as S from './AccountInfoSection.styles';
+import * as S from './AccountInfoClient.styles';
 import SettingIcon from '@/assets/images/setting.svg';
 import ChevronRightIcon from '@/assets/images/chevronRight.svg';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants';
-export default function AccountInfoSection() {
+
+export default function AccountInfoClient() {
   const router = useRouter();
 
   return (

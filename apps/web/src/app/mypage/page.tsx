@@ -11,6 +11,8 @@ import BannerContainer from './_components/BannerContainer/BannerContainer';
 import CoupleInfoContainer from './_components/CoupleInfoContainer/CoupleInfoContainer';
 import { PAGE_TITLE } from './constants';
 import styles from './page.module.css';
+import AccountInfoContainer from './_components/AccountInfoContainer/AccountInfoContainer';
+import CustomerSupportContainer from './_components/CustomerSupportContainer/CustomerSupportContainer';
 
 export default async function MyPage() {
   const cookieStore = await cookies();
@@ -39,6 +41,12 @@ export default async function MyPage() {
         </div>
         <div className={styles.banner}>
           <BannerContainer />
+        </div>
+        <div className={styles.accountInfo}>
+          <AccountInfoContainer />
+        </div>
+        <div className={styles.customerSupport}>
+          <CustomerSupportContainer />
         </div>
       </main>
     </HydrationBoundary>
