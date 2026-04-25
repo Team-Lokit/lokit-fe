@@ -2,7 +2,6 @@
 
 import * as S from './page.style';
 import { PAGE_TITLE, PRIVACY_POLICY_URL, SERVICE_TERMS_URL } from './constants';
-import CoupleStatusSyncClient from '@/app/mypage/_clientBoundary/CoupleStatusSyncClient/CoupleStatusSyncClient';
 import HeaderClient from '@/app/mypage/policies/HeaderClient/HeaderClient';
 import ChevronRightIcon from '@/assets/images/chevronRight.svg';
 import { useRouter } from 'next/navigation';
@@ -13,7 +12,6 @@ export default function PoliciesPage() {
   return (
     <S.Wrapper>
       <S.SrOnly>{PAGE_TITLE}</S.SrOnly>
-      <CoupleStatusSyncClient />
       <HeaderClient />
       <S.ContentLayout>
         <S.ButtonWrapper>
