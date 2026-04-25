@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import * as S from './PolicyButtonClient.style';
 import ChevronRightIcon from '@/assets/images/chevronRight.svg';
-import { PRIVACY_POLICY_URL, SERVICE_TERMS_URL } from '../constants';
+import { PRIVACY_POLICY_URL, SERVICE_TERMS_URL } from '../../constants';
 
 export default function PolicyButtonClient() {
   const router = useRouter();

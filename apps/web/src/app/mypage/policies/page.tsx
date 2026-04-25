@@ -2,8 +2,8 @@ export const dynamic = 'force-dynamic';
 
 import styles from './page.module.css';
 import { PAGE_TITLE } from './constants';
-import HeaderClient from '@/app/mypage/policies/HeaderClient/HeaderClient';
-import PolicyButtonClient from './PolicyButtonClient/PolicyButtonClient';
+import PolicyButtonClient from './_clientBoundary/PolicyButtonClient/PolicyButtonClient';
+import HeaderClient from './_clientBoundary/HeaderClient/HeaderClient';
 
 export default function PoliciesPage() {
   return (

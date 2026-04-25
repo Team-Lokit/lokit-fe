@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import DefaultHeader from '@/components/header/default/DefaultHeader';
-import { PAGE_TITLE } from '../constants';
+import { PAGE_TITLE } from '../../constants';
 
 export default function HeaderClient() {
   const router = useRouter();
