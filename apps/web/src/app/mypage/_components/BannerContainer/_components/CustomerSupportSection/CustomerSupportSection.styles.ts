@@ -59,6 +59,7 @@ export const LinkButton = styled.a`
   background: none;
   cursor: pointer;
   transition: background-color 0.15s ease;
+  text-decoration: none;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
