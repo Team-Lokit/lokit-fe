@@ -18,7 +18,7 @@ export default async function AccountPage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <AccountPageClient />;
+      <AccountPageClient />
     </HydrationBoundary>
   );
 }
