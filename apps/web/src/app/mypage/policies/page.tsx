@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import styles from './page.module.css';
 import { PAGE_TITLE } from './constants';
 import PolicyButtonClient from './_clientBoundary/PolicyButtonClient/PolicyButtonClient';
