@@ -14,7 +14,7 @@ export const ButtonWrapper = styled.div`
   background-color: ${({ theme }) => theme.colors.blueWhite['bg5']};
 `;
 
-export const Button = styled.button`
+export const LinkButton = styled.a`
   display: flex;
   align-items: center;
   gap: 12px;
@@ -26,6 +26,7 @@ export const Button = styled.button`
   background: none;
   cursor: pointer;
   transition: background-color 0.15s ease;
+  text-decoration: none;
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
