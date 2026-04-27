@@ -45,8 +45,8 @@ export const AppleButton = styled.button`
   padding: 11px 0px;
   border: none;
   border-radius: 8px;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: white;
+  color: black;
   ${({ theme }) => theme.typography.body16Semibold}
   cursor: pointer;
 
