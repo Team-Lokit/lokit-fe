@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import * as S from './DisconnectClient.style';
+import * as S from './DisconnectClient.styles';
 import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 import { ROUTES } from '@/constants';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import * as S from './ConnectedAccountValueClient.style';
+import * as S from './ConnectedAccountValueClient.styles';
 import KakaoIcon from '@/assets/images/kakao.svg';
 
 // TODO: 연결된 계정 api 연결 필요

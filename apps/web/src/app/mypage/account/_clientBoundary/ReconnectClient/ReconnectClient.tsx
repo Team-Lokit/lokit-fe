@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { COUPLE_STATUS_COOKIE } from '@/constants/cookie';
 import { COUPLE_STATUS } from '@/constants/coupleStatus';
 import { ROUTES } from '@/constants/routes';
-import * as S from './ReconnectClient.style';
+import * as S from './ReconnectClient.styles';
 import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 
 function getCookieValue(name: string): string | undefined {

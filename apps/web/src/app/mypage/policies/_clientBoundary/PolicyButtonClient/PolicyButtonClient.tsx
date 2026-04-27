@@ -1,13 +1,10 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import * as S from './PolicyButtonClient.style';
+import * as S from './PolicyButtonClient.styles';
 import ChevronRightIcon from '@/assets/images/chevronRight.svg';
 import { PRIVACY_POLICY_URL, SERVICE_TERMS_URL } from '../../constants';
 
 export default function PolicyButtonClient() {
-  const router = useRouter();
-
   return (
     <S.ContentLayout>
       <S.ButtonWrapper>

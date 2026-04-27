@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import * as S from './ProfileRowClient.style';
+import * as S from './ProfileRowClient.styles';
 
 type ProfileRowType = 'name' | 'connectedAccount' | 'versionInfo';
 
