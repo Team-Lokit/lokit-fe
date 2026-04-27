@@ -1,16 +1,14 @@
-'use client';
-
-import * as S from './ProfileClient.style';
-import { Suspense } from 'react';
-import ProfileNameValueClient from '../ProfileNameValueClient/ProfileNameValueClient';
-import ConnectedAccountValueClient from '../ConnectedAccountValueClient/ConnectedAccountValueClient';
-import VersionInfoValueClient from '../VersionInfoValueClient/VersionInfoValueClient';
 import ProfileRowClient from '@/app/mypage/account/_clientBoundary/ProfileRowClient/ProfileRowClient';
+import styles from './ProfileContainer.module.css';
+import { Suspense } from 'react';
 import ProfileRowFallback from '@/app/mypage/account/_components/ProfileRowFallback/ProfileRowFallback';
+import ProfileNameValueClient from '@/app/mypage/account/_clientBoundary/ProfileNameValueClient/ProfileNameValueClient';
+import ConnectedAccountValueClient from '@/app/mypage/account/_clientBoundary/ConnectedAccountValueClient/ConnectedAccountValueClient';
+import VersionInfoValueClient from '@/app/mypage/account/_clientBoundary/VersionInfoValueClient/VersionInfoValueClient';
 
-export default function ProfileClient() {
+export default function ProfileContainer() {
   return (
-    <S.Wrapper>
+    <div className={styles.wrapper}>
       <ProfileRowClient type="name">
         <Suspense fallback={<ProfileRowFallback />}>
           <ProfileNameValueClient />
@@ -26,6 +24,6 @@ export default function ProfileClient() {
           <VersionInfoValueClient />
         </Suspense>
       </ProfileRowClient>
-    </S.Wrapper>
+    </div>
   );
 }
