@@ -1,22 +1,31 @@
+'use client';
+
 import * as S from './ProfileClient.style';
 import { Suspense } from 'react';
-import ProfileNameClient from '../ProfileNameClient/ProfileNameClient';
-import ConnectedAccountClient from '../ConnectedAccountClient/ConnectedAccountClient';
-import VersionInfoClient from '../VersionInfoClient/VersionInfoClient';
-import ProfileFallback from '../../_components/ProfileFallback/ProfileFallback';
+import ProfileNameValueClient from '../ProfileNameValueClient/ProfileNameValueClient';
+import ConnectedAccountValueClient from '../ConnectedAccountValueClient/ConnectedAccountValueClient';
+import VersionInfoValueClient from '../VersionInfoValueClient/VersionInfoValueClient';
+import ProfileRowClient from '@/app/mypage/account/_clientBoundary/ProfileRowClient/ProfileRowClient';
+import ProfileRowFallback from '@/app/mypage/account/_components/ProfileRowFallback/ProfileRowFallback';
 
 export default function ProfileClient() {
   return (
     <S.Wrapper>
-      <Suspense fallback={<ProfileFallback type="profileName" />}>
-        <ProfileNameClient />
-      </Suspense>
-      <Suspense fallback={<ProfileFallback type="connectedAccount" />}>
-        <ConnectedAccountClient />
-      </Suspense>
-      <Suspense fallback={<ProfileFallback type="versionInfo" />}>
-        <VersionInfoClient />
-      </Suspense>
+      <ProfileRowClient type="name">
+        <Suspense fallback={<ProfileRowFallback />}>
+          <ProfileNameValueClient />
+        </Suspense>
+      </ProfileRowClient>
+      <ProfileRowClient type="connectedAccount">
+        <Suspense fallback={<ProfileRowFallback />}>
+          <ConnectedAccountValueClient />
+        </Suspense>
+      </ProfileRowClient>
+      <ProfileRowClient type="versionInfo">
+        <Suspense fallback={<ProfileRowFallback />}>
+          <VersionInfoValueClient />
+        </Suspense>
+      </ProfileRowClient>
     </S.Wrapper>
   );
 }

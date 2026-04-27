@@ -9,7 +9,7 @@ export const Row = styled.div`
 
 export const RowTitle = styled.span`
   ${({ theme }) => theme.typography.body16Medium}
-  color: ${({ theme }) => theme.colors.gray['400']};
+  color: ${({ theme }) => theme.colors.gray[400]};
 `;
 
 export const RowValue = styled.div`
@@ -17,5 +17,5 @@ export const RowValue = styled.div`
   gap: 8px;
   align-items: center;
   ${({ theme }) => theme.typography.body16Semibold}
-  color: ${({ theme }) => theme.colors.gray['200']};
+  color: ${({ theme }) => theme.colors.gray[200]};
 `;
