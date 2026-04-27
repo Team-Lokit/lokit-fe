@@ -1,19 +1,5 @@
 import styled from '@emotion/styled';
 
-export const ContentLayout = styled.div`
-  padding: 16px;
-`;
-export const ButtonWrapper = styled.div`
-  display: flex;
-  height: 108px;
-  padding: 8px;
-  flex-direction: column;
-  align-items: flex-start;
-  align-self: stretch;
-  border-radius: 16px;
-  background-color: ${({ theme }) => theme.colors.blueWhite['bg5']};
-`;
-
 export const LinkButton = styled.a`
   display: flex;
   align-items: center;
