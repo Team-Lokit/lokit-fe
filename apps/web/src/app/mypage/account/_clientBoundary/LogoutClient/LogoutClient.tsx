@@ -7,7 +7,7 @@ import Modal from '@/components/popup/modal/Modal';
 import TextButton from '@/components/buttons/textButton/TextButton';
 import { ROUTES } from '@/constants/routes';
 import * as S from './LogoutClient.styles';
-import ChevronRightIcon from '@/assets/images/chevronRight.svg';
+import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 
 export default function LogoutClient() {
   const { isOpen, handleOpen, handleClose } = usePopup();
@@ -30,7 +30,7 @@ export default function LogoutClient() {
       <S.Button type="button" onClick={handleOpen}>
         <S.ButtonText>로그아웃</S.ButtonText>
         <S.ChevronIcon>
-          <ChevronRightIcon />
+          <ChevronRightSmallIcon />
         </S.ChevronIcon>
       </S.Button>
       <Modal isOpen={isOpen} onClose={isPending ? () => {} : handleClose}>

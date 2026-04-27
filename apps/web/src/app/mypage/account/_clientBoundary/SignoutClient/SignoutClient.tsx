@@ -8,7 +8,7 @@ import { ROUTES } from '@/constants/routes';
 import { COUPLE_STATUS_COOKIE } from '@/constants/cookie';
 import { COUPLE_STATUS } from '@/constants/coupleStatus';
 import * as S from './SignoutClient.styles';
-import ChevronRightIcon from '@/assets/images/chevronRight.svg';
+import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 
 function getCookieValue(name: string): string | undefined {
   const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
@@ -38,7 +38,7 @@ export default function SignoutClient() {
       <S.Button type="button" onClick={handleClick}>
         <S.ButtonText>회원탈퇴</S.ButtonText>
         <S.ChevronIcon>
-          <ChevronRightIcon />
+          <ChevronRightSmallIcon />
         </S.ChevronIcon>
       </S.Button>
       <Modal isOpen={isOpen} onClose={handleClose}>
