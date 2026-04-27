@@ -16,6 +16,7 @@ export * from './albumRequest';
 export * from './albumThumbnails';
 export * from './albumWithPhotosResponse';
 export * from './apiResponseErrorDetail';
+export * from './appleAuthorizeParams';
 export * from './authTokens';
 export * from './authTokens';
 export * from './boundingBoxResponse';
