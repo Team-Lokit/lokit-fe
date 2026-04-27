@@ -47,10 +47,9 @@ export const Description = styled.p`
 `;
 
 export const ChevronIcon = styled.span`
-  position: relative;
-  z-index: 1;
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  color: ${({ theme }) => theme.colors.gray[200]};
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.gray[400]};
 `;

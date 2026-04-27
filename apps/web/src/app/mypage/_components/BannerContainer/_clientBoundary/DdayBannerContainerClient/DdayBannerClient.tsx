@@ -2,7 +2,7 @@
 
 import { useGetMyPageSuspense } from '@repo/api-client';
 import usePopup from '@/hooks/usePopup';
-import ChevronRightIcon from '@/assets/images/chevronRight.svg';
+import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 import DdayEditModal from './DdayEditModal';
 import * as S from './DdayBannerClient.styles';
 import CalendarIcon from '@/assets/images/calendar.svg';
@@ -36,7 +36,7 @@ export default function DdayBannerClient() {
           </S.TextContainer>
         </S.ContentContainer>
         <S.ChevronIcon>
-          <ChevronRightIcon width={22} height={22} />
+          <ChevronRightSmallIcon />
         </S.ChevronIcon>
       </S.Wrapper>
       <DdayEditModal

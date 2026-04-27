@@ -4,7 +4,7 @@ import * as S from './CustomerSupportClient.styles';
 import HeadsetIcon from '@/assets/images/headset.svg';
 import InfoLineIcon from '@/assets/images/info-line.svg';
 import InstaIcon from '@/assets/images/insta.svg';
-import ChevronRightIcon from '@/assets/images/chevronRight.svg';
+import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants';
 import { INQUIRE_URL, SNS_URL } from '@/app/mypage/policies/constants';
@@ -22,7 +22,7 @@ export default function CustomerSupportClient() {
           </S.Icon>
           <S.ButtonText>문의하기</S.ButtonText>
           <S.ChevronIcon>
-            <ChevronRightIcon />
+            <ChevronRightSmallIcon />
           </S.ChevronIcon>
         </S.LinkButton>
         <S.Button onClick={() => router.push(ROUTES.POLICIES)}>
@@ -31,7 +31,7 @@ export default function CustomerSupportClient() {
           </S.Icon>
           <S.ButtonText>약관 및 정책</S.ButtonText>
           <S.ChevronIcon>
-            <ChevronRightIcon />
+            <ChevronRightSmallIcon />
           </S.ChevronIcon>
         </S.Button>
         <S.LinkButton href={SNS_URL} target="_blank" rel="noopener noreferrer">
@@ -40,7 +40,7 @@ export default function CustomerSupportClient() {
           </S.Icon>
           <S.ButtonText>SNS 놀러가기</S.ButtonText>
           <S.ChevronIcon>
-            <ChevronRightIcon />
+            <ChevronRightSmallIcon />
           </S.ChevronIcon>
         </S.LinkButton>
       </S.ButtonContainer>

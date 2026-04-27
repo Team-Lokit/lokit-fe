@@ -2,7 +2,7 @@
 
 import * as S from './AccountInfoClient.styles';
 import SettingIcon from '@/assets/images/setting.svg';
-import ChevronRightIcon from '@/assets/images/chevronRight.svg';
+import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants';
 
@@ -18,7 +18,7 @@ export default function AccountInfoClient() {
         </S.Icon>
         <S.ButtonText>계정 정보 관리</S.ButtonText>
         <S.ChevronIcon>
-          <ChevronRightIcon />
+          <ChevronRightSmallIcon />
         </S.ChevronIcon>
       </S.Button>
     </S.Wrapper>

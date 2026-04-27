@@ -71,15 +71,15 @@ export const LinkButton = styled.a`
 `;
 
 export const Icon = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  color: ${({ theme }) => theme.colors.gray[200]};
+  width: 20px;
+  height: 20px;
+  overflow: visible;
 
-  svg {
+  & > svg {
     width: 20px;
     height: 20px;
-    flex-shrink: 0;
+    display: block;
     overflow: visible;
   }
 `;

@@ -52,6 +52,7 @@ export const Icon = styled.div`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  color: ${({ theme }) => theme.colors.gray[200]};
 
   svg {
     width: 20px;
