@@ -25,7 +25,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  min-height: 100vh;
+  min-height: 100dvh;
   padding: 0;
   background-color: ${({ theme }) => theme.colors.gray[1000]};
   overflow: hidden;
@@ -33,19 +33,25 @@ export const Wrapper = styled.div`
   &::before {
     content: '';
     position: absolute;
-    width: 450px;
-    height: 450px;
-    top: 90px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(
-      180deg,
-      rgba(213, 255, 253, 0.1) 0%,
-      rgba(110, 234, 228, 0.1) 100%
-    );
-    filter: blur(116.35px);
+    inset: 0;
+    background:
+      radial-gradient(
+        68% 42% at 50% 38%,
+        rgba(213, 255, 253, 0.16) 0%,
+        rgba(110, 234, 228, 0.1) 38%,
+        rgba(110, 234, 228, 0.04) 62%,
+        rgba(110, 234, 228, 0) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(213, 255, 253, 0.04) 0%,
+        rgba(110, 234, 228, 0.08) 45%,
+        rgba(110, 234, 228, 0.03) 72%,
+        rgba(110, 234, 228, 0) 100%
+      );
     animation: ${bgBlur} 0.8s ease-in-out;
     z-index: 0;
+    pointer-events: none;
   }
 `;
 
@@ -61,6 +67,13 @@ export const Content = styled.div`
   animation: ${fadeIn} 0.8s ease-in-out;
   animation-fill-mode: both;
   gap: 24px;
+`;
+
+export const HeadingGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 `;
 
 export const BackButton = styled.button`
@@ -89,6 +102,7 @@ export const Description = styled.p`
   ${({ theme }) => theme.typography.body18Medium};
   color: ${({ theme }) => theme.colors.text.primary};
   text-align: center;
+  margin: 0;
 `;
 
 export const CodeSection = styled.div`

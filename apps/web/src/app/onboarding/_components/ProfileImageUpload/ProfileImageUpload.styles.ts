@@ -46,8 +46,8 @@ export const CameraButton = styled.button`
   position: absolute;
   width: 28px;
   height: 28px;
-  right: -4px;
-  bottom: -4px;
+  right: 3px;
+  bottom: 3px;
   border-radius: 50%;
   border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
   background: ${({ theme }) => theme.colors.blueWhite.bg8};
