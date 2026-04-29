@@ -3,6 +3,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import BootSplash from 'react-native-bootsplash';
+import { buildBridgeInjection } from './bridge';
 
 function App() {
   useEffect(() => {
@@ -30,6 +31,7 @@ function AppContent() {
       <WebView
         source={{ uri: webAppUrl }}
         style={styles.webView}
+        injectedJavaScriptBeforeContentLoaded={buildBridgeInjection()}
         // dvh 단위가 모바일 웹뷰에서 제대로 작동하지 않는 문제를 해결
         injectedJavaScript={`
           (function() {
