@@ -1,0 +1,9 @@
+.wrapper {
+  display: flex;
+  padding: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  border-radius: 16px;
+  background-color: rgba(226, 230, 255, 0.05); /* blueWhite['bg5'] */
+}

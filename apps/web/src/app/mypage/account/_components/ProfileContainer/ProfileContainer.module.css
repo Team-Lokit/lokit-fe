@@ -1,0 +1,10 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  align-items: flex-start;
+  align-self: stretch;
+  border-radius: 16px;
+  background-color: rgba(226, 230, 255, 0.05); /* blueWhite['bg5'] */
+}

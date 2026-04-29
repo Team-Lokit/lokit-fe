@@ -17,14 +17,9 @@
   border: 0;
 }
 
-.coupleInfo {
-  margin-top: 32px;
-}
-
 .sectionContainer {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 0 16px;
-  margin-top: 32px;
+  padding: 16px;
 }
