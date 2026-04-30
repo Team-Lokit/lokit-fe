@@ -1,12 +1,14 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useGetMyPage } from '@repo/api-client';
 import usePopup from '@/hooks/usePopup';
 import Modal from '@/components/popup/modal/Modal';
 import TextButton from '@/components/buttons/textButton/TextButton';
 import { ROUTES } from '@/constants/routes';
 import { COUPLE_STATUS_COOKIE } from '@/constants/cookie';
 import { COUPLE_STATUS } from '@/constants/coupleStatus';
+import { track } from '@/lib/analytics';
 import * as S from './SignoutClient.styles';
 import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 
@@ -18,8 +20,14 @@ function getCookieValue(name: string): string | undefined {
 export default function SignoutClient() {
   const router = useRouter();
   const { isOpen, handleOpen, handleClose } = usePopup();
+  const { data: myPageData } = useGetMyPage();
 
   const handleClick = () => {
+    track('click_withdraw', {
+      couple_days: myPageData?.coupledDay ?? 0,
+      total_photos: myPageData?.couplePhotoCount ?? 0,
+    });
+
     const coupleStatus = getCookieValue(COUPLE_STATUS_COOKIE);
 
     if (

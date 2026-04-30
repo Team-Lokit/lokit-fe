@@ -3,6 +3,8 @@
 import type { PhotoLocation, SelectedPhoto } from '@/app/photo/add/_types/photo';
 import { useToast } from '@/components/toast';
 import { getMapMeAlbumsQueryKey } from '@/hooks/queries/useMapMeAlbums';
+import { track } from '@/lib/analytics';
+import type { PhotoUploadErrorType } from '@/lib/analytics/events';
 import {
   create,
   getGetMapMeQueryKey,
@@ -20,6 +22,33 @@ import {
   type PropsWithChildren,
 } from 'react';
 import type { PendingPhoto } from './types';
+
+const FIRST_UPLOAD_KEY = 'lokit:firstUploadDone';
+
+function readFirstUploadDone(): boolean {
+  try {
+    return localStorage.getItem(FIRST_UPLOAD_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function markFirstUploadDone() {
+  try {
+    localStorage.setItem(FIRST_UPLOAD_KEY, '1');
+  } catch {
+    // ignore
+  }
+}
+
+function classifyUploadError(error: unknown): PhotoUploadErrorType {
+  if (error instanceof DOMException && error.name === 'TimeoutError') return 'timeout';
+  if (error instanceof TypeError) return 'network'; // fetch network error
+  const message = error instanceof Error ? error.message.toLowerCase() : '';
+  if (message.includes('timeout')) return 'timeout';
+  if (message.includes('network') || message.includes('s3')) return 'network';
+  return 'server';
+}
 
 interface AddPendingPhotoParams {
   photo: SelectedPhoto;
@@ -184,6 +213,19 @@ export function PendingPhotosProvider({ children }: PropsWithChildren) {
             serverId: createResponse.id,
           });
 
+          // 성공 트래킹
+          const isFirst = !readFirstUploadDone();
+          track('photo_upload_success', {
+            photo_id: String(createResponse.id ?? ''),
+            photo_count: 1,
+            // TODO: is_first_upload은 클라이언트가 정확히 알 수 없어 제외
+          });
+          if (isFirst) {
+            markFirstUploadDone();
+            // TODO: days_since_signup, days_since_couple_connect는 클라이언트가 알 수 없어 제외
+            track('first_photo_upload', {});
+          }
+
           // 성공 시 쿼리 invalidate
           queryClient.invalidateQueries({ queryKey: getGetMapMeQueryKey() });
           queryClient.invalidateQueries({ queryKey: getMapMeAlbumsQueryKey() });
@@ -202,6 +244,10 @@ export function PendingPhotosProvider({ children }: PropsWithChildren) {
             // 사용자가 취소한 경우 — 이미 removePendingPhoto에서 제거됨
             return;
           }
+          track('photo_upload_fail', {
+            error_type: classifyUploadError(error),
+            photo_count: 1,
+          });
           updatePending(pendingId, {
             status: 'error',
             errorMessage: error instanceof Error ? error.message : 'Upload failed',

@@ -1,14 +1,21 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useGetMyPage } from '@repo/api-client';
+import { track } from '@/lib/analytics';
 import * as S from './DisconnectClient.styles';
 import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 import { ROUTES } from '@/constants';
 
 export default function DisconnectClient() {
   const router = useRouter();
+  const { data: myPageData } = useGetMyPage();
 
   const handleClickDisconnect = () => {
+    track('click_disconnect_couple', {
+      couple_days: myPageData?.coupledDay ?? 0,
+      total_photos: myPageData?.couplePhotoCount ?? 0,
+    });
     router.push(ROUTES.DISCONNECT);
   };
 
