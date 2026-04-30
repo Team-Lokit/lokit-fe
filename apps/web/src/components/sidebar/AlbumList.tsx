@@ -7,7 +7,7 @@ interface AlbumListProps {
   albums: AlbumThumbnails[];
   searchValue: string;
   selectedAlbumId?: number | null;
-  onSelectAlbum: (albumId: number) => void;
+  onSelectAlbum: (albumId: number, position: number) => void;
   onRenameAlbum: (albumId: number) => void;
   onDeleteAlbum: (albumId: number) => void;
 }
@@ -42,7 +42,7 @@ const AlbumList = ({
                 selectedAlbumId != null ? album.id === selectedAlbumId : index === 0
               }
               showMenu={index !== 0}
-              onClick={() => onSelectAlbum(album.id ?? 0)}
+              onClick={() => onSelectAlbum(album.id ?? 0, index)}
               onRename={() => onRenameAlbum(album.id ?? 0)}
               onDelete={() => onDeleteAlbum(album.id ?? 0)}
             />

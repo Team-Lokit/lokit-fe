@@ -12,8 +12,16 @@ import { getGetPhotoDetailQueryOptions, useGetPhotoDetail } from '@repo/api-clie
 import { AnimatePresence } from 'framer-motion';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { track } from '@/lib/analytics';
+import type { PhotoDetailSource } from '@/lib/analytics/events';
 import DeleteConfirmModal from './_components/DeleteConfirmModal';
 import PhotoEditOverlay from './_components/PhotoEditOverlay';
+
+const VALID_SOURCES: readonly PhotoDetailSource[] = [
+  'home_map',
+  'home_grid',
+  'album_detail',
+];
 import {
   useLongPress,
   usePhotoData,
@@ -126,6 +134,28 @@ export default function PhotoViewPage() {
       setShowMoreButton(height > lineHeight * 2);
     }
   }, [resolvedDescription]);
+
+  // 사진 상세 진입 트래킹 (photoDetail 첫 로드 시 1회만)
+  const photoDetailTrackedRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!photoDetail || displayPhotoId === undefined) return;
+    if (photoDetailTrackedRef.current === displayPhotoId) return;
+    photoDetailTrackedRef.current = displayPhotoId;
+
+    const sourceParam = searchParams.get('source');
+    const source: PhotoDetailSource = VALID_SOURCES.includes(
+      sourceParam as PhotoDetailSource,
+    )
+      ? (sourceParam as PhotoDetailSource)
+      : 'home_map';
+
+    track('screen_view_photo_detail', {
+      photo_id: String(displayPhotoId),
+      source,
+      has_memo: !!resolvedDescription,
+      // TODO: 댓글 기능 구현 후 comment_count 추가 예정
+    });
+  }, [photoDetail, displayPhotoId, resolvedDescription, searchParams]);
 
   const handleBack = () => {
     if (activePendingId) {

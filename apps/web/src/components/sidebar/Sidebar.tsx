@@ -19,7 +19,7 @@ interface SidebarProps {
   onExplore: () => void;
   onNewAlbum: () => void;
   selectedAlbumId?: number | null;
-  onSelectAlbum: (albumId: number) => void;
+  onSelectAlbum: (albumId: number, position: number) => void;
   onRenameAlbum: (albumId: number) => void;
   onDeleteAlbum: (albumId: number) => void;
   onMyPage: () => void;
