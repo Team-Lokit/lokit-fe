@@ -13,6 +13,7 @@ import { captureApiError } from '@repo/sentry';
 import { ToastProvider } from '@/components/toast';
 import { PhotoProvider } from './photo/_contexts/PhotoContext';
 import { PendingPhotosProvider } from '@/stores/pendingPhotos/PendingPhotosContext';
+import AnalyticsProvider from '@/components/analytics/AnalyticsProvider';
 
 export type AppProvidersProps = PropsWithChildren<{
   showDevtools?: boolean;
@@ -75,11 +76,13 @@ export function AppProviders({
       <ThemeProvider theme={theme}>
         <GlobalStyles />
         <QueryClientProvider client={queryClient}>
-          <PhotoProvider>
-            <ToastProvider>
-              <PendingPhotosProvider>{children}</PendingPhotosProvider>
-            </ToastProvider>
-          </PhotoProvider>
+          <AnalyticsProvider>
+            <PhotoProvider>
+              <ToastProvider>
+                <PendingPhotosProvider>{children}</PendingPhotosProvider>
+              </ToastProvider>
+            </PhotoProvider>
+          </AnalyticsProvider>
           {showDevtools ? <ReactQueryDevtools initialIsOpen={false} /> : null}
         </QueryClientProvider>
       </ThemeProvider>
