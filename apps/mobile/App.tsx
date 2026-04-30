@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Linking, Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import BootSplash from 'react-native-bootsplash';
 import { buildBridgeInjection } from './bridge';
+import useAppLifecycleTracking from './useAppLifecycleTracking';
 
 function App() {
   useEffect(() => {
@@ -24,14 +25,47 @@ function App() {
 }
 
 function AppContent() {
-  const webAppUrl = getWebAppUrl();
+  const defaultUrl = getWebAppUrl();
+  const webViewRef = useRef<WebView>(null);
+  const { onWebViewLoad } = useAppLifecycleTracking(webViewRef);
+
+  // 콜드 스타트 시점의 딥링크 (Linking.getInitialURL).
+  // null = 아직 모름, undefined = 딥링크 없음(일반 실행).
+  const [initialUrl, setInitialUrl] = useState<string | null | undefined>(null);
+  const initialUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    Linking.getInitialURL().then((url) => {
+      initialUrlRef.current = url;
+      setInitialUrl(url ?? undefined);
+    });
+
+    // 워밍 스타트(앱이 떠있을 때 새 딥링크) → WebView를 해당 URL로 이동
+    const sub = Linking.addEventListener('url', ({ url }) => {
+      webViewRef.current?.injectJavaScript(`
+        window.__LOKIT_DEEPLINK__ = ${JSON.stringify(url)};
+        window.location.href = ${JSON.stringify(url)};
+        true;
+      `);
+    });
+
+    return () => sub.remove();
+  }, []);
+
+  // Linking이 resolve되기 전에는 WebView를 띄우지 않음(스플래시가 가려줌).
+  // 콜드 스타트 딥링크는 buildBridgeInjection에서 페이지 로드 전 주입돼야 정확하다.
+  if (initialUrl === null) {
+    return <View style={styles.content} />;
+  }
 
   return (
     <View style={styles.content}>
       <WebView
-        source={{ uri: webAppUrl }}
+        ref={webViewRef}
+        source={{ uri: initialUrl ?? defaultUrl }}
         style={styles.webView}
-        injectedJavaScriptBeforeContentLoaded={buildBridgeInjection()}
+        injectedJavaScriptBeforeContentLoaded={buildBridgeInjection(initialUrl)}
+        onLoad={onWebViewLoad}
         // dvh 단위가 모바일 웹뷰에서 제대로 작동하지 않는 문제를 해결
         injectedJavaScript={`
           (function() {
