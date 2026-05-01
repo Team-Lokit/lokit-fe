@@ -30,4 +30,6 @@ export interface MyPageResponse {
   defaultAlbumId?: number;
   /** 랜덤 배경 사진 */
   backgroundImageUrl?: string;
+  /** 회원가입 날짜 */
+  joinedDate?: string;
 }

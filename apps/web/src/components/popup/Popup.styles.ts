@@ -2,7 +2,12 @@ import styled from '@emotion/styled';
 
 export const Root = styled.div`
   position: fixed;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: ${({ theme }) => theme.layout.maxWidth};
 
   z-index: ${({ theme }) => theme.zIndex.popupRoot};
 

@@ -13,6 +13,7 @@ export const 마이페이지_조회_성공: MyPageResponse = {
   couplePhotoCount: 42,
   defaultAlbumId: 100,
   backgroundImageUrl: 'https://picsum.photos/id/1018/400/400',
+  joinedDate: '2022-11-09',
 };
 
 export const 마이페이지_조회_미연결: MyPageResponse = {
@@ -26,4 +27,5 @@ export const 마이페이지_조회_미연결: MyPageResponse = {
   coupledDay: undefined,
   couplePhotoCount: 0,
   defaultAlbumId: 100,
+  joinedDate: '2022-11-09',
 };

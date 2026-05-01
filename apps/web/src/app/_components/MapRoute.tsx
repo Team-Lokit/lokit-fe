@@ -1,16 +1,30 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { getGetClusterPhotosQueryOptions } from '@repo/api-client';
+import { getGetClusterPhotosQueryOptions, useGetMyPage } from '@repo/api-client';
 import MapView from '@/components/map/MapView';
+import Sidebar from '@/components/sidebar/Sidebar';
+import ViewSwitcher, {
+  VIEW_TYPE,
+  type ViewType,
+} from '@/components/viewSwitcher/ViewSwitcher';
+import FloatingButton from '@/components/buttons/floatingButton/FloatingButton';
+import PhotoGridContainer from '@/components/photoGridContainer/PhotoGridContainer';
+import PhotoGridItem from '@/components/photoGridItem/PhotoGridItem';
+import HomeEmptyState from '@/components/common/homeEmptyState/HomeEmptyState';
+import CrossHairIcon from '@/assets/images/crossHair.svg';
+import CircleButton from '@/components/buttons/circleButton/CircleButton';
+import AddIcon from '@/assets/images/add.svg';
+import MenuButton from '@/components/buttons/menuButton/MenuButton';
+import TextButton from '@/components/buttons/textButton/TextButton';
 import { MapPin } from '@/types/map.type';
 import { ROUTES } from '@/constants/routes';
-import { SHEET_CONTEXT_TYPE } from '@/components/bottomSheet/constants';
+import { VIEW_CONTEXT_TYPE } from '@/constants/viewContext';
 import * as S from '../page.styles';
 import { useMapRouteViewState } from '../_hooks/useMapRouteViewState';
-import { useMapRouteSheetContext } from '../_hooks/useMapRouteSheetContext';
+import { useMapRouteViewContext } from '../_hooks/useMapRouteViewContext';
 import { useMapRouteData } from '../_hooks/useMapRouteData';
 import { usePendingPhotosViewModel } from '@/hooks/usePendingPhotosViewModel';
 import {
@@ -18,7 +32,6 @@ import {
   calculateCenterFromAlbumPhotos,
 } from '../_utils/mapRoute.calc';
 import { MapRouteHeader } from './MapRouteHeader';
-import { MapRouteBottomSection } from './MapRouteBottomSection';
 import { AlbumAddModalContainer } from './albumAddModal/AlbumAddModalContainer';
 import { AlbumRenameModalContainer } from './albumRenameModal/AlbumRenameModalContainer';
 import { AlbumDeleteModalContainer } from './albumDeleteModal/AlbumDeleteModalContainer';
@@ -26,16 +39,26 @@ import LocationPermissionModal from './locationPermissionModal/LocationPermissio
 import { getCurrentPosition } from '@/utils/getCurrentPosition';
 import { validateCenterCoordinate } from '../_utils/mapRoute.calc';
 import { saveClusterToSession } from '@/utils/sessionStorage';
+import { usePhotoContext } from '@/app/photo/_contexts/PhotoContext';
+import { usePhotoSelect } from '@/app/photo/add/_hooks/usePhotoSelect';
+import type { SelectedPhoto } from '@/app/photo/add/_types/photo';
 
 export default function MapRoute() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  // 사이드바 상태
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeView, setActiveView] = useState<ViewType>(VIEW_TYPE.MAP);
+
+  // 사용자 프로필 데이터
+  const { data: myPageData } = useGetMyPage();
+
   // 상태 관리
   const { viewState, mapViewRef, handleViewStateChange, handleGoToCurrentLocation } =
     useMapRouteViewState();
 
-  const { sheetContext, setSheetContext, selectedAlbumId } = useMapRouteSheetContext();
+  const { viewContext, setViewContext, selectedAlbumId } = useMapRouteViewContext();
 
   // 데이터 페칭
   const {
@@ -49,7 +72,7 @@ export default function MapRoute() {
     clusterExpansionData,
   } = useMapRouteData({
     viewState,
-    sheetContext,
+    viewContext,
     selectedAlbumId,
   });
 
@@ -58,6 +81,38 @@ export default function MapRoute() {
     albumList,
     albumDetail,
   );
+
+  // 사진 추가
+  const { addPhotos, setSelectedPhoto, setInitialAlbumId, resetPhotoNoteState } =
+    usePhotoContext();
+
+  const handlePhotosSelected = useCallback(
+    (newPhotos: SelectedPhoto[]) => {
+      addPhotos(newPhotos);
+      if (newPhotos.length > 0) {
+        setSelectedPhoto(newPhotos[0]);
+        resetPhotoNoteState(newPhotos[0]);
+        const albumId =
+          viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL
+            ? viewContext.albumId
+            : null;
+        setInitialAlbumId(albumId);
+        router.push(ROUTES.PHOTO.NOTE.ADD);
+      }
+    },
+    [
+      addPhotos,
+      setSelectedPhoto,
+      resetPhotoNoteState,
+      setInitialAlbumId,
+      router,
+      viewContext,
+    ],
+  );
+
+  const { selectPhotosFromFile } = usePhotoSelect({
+    onPhotosSelected: handlePhotosSelected,
+  });
 
   // 모달 상태 관리
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -73,12 +128,10 @@ export default function MapRoute() {
       return;
     }
 
-    // 앨범의 실제 사진 위치들로부터 중심 계산 (백엔드 centerLng/Lat가 부정확할 수 있으므로)
     let centerInfo = null;
     if (albumDetail?.photos && albumDetail.photos.length > 0) {
       centerInfo = calculateCenterFromAlbumPhotos(albumDetail.photos);
     } else if (albumMapInfo) {
-      // photos 데이터가 없으면 albumMapInfo 사용
       centerInfo = validateCenterCoordinate(
         albumMapInfo.centerLongitude,
         albumMapInfo.centerLatitude,
@@ -107,16 +160,14 @@ export default function MapRoute() {
   }, []);
 
   // 계산된 데이터
-  const albumDetailById = useMemo(() => {
-    if (!albumDetail?.id) return {};
-    return { [albumDetail.id]: albumDetail };
-  }, [albumDetail]);
-
   const photoCount = useMemo(() => {
-    return calculatePhotoCount(sheetContext, albumDetail, 0, totalHistoryCount);
-  }, [sheetContext, albumDetail, totalHistoryCount]);
+    return calculatePhotoCount(viewContext, albumDetail, 0, totalHistoryCount);
+  }, [viewContext, albumDetail, totalHistoryCount]);
 
   const selectedAlbumTitle = albumDetail?.title;
+
+  const isCustomAlbumSelected =
+    selectedAlbumId != null && selectedAlbumId !== mergedAlbumList[0]?.id;
 
   const handlePinClick = async (pin: MapPin) => {
     if (!pin.isCluster) {
@@ -148,29 +199,19 @@ export default function MapRoute() {
   };
 
   const handleSelectAlbum = (albumId: number) => {
-    setSheetContext({ type: SHEET_CONTEXT_TYPE.ALBUM_DETAIL, albumId });
+    setViewContext({ type: VIEW_CONTEXT_TYPE.ALBUM_DETAIL, albumId });
+    setIsSidebarOpen(false);
     router.push(`/album/${albumId}`);
   };
 
-  const handleCloseAlbumDetail = () => {
-    router.back();
-  };
-
-  const handleOpenAlbumRename = () => {
-    setIsRenameModalOpen(true);
-  };
-
-  const handleOpenAlbumDelete = () => {
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleGridAlbumRename = (albumId: number, albumTitle: string) => {
+  const handleRenameAlbum = (albumId: number) => {
+    const album = mergedAlbumList.find((a) => a.id === albumId);
     setMenuAlbumId(albumId);
-    setMenuAlbumTitle(albumTitle);
+    setMenuAlbumTitle(album?.title ?? '');
     setIsRenameModalOpen(true);
   };
 
-  const handleGridAlbumDelete = (albumId: number) => {
+  const handleDeleteAlbum = (albumId: number) => {
     setMenuAlbumId(albumId);
     setIsDeleteModalOpen(true);
   };
@@ -194,17 +235,20 @@ export default function MapRoute() {
     <S.Wrapper>
       <S.HeaderContainer>
         <MapRouteHeader
-          sheetContext={sheetContext}
+          viewContext={viewContext}
           selectedAlbumTitle={selectedAlbumTitle}
           address={address}
-          profileImageUrl={profileImageUrl}
-          onCloseAlbumDetail={handleCloseAlbumDetail}
-          onOpenAlbumRename={handleOpenAlbumRename}
-          onOpenAlbumDelete={handleOpenAlbumDelete}
+          onOpenSidebar={() => setIsSidebarOpen(true)}
+          onRenameAlbum={
+            isCustomAlbumSelected ? () => handleRenameAlbum(selectedAlbumId) : undefined
+          }
+          onDeleteAlbum={
+            isCustomAlbumSelected ? () => handleDeleteAlbum(selectedAlbumId) : undefined
+          }
         />
       </S.HeaderContainer>
 
-      {viewState && (
+      {activeView === VIEW_TYPE.MAP && viewState && (
         <MapView
           ref={mapViewRef}
           locationState={viewState}
@@ -214,19 +258,92 @@ export default function MapRoute() {
         />
       )}
 
-      <MapRouteBottomSection
-        sheetContext={sheetContext}
-        albumList={mergedAlbumList}
-        albumDetailById={albumDetailById}
-        photoCount={photoCount}
-        displayPhotos={displayPhotos}
-        onChangeContext={setSheetContext}
+      {activeView === VIEW_TYPE.GRID && (
+        <S.GridViewContainer>
+          {displayPhotos.length === 0 ? (
+            <S.EmptyState>
+              <HomeEmptyState
+                onAddPhoto={() => selectPhotosFromFile()}
+                onAddAlbum={() => setIsAddModalOpen(true)}
+              />
+            </S.EmptyState>
+          ) : (
+            <PhotoGridContainer>
+              {displayPhotos.map((photo) =>
+                photo.kind === 'pending' ? (
+                  <PhotoGridItem
+                    key={photo.pendingId}
+                    src={photo.url}
+                    date={photo.takenAt}
+                    onClick={() => {}}
+                    progress={photo.progress}
+                    hasError={photo.status === 'error'}
+                  />
+                ) : (
+                  <PhotoGridItem
+                    key={photo.id}
+                    src={photo.url ?? ''}
+                    date={photo.takenAt}
+                    onClick={() => router.push(ROUTES.PHOTO.VIEW(photo.id!))}
+                  />
+                ),
+              )}
+            </PhotoGridContainer>
+          )}
+        </S.GridViewContainer>
+      )}
+
+      <S.ActionColumn>
+        <MenuButton
+          triggerIcon={(isOpen) => (
+            <AddIcon
+              style={{
+                transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                transition: 'transform 0.2s ease',
+              }}
+            />
+          )}
+          placement="top"
+        >
+          <TextButton
+            text="사진 추가"
+            onClick={() => selectPhotosFromFile()}
+            textAlign="left"
+          />
+          <TextButton
+            text="앨범 추가"
+            onClick={() => setIsAddModalOpen(true)}
+            textAlign="left"
+          />
+        </MenuButton>
+
+        <CircleButton aria-label="현재 위치로 이동" onClick={handleGoToCurrentLocation}>
+          <CrossHairIcon />
+        </CircleButton>
+      </S.ActionColumn>
+
+      <S.FloatingButtonWrapper>
+        <FloatingButton text={`기록 ${photoCount}개`} />
+      </S.FloatingButtonWrapper>
+
+      <S.ViewSwitcherWrapper>
+        <ViewSwitcher activeView={activeView} onChangeView={setActiveView} />
+      </S.ViewSwitcherWrapper>
+
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        albums={mergedAlbumList}
+        nickname={myPageData?.myName ?? ''}
+        dDay={myPageData?.coupledDay ?? 0}
+        profileImageUrl={myPageData?.myProfileImageUrl ?? profileImageUrl}
+        selectedAlbumId={selectedAlbumId}
+        onExplore={() => router.push(ROUTES.EXPLORE)}
+        onNewAlbum={() => setIsAddModalOpen(true)}
         onSelectAlbum={handleSelectAlbum}
-        onGoToCurrentLocation={handleGoToCurrentLocation}
-        onOpenAddAlbumModal={() => setIsAddModalOpen(true)}
-        onRenameAlbum={handleGridAlbumRename}
-        onDeleteAlbum={handleGridAlbumDelete}
-        clusterExpansionData={clusterExpansionData}
+        onRenameAlbum={handleRenameAlbum}
+        onDeleteAlbum={handleDeleteAlbum}
+        onMyPage={() => router.push(ROUTES.MYPAGE)}
       />
 
       <AlbumAddModalContainer

@@ -1,19 +1,12 @@
 import { Suspense } from 'react';
-import DdayBannerClient from './_clientBoundary/DdayBannerClient/DdayBannerClient';
-import DdayEmptyBannerClient from './_clientBoundary/DdayBannerClient/DdayEmptyBannerClient';
-import TotalPhotoCountBannerClient from './_clientBoundary/TotalPhotoCountBannerClient/TotalPhotoCountBannerClient';
 import BannerFallback from './_components/BannerFallback/BannerFallback';
-import styles from './BannerContainer.module.css';
+import DdayBannerContainerClient from '@/app/mypage/_components/BannerContainer/_clientBoundary/DdayBannerContainerClient/DdayBannerContainerClient';
 
 export default function BannerContainer() {
   return (
-    <section className={styles.wrapper}>
+    <section>
       <Suspense fallback={<BannerFallback />}>
-        <DdayBannerClient />
-      </Suspense>
-      <DdayEmptyBannerClient />
-      <Suspense fallback={<BannerFallback />}>
-        <TotalPhotoCountBannerClient />
+        <DdayBannerContainerClient />
       </Suspense>
     </section>
   );

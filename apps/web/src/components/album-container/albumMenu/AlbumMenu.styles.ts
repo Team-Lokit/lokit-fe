@@ -26,28 +26,29 @@ export const Backdrop = styled.div`
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1009;
+  z-index: ${({ theme }) => theme.zIndex.modal - 1};
 `;
 
 export const Dropdown = styled.div`
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
-  min-width: 140px;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 160px;
   padding: 8px;
   background: ${({ theme }) => theme.colors.blueWhite.bg8};
   backdrop-filter: blur(25px);
   border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
   border-radius: 16px;
-  z-index: 1010;
+  z-index: ${({ theme }) => theme.zIndex.modal};
 `;
 
 export const Item = styled.button<{ variant?: 'default' | 'danger' }>`
-  ${({ theme }) => theme.typography.body16Semibold}
+  ${({ theme }) => theme.typography.body15Medium}
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 12px 16px;
+  padding: 6px 12px;
   background: transparent;
   border: none;
   color: ${({ theme, variant }) =>

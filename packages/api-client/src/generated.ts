@@ -22,6 +22,7 @@ import type {
   AddEmoticonRequest,
   AlbumRequest,
   ApiResponseErrorDetail,
+  AppleAuthorizeParams,
   CreateCommentRequest,
   CreatePhotoRequest,
   GetLocationInfoParams,
@@ -3255,6 +3256,133 @@ export function useKakaoAuthorizeSuspense<
 }
 
 /**
+ * 애플 OAuth 인증 페이지로 리다이렉트합니다. redirect 파라미터로 로그인 후 돌아갈 프론트엔드 URL을 지정할 수 있습니다.
+ * @summary 애플 로그인 페이지로 리다이렉트
+ */
+export const appleAuthorize = (params?: AppleAuthorizeParams, signal?: AbortSignal) => {
+  return customFetcher<unknown>({ url: `/auth/apple`, method: 'GET', params, signal });
+};
+
+export const getAppleAuthorizeQueryKey = (params?: AppleAuthorizeParams) => {
+  return [`/auth/apple`, ...(params ? [params] : [])] as const;
+};
+
+export const getAppleAuthorizeQueryOptions = <
+  TData = Awaited<ReturnType<typeof appleAuthorize>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params?: AppleAuthorizeParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof appleAuthorize>>, TError, TData>;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getAppleAuthorizeQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof appleAuthorize>>> = ({
+    signal,
+  }) => appleAuthorize(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof appleAuthorize>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type AppleAuthorizeQueryResult = NonNullable<
+  Awaited<ReturnType<typeof appleAuthorize>>
+>;
+export type AppleAuthorizeQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 애플 로그인 페이지로 리다이렉트
+ */
+
+export function useAppleAuthorize<
+  TData = Awaited<ReturnType<typeof appleAuthorize>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params?: AppleAuthorizeParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof appleAuthorize>>, TError, TData>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getAppleAuthorizeQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getAppleAuthorizeSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof appleAuthorize>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params?: AppleAuthorizeParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof appleAuthorize>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getAppleAuthorizeQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof appleAuthorize>>> = ({
+    signal,
+  }) => appleAuthorize(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof appleAuthorize>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type AppleAuthorizeSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof appleAuthorize>>
+>;
+export type AppleAuthorizeSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 애플 로그인 페이지로 리다이렉트
+ */
+
+export function useAppleAuthorizeSuspense<
+  TData = Awaited<ReturnType<typeof appleAuthorize>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params?: AppleAuthorizeParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof appleAuthorize>>,
+      TError,
+      TData
+    >;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getAppleAuthorizeSuspenseQueryOptions(params, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * 사용자가 선택할 수 있는 앨범 목록을 조회합니다.
  * @summary 선택 가능한 앨범 조회
  */
@@ -3481,7 +3609,7 @@ export function useGetUsersSuspense<
 }
 
 /**
- * 현재 로그인한 사용자의 계정을 탈퇴 처리합니다. 탈퇴 전 반드시 커플 연결 끊기가 완료되어야 하며, 계정 상태가 WITHDRAWN으로 변경되고 세션/토큰이 무효화됩니다.
+ * 현재 로그인한 사용자의 계정을 즉시 탈퇴 처리합니다. 탈퇴 전 반드시 커플 연결 끊기가 완료되어야 하며, 세션/토큰이 무효화되고 계정은 즉시 조회 대상에서 제외됩니다.
  * @summary 회원 탈퇴
  */
 export const withdraw = () => {
@@ -4162,6 +4290,10 @@ export const getGetMyPageResponseMock = (
   ]),
   backgroundImageUrl: faker.helpers.arrayElement([
     faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
+  joinedDate: faker.helpers.arrayElement([
+    faker.date.past().toISOString().split('T')[0],
     undefined,
   ]),
   ...overrideResponse,
@@ -5380,6 +5512,27 @@ export const getKakaoAuthorizeMockHandler = (
   );
 };
 
+export const getAppleAuthorizeMockHandler = (
+  overrideResponse?:
+    | unknown
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<unknown> | unknown),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/auth/apple',
+    async (info) => {
+      await delay(1000);
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info);
+      }
+      return new HttpResponse(null, { status: 200 });
+    },
+    options,
+  );
+};
+
 export const getGetSelectableAlbumsMockHandler = (
   overrideResponse?:
     | SelectableAlbumResponse
@@ -5538,6 +5691,7 @@ export const getLokitAPIMock = () => [
   getGetAlbumMapInfoMockHandler(),
   getGetMyStatusMockHandler(),
   getKakaoAuthorizeMockHandler(),
+  getAppleAuthorizeMockHandler(),
   getGetSelectableAlbumsMockHandler(),
   getGetUsersMockHandler(),
   getWithdrawMockHandler(),

@@ -6,6 +6,7 @@ import { useGetPhotoDetail } from '@repo/api-client';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { STATE_SOURCE } from '../../_constants/stateSource';
+import { TOOLTIP_TEXT } from '../../_constants/tooltipText';
 import { usePhotoContext } from '../../_contexts/PhotoContext';
 import AlbumSelectOverlay from '../../add/note/_components/AlbumSelectOverlay';
 import LocationSelectOverlay from '../../add/note/_components/LocationSelectOverlay';
@@ -172,17 +173,20 @@ export default function PhotoEditOverlay({
 
   const isMemoModified = memo !== (photoDetail.description || '');
   const isAlbumModified = selectedAlbum !== null || isAlbumCleared;
-  const isLocationModified = selectedLocation !== null;
+  const isLocationModified =
+    selectedLocation !== null &&
+    (selectedLocation.latitude !== photoDetail.latitude ||
+      selectedLocation.longitude !== photoDetail.longitude);
   const isModified = isMemoModified || isAlbumModified || isLocationModified;
 
   const getTooltipText = () => {
     if (isModified) {
-      return '위치가 수정되었어요.';
+      return TOOLTIP_TEXT.LOCATION_MODIFIED;
     }
     if (hasLocation) {
-      return '위치가 저장되어 있어요.';
+      return TOOLTIP_TEXT.LOCATION_SAVED;
     }
-    return '위치를 추가해주세요.';
+    return TOOLTIP_TEXT.LOCATION_EMPTY;
   };
 
   return (
@@ -193,9 +197,9 @@ export default function PhotoEditOverlay({
       transition={{ duration: 0.2 }}
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        inset: 0,
         height: '100dvh',
         zIndex: 100,
         overflow: 'hidden',
@@ -203,10 +207,15 @@ export default function PhotoEditOverlay({
     >
       <S.Container>
         <S.PhotoSection>
-          <S.PhotoBackground>
-            <img src={photoDetail.url} alt="" />
-          </S.PhotoBackground>
+          <S.PhotoFrame>
+            <S.PhotoBlurBackground>
+              <img src={photoDetail.url} alt="" />
+            </S.PhotoBlurBackground>
 
+            <S.PhotoMain>
+              <img src={photoDetail.url} alt={`photo-${photoDetail.id}`} />
+            </S.PhotoMain>
+          </S.PhotoFrame>
           <S.TopOverlay>
             <PhotoAddHeader
               left={

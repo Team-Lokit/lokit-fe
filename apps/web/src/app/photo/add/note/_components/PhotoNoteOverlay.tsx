@@ -238,9 +238,9 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
       }}
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        inset: 0,
         height: '100dvh',
         zIndex: 100,
         overflow: 'hidden',
@@ -251,9 +251,15 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
       <S.Container>
         {/* 사진 영역 */}
         <S.PhotoSection>
-          <S.PhotoBackground>
-            <img src={selectedPhoto.uri} alt={selectedPhoto.filename} />
-          </S.PhotoBackground>
+          <S.PhotoFrame>
+            <S.PhotoBlurBackground>
+              <img src={selectedPhoto.uri} alt="" />
+            </S.PhotoBlurBackground>
+
+            <S.PhotoMain>
+              <img src={selectedPhoto.uri} alt={selectedPhoto.filename} />
+            </S.PhotoMain>
+          </S.PhotoFrame>
 
           {/* 상단 오버레이 */}
           <S.TopOverlay>

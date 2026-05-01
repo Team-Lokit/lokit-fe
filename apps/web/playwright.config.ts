@@ -1,0 +1,20 @@
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+  timeout: 30000,
+  outputDir: '/tmp/playwright-results',
+  use: {
+    baseURL: 'http://localhost:3000',
+    headless: true,
+    screenshot: 'only-on-failure',
+  },
+  retries: 1,
+  workers: 1,
+  webServer: {
+    command: 'pnpm dev:mock',
+    port: 3000,
+    reuseExistingServer: true,
+    timeout: 60000,
+  },
+});

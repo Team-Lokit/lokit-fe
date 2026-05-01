@@ -1,6 +1,6 @@
 import { LocationState } from '@/types/map.type';
-import { SHEET_CONTEXT_TYPE } from '@/components/bottomSheet/constants';
-import type { SheetContext } from '@/components/bottomSheet/constants';
+import { VIEW_CONTEXT_TYPE } from '@/constants/viewContext';
+import type { ViewContext } from '@/constants/viewContext';
 import type { AlbumWithPhotosResponse, BoundingBoxResponse } from '@repo/api-client';
 import { BBOX_ZOOM_CALCULATION } from '@/constants/map';
 
@@ -73,7 +73,7 @@ export const calculateCenterFromBoundingBox = (
     return null;
   }
 
-  // 중심 좌표 계산 (위도는 남쪽으로 편향해서 바텀시트가 가리지 않도록 함)
+  // 중심 좌표 계산 (위도는 남쪽으로 편향해서 뷰 컨텍스트가 가리지 않도록 함)
   const longitude = (boundingBox.west + boundingBox.east) / 2;
   // 바운딩박스 범위에서 남쪽 75% 지점을 지도 중심으로 설정
   const latitudeRange = boundingBox.north - boundingBox.south;
@@ -135,24 +135,21 @@ export const extractAlbumIdFromPath = (pathname: string): number | null => {
 
 /**
  * 현재 선택된 앨범 ID를 결정합니다.
- * 경로에서 온 ID가 있으면 우선, 없으면 바텀시트 컨텍스트에서 결정합니다.
+ * 경로에서 온 ID가 있으면 우선, 없으면 뷰 컨텍스트 컨텍스트에서 결정합니다.
  * @param albumIdFromPath - URL 경로에서 추출한 앨범 ID
- * @param sheetContext - 바텀시트 컨텍스트
+ * @param viewContext - 뷰 컨텍스트 컨텍스트
  * @returns 선택된 앨범 ID 또는 null
  */
 export const getSelectedAlbumId = (
   albumIdFromPath: number | null,
-  sheetContext: SheetContext,
+  viewContext: ViewContext,
 ): number | null => {
   if (albumIdFromPath !== null) {
     return albumIdFromPath;
   }
 
-  if (
-    sheetContext.type === SHEET_CONTEXT_TYPE.ALBUM_DETAIL &&
-    'albumId' in sheetContext
-  ) {
-    return sheetContext.albumId;
+  if (viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL && 'albumId' in viewContext) {
+    return viewContext.albumId;
   }
 
   return null;
@@ -160,24 +157,24 @@ export const getSelectedAlbumId = (
 
 /**
  * 현재 표시해야 할 사진의 개수를 계산합니다.
- * 바텀시트 타입에 따라 다른 출처에서 값을 가져옵니다.
- * @param sheetContext - 바텀시트 컨텍스트
+ * 뷰 컨텍스트 타입에 따라 다른 출처에서 값을 가져옵니다.
+ * @param viewContext - 뷰 컨텍스트 컨텍스트
  * @param albumDetail - 선택된 앨범의 상세 정보
  * @param clusterPhotosTotal - 클러스터의 전체 사진 개수
  * @param totalHistoryCount - 전체 기록 개수
  * @returns 계산된 사진 개수
  */
 export const calculatePhotoCount = (
-  sheetContext: SheetContext,
+  viewContext: ViewContext,
   albumDetail: AlbumWithPhotosResponse | undefined | null,
   clusterPhotosTotal: number | undefined,
   totalHistoryCount: number | undefined,
 ): number => {
-  if (sheetContext.type === SHEET_CONTEXT_TYPE.ALBUM_DETAIL) {
+  if (viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL) {
     return albumDetail?.photoCount ?? 0;
   }
 
-  if (sheetContext.type === SHEET_CONTEXT_TYPE.CLUSTER_DETAIL) {
+  if (viewContext.type === VIEW_CONTEXT_TYPE.CLUSTER_DETAIL) {
     return clusterPhotosTotal ?? 0;
   }
 

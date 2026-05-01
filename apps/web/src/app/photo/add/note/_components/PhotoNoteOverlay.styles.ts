@@ -4,10 +4,9 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: ${({ theme }) => theme.layout.maxWidth};
   height: 100dvh;
   background-color: ${({ theme }) => theme.colors.gray[1000]};
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
   overflow: hidden;
 `;
 
@@ -17,25 +16,59 @@ export const PhotoSection = styled.div`
   overflow: hidden;
 `;
 
-export const PhotoBackground = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
+export const PhotoFrame = styled.div`
+  position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: ${({ theme }) => theme.colors.overlay[100]};
+`;
+
+export const PhotoBlurBackground = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transform: scale(1.08);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #00000033;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+  }
+`;
+
+export const PhotoMain = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+
+  img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
+    pointer-events: none;
   }
 `;
 
 export const TopOverlay = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+  inset: 0 0 auto 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -44,9 +77,7 @@ export const TopOverlay = styled.div`
 
 export const MemoAlbumOverlay = styled.div`
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  inset: auto 0 0 0;
   padding: 16px;
   box-sizing: border-box;
   display: flex;
@@ -56,8 +87,8 @@ export const MemoAlbumOverlay = styled.div`
 `;
 
 export const BottomContainer = styled.div`
-  padding: 12px 20px 33px;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
+  padding: 12px 16px 57px;
+  background-color: ${({ theme }) => theme.colors.overlay[100]};
 `;
 
 // 말풍선
@@ -201,7 +232,7 @@ export const MapPreviewButton = styled.button`
   justify-content: center;
   gap: 8px;
   padding: 12px 16px;
-  background: ${({ theme }) => theme.colors.gray[900]};
+  background: ${({ theme }) => theme.colors.blueWhite.bg5};
   border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
   border-radius: 999px;
   cursor: pointer;
@@ -211,7 +242,6 @@ export const MapPreviewButton = styled.button`
   }
 
   &:disabled {
-    opacity: 0.4;
     cursor: not-allowed;
   }
 `;
@@ -222,11 +252,12 @@ export const MapIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  color: ${({ theme }) => theme.colors.gray[400]};
 `;
 
 export const MapPreviewText = styled.span`
-  ${({ theme }) => theme.typography.body16Semibold};
-  color: ${({ theme }) => theme.colors.gray[0]};
+  ${({ theme }) => theme.typography.body15Medium};
+  color: ${({ theme }) => theme.colors.gray[200]};
 `;
 
 export const UploadButton = styled.button`
@@ -245,7 +276,7 @@ export const UploadButton = styled.button`
   }
 
   &:disabled {
-    background: ${({ theme }) => theme.colors.gray[700]};
+    background: ${({ theme }) => theme.colors.gray[600]};
     cursor: not-allowed;
   }
 `;
@@ -256,6 +287,11 @@ export const UploadIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  color: ${({ theme }) => theme.colors.gray[1000]};
+
+  &:disabled {
+    color: ${({ theme }) => theme.colors.gray[700]};
+  }
 `;
 
 // 선택된 사진 없음 화면

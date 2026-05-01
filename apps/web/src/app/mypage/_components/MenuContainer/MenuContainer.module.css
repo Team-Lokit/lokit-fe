@@ -1,6 +1,0 @@
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  background-color: rgba(226, 230, 255, 0.1); /* blueWhite.border10 */
-}

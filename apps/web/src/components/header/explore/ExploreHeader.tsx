@@ -1,55 +1,44 @@
-import ExploreIcon from '@/assets/images/explore.svg';
+import AlarmIcon from '@/assets/images/alarm.svg';
 import LocationIcon from '@/assets/images/location.svg';
-import ProfileIcon from '@/assets/images/profile.svg';
+import HamburgerIcon from '@/assets/images/hamburger.svg';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import CrossfadeText from '@/components/common/crossfadeText/CrossfadeText';
-import {
-  BUTTON_SIZE,
-  ICON_SIZE,
-  PROFILE_ICON_SIZE,
-  PROFILE_IMAGE_SIZE,
-} from '../base/Header.constants';
+import { BUTTON_SIZE, ICON_SIZE } from '../base/Header.constants';
 import HeaderBase from '../base/HeaderBase';
 import * as S from './ExploreHeader.styles';
 
 export interface ExploreHeaderProps {
   /** 위치 타이틀 */
   title: string;
-  /** 프로필 버튼 클릭 이벤트 */
-  onClickProfile: () => void;
-  /** 탐색 버튼 클릭 이벤트 */
-  onClickExplore: () => void;
-  /** 프로필 이미지 URL */
+  /** ≡ 메뉴(사이드바) 버튼 클릭 이벤트 */
+  onClickMenu: () => void;
+  /** 알림 버튼 클릭 이벤트 */
+  onClickAlarm?: (() => void) | undefined;
+  /** 우측 버튼 커스텀 슬롯 (지정 시 알림 버튼 대체) */
+  rightSlot?: React.ReactNode;
+  /** 프로필 버튼 클릭 이벤트 @deprecated 사이드바 My로 이동 */
+  onClickProfile?: () => void;
+  /** 탐색 버튼 클릭 이벤트 @deprecated 사이드바 Menu로 이동 */
+  onClickExplore?: () => void;
+  /** 프로필 이미지 URL @deprecated */
   profileImageSrc?: string;
 }
 
 const ExploreHeader = ({
   title,
-  onClickProfile,
-  onClickExplore,
-  profileImageSrc,
+  onClickMenu,
+  onClickAlarm,
+  rightSlot,
 }: ExploreHeaderProps) => {
   return (
     <HeaderBase
       left={
         <CircleButton
-          onClick={onClickProfile}
+          onClick={onClickMenu}
+          aria-label="사이드바 열기"
           style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
         >
-          {profileImageSrc ? (
-            <S.ProfileImage
-              src={profileImageSrc}
-              alt="프로필"
-              width={PROFILE_IMAGE_SIZE}
-              height={PROFILE_IMAGE_SIZE}
-            />
-          ) : (
-            <ProfileIcon
-              width={PROFILE_ICON_SIZE}
-              height={PROFILE_ICON_SIZE}
-              style={{ display: 'block' }}
-            />
-          )}
+          <HamburgerIcon width={ICON_SIZE} height={ICON_SIZE} />
         </CircleButton>
       }
       center={
@@ -63,12 +52,15 @@ const ExploreHeader = ({
         </S.LocationWrapper>
       }
       right={
-        <CircleButton
-          onClick={onClickExplore}
-          style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
-        >
-          <ExploreIcon width={ICON_SIZE} height={ICON_SIZE} />
-        </CircleButton>
+        rightSlot ?? (
+          <CircleButton
+            onClick={onClickAlarm ?? (() => {})}
+            aria-label="알림"
+            style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
+          >
+            <AlarmIcon width={ICON_SIZE} height={ICON_SIZE} />
+          </CircleButton>
+        )
       }
     />
   );

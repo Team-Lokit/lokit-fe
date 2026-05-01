@@ -18,14 +18,11 @@ import {
   type ClusterPhotoResponse,
 } from '@repo/api-client';
 import { MAP_CLUSTERING_CONFIG } from '@/constants/map';
-import {
-  SHEET_CONTEXT_TYPE,
-  type SheetContext,
-} from '@/components/bottomSheet/constants';
+import { VIEW_CONTEXT_TYPE, type ViewContext } from '@/constants/viewContext';
 
 interface UseMapRouteDataProps {
   viewState: LocationState | null;
-  sheetContext: SheetContext;
+  viewContext: ViewContext;
   selectedAlbumId: number | null;
 }
 
@@ -52,7 +49,7 @@ interface UseMapRouteDataReturn {
  */
 export const useMapRouteData = ({
   viewState,
-  sheetContext,
+  viewContext,
   selectedAlbumId,
 }: UseMapRouteDataProps): UseMapRouteDataReturn => {
   // 선택된 앨범의 상세 정보 조회
@@ -80,12 +77,12 @@ export const useMapRouteData = ({
 
   // 클러스터의 위치 정보 조회
   const clusterLatitude =
-    sheetContext.type === SHEET_CONTEXT_TYPE.CLUSTER_DETAIL && 'latitude' in sheetContext
-      ? sheetContext.latitude
+    viewContext.type === VIEW_CONTEXT_TYPE.CLUSTER_DETAIL && 'latitude' in viewContext
+      ? viewContext.latitude
       : null;
   const clusterLongitude =
-    sheetContext.type === SHEET_CONTEXT_TYPE.CLUSTER_DETAIL && 'longitude' in sheetContext
-      ? sheetContext.longitude
+    viewContext.type === VIEW_CONTEXT_TYPE.CLUSTER_DETAIL && 'longitude' in viewContext
+      ? viewContext.longitude
       : null;
 
   const { data: clusterLocationData } = useQuery({
@@ -98,8 +95,8 @@ export const useMapRouteData = ({
 
   // 클러스터의 사진 정보 조회
   const clusterId =
-    sheetContext.type === SHEET_CONTEXT_TYPE.CLUSTER_DETAIL && 'clusterId' in sheetContext
-      ? sheetContext.clusterId
+    viewContext.type === VIEW_CONTEXT_TYPE.CLUSTER_DETAIL && 'clusterId' in viewContext
+      ? viewContext.clusterId
       : null;
 
   // 클라이언트 클러스터인지 판별

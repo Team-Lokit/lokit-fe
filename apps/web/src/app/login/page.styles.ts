@@ -13,7 +13,8 @@ export const Wrapper = styled.div`
 export const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
 `;
 
 export const KakaoButton = styled.button`
@@ -27,6 +28,25 @@ export const KakaoButton = styled.button`
   border-radius: 8px;
   background-color: #fee500;
   color: #000000;
+  ${({ theme }) => theme.typography.body16Semibold}
+  cursor: pointer;
+
+  svg {
+    display: block;
+  }
+`;
+
+export const AppleButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 0px;
+  border: none;
+  border-radius: 8px;
+  background-color: white;
+  color: black;
   ${({ theme }) => theme.typography.body16Semibold}
   cursor: pointer;
 
