@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
-import { Linking, Platform, StyleSheet, View } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import BootSplash from 'react-native-bootsplash';
 import { buildBridgeInjection } from './bridge';
 import useAppLifecycleTracking from './useAppLifecycleTracking';
+import useDeepLinkHandling from './useDeepLinkHandling';
 
 function App() {
   useEffect(() => {
@@ -28,29 +29,7 @@ function AppContent() {
   const defaultUrl = getWebAppUrl();
   const webViewRef = useRef<WebView>(null);
   const { onWebViewLoad } = useAppLifecycleTracking(webViewRef);
-
-  // 콜드 스타트 시점의 딥링크 (Linking.getInitialURL).
-  // null = 아직 모름, undefined = 딥링크 없음(일반 실행).
-  const [initialUrl, setInitialUrl] = useState<string | null | undefined>(null);
-  const initialUrlRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    Linking.getInitialURL().then((url) => {
-      initialUrlRef.current = url;
-      setInitialUrl(url ?? undefined);
-    });
-
-    // 워밍 스타트(앱이 떠있을 때 새 딥링크) → WebView를 해당 URL로 이동
-    const sub = Linking.addEventListener('url', ({ url }) => {
-      webViewRef.current?.injectJavaScript(`
-        window.__LOKIT_DEEPLINK__ = ${JSON.stringify(url)};
-        window.location.href = ${JSON.stringify(url)};
-        true;
-      `);
-    });
-
-    return () => sub.remove();
-  }, []);
+  const { initialUrl } = useDeepLinkHandling(webViewRef);
 
   // Linking이 resolve되기 전에는 WebView를 띄우지 않음(스플래시가 가려줌).
   // 콜드 스타트 딥링크는 buildBridgeInjection에서 페이지 로드 전 주입돼야 정확하다.
