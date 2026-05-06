@@ -13,7 +13,7 @@ import { captureApiError } from '@repo/sentry';
 import { ToastProvider } from '@/components/toast';
 import { PhotoProvider } from './photo/_contexts/PhotoContext';
 import { PendingPhotosProvider } from '@/stores/pendingPhotos/PendingPhotosContext';
-import AnalyticsProvider from '@/components/analytics/AnalyticsProvider';
+import { useInitAnalytics } from '@/components/analytics/useInitAnalytics';
 
 export type AppProvidersProps = PropsWithChildren<{
   showDevtools?: boolean;
@@ -52,6 +52,8 @@ export function AppProviders({
     };
   }, []);
 
+  useInitAnalytics();
+
   // Kakao SDK 초기화
   useEffect(() => {
     const initKakao = () => {
@@ -76,13 +78,11 @@ export function AppProviders({
       <ThemeProvider theme={theme}>
         <GlobalStyles />
         <QueryClientProvider client={queryClient}>
-          <AnalyticsProvider>
-            <PhotoProvider>
-              <ToastProvider>
-                <PendingPhotosProvider>{children}</PendingPhotosProvider>
-              </ToastProvider>
-            </PhotoProvider>
-          </AnalyticsProvider>
+          <PhotoProvider>
+            <ToastProvider>
+              <PendingPhotosProvider>{children}</PendingPhotosProvider>
+            </ToastProvider>
+          </PhotoProvider>
           {showDevtools ? <ReactQueryDevtools initialIsOpen={false} /> : null}
         </QueryClientProvider>
       </ThemeProvider>

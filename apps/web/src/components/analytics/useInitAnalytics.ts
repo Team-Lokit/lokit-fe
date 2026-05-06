@@ -1,6 +1,6 @@
 'use client';
 
-import { PropsWithChildren, useEffect } from 'react';
+import { useEffect } from 'react';
 import { initMixpanel, track } from '@/lib/analytics';
 import type { EventName, EventParams } from '@/lib/analytics';
 
@@ -20,7 +20,7 @@ declare global {
   }
 }
 
-export default function AnalyticsProvider({ children }: PropsWithChildren) {
+export function useInitAnalytics() {
   useEffect(() => {
     initMixpanel();
     window.lokitTrack = track;
@@ -28,6 +28,4 @@ export default function AnalyticsProvider({ children }: PropsWithChildren) {
       delete window.lokitTrack;
     };
   }, []);
-
-  return <>{children}</>;
 }
