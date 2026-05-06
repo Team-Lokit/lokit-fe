@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Linking } from 'react-native';
 import type WebView from 'react-native-webview';
 
@@ -6,11 +6,9 @@ export default function useDeepLinkHandling(webViewRef: React.RefObject<WebView 
   // 콜드 스타트 시점의 딥링크 (Linking.getInitialURL).
   // null = 아직 모름, undefined = 딥링크 없음(일반 실행).
   const [initialUrl, setInitialUrl] = useState<string | null | undefined>(null);
-  const initialUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
     Linking.getInitialURL().then((url) => {
-      initialUrlRef.current = url;
       setInitialUrl(url ?? undefined);
     });
 
@@ -26,5 +24,5 @@ export default function useDeepLinkHandling(webViewRef: React.RefObject<WebView 
     return () => sub.remove();
   }, [webViewRef]);
 
-  return { initialUrl, initialUrlRef };
+  return { initialUrl };
 }
