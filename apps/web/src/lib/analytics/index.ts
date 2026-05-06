@@ -14,6 +14,7 @@ const isDev = process.env.NODE_ENV !== 'production';
 export function track<E extends EventName>(event: E, params: EventParams<E> | null) {
   if (isDev && typeof window !== 'undefined') {
     console.debug('[analytics]', event, params);
+    return;
   }
   gtmTrack(event, params);
   mixpanelTrack(event, params);
