@@ -13,7 +13,7 @@ import { captureApiError } from '@repo/sentry';
 import { ToastProvider } from '@/components/toast';
 import { PhotoProvider } from './photo/_contexts/PhotoContext';
 import { PendingPhotosProvider } from '@/stores/pendingPhotos/PendingPhotosContext';
-import { useInitAnalytics } from '@/components/analytics/useInitAnalytics';
+import { useInitAnalytics } from '@/hooks/analytics/useInitAnalytics';
 
 export type AppProvidersProps = PropsWithChildren<{
   showDevtools?: boolean;
