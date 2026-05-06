@@ -12,7 +12,7 @@ import { getGetPhotoDetailQueryOptions, useGetPhotoDetail } from '@repo/api-clie
 import { AnimatePresence } from 'framer-motion';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { useTrackPage } from '@/components/analytics/useTrackPage';
+import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 import type { PhotoDetailSource } from '@/lib/analytics/events';
 import DeleteConfirmModal from './_components/DeleteConfirmModal';
 import PhotoEditOverlay from './_components/PhotoEditOverlay';

@@ -6,7 +6,7 @@ import KakaoIcon from '@/assets/images/kakao.svg';
 import { API_URL } from '@/constants/apiUrl';
 import { useIsIOS } from '@/hooks/useIsIOS';
 import { track } from '@/lib/analytics';
-import { useTrackPage } from '@/components/analytics/useTrackPage';
+import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 import { resolveLoginReferrer } from '@/utils/resolveLoginReferrer';
 import * as S from './page.styles';
 import OnboardingCarousel from './_components/loginCarousel/OnboardingCarousel';

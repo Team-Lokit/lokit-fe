@@ -11,7 +11,7 @@ const isDev = process.env.NODE_ENV !== 'production';
  * @example
  * track('login_success', { is_new_user: true, login_method: 'kakao' });
  */
-export function track<E extends EventName>(event: E, params: EventParams<E>) {
+export function track<E extends EventName>(event: E, params: EventParams<E> | null) {
   if (isDev && typeof window !== 'undefined') {
     console.debug('[analytics]', event, params);
   }

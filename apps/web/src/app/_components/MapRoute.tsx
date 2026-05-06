@@ -23,7 +23,7 @@ import { MapPin } from '@/types/map.type';
 import { ROUTES } from '@/constants/routes';
 import { VIEW_CONTEXT_TYPE } from '@/constants/viewContext';
 import { track } from '@/lib/analytics';
-import { useTrackPage } from '@/components/analytics/useTrackPage';
+import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 import * as S from '../page.styles';
 import { useMapRouteViewState } from '../_hooks/useMapRouteViewState';
 import { useMapRouteViewContext } from '../_hooks/useMapRouteViewContext';

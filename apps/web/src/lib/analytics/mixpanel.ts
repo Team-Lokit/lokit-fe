@@ -20,9 +20,14 @@ export function mixpanelInit() {
   initialized = true;
 }
 
-export function mixpanelTrack<E extends EventName>(event: E, params: EventParams<E>) {
+export function mixpanelTrack<E extends EventName>(
+  event: E,
+  params: EventParams<E> | null,
+) {
   if (!initialized) return;
-  mixpanel.track(event, params);
+  if (params !== null) {
+    mixpanel.track(event, params);
+  }
 }
 
 export function mixpanelIdentify(userId: string) {

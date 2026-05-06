@@ -15,7 +15,7 @@ export function ensureDataLayer() {
   window.dataLayer = window.dataLayer || [];
 }
 
-export function gtmTrack<E extends EventName>(event: E, params: EventParams<E>) {
+export function gtmTrack<E extends EventName>(event: E, params: EventParams<E> | null) {
   if (!isBrowser()) return;
   ensureDataLayer();
   window.dataLayer!.push({

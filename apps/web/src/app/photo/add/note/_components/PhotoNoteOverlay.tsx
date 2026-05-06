@@ -47,7 +47,7 @@ import { getCurrentPosition } from '@/utils/getCurrentPosition';
 import { getLocationInfo } from '@repo/api-client';
 import { useEffect, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
-import { useTrackPage } from '@/components/analytics/useTrackPage';
+import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 
 interface PhotoNoteOverlayProps {
   onClose: () => void;
