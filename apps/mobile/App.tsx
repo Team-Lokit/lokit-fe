@@ -18,7 +18,7 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container} edges={['left', 'right']}>
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
         <AppContent />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -77,10 +77,6 @@ function AppContent() {
 }
 
 function getWebAppUrl() {
-  if (!__DEV__) {
-    return 'https://develop.lokit.co.kr';
-  }
-
   return (
     Platform.select({
       ios: 'https://local.lokit.co.kr:3000/',
