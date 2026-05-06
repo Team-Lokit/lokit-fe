@@ -1,3 +1,6 @@
+/**
+ * @see https://www.analyticsmania.com/post/google-tag-manager-noscript/ **/
+
 export default function GtmNoScript() {
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
   if (!gtmId) return null;
