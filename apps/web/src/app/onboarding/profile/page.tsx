@@ -9,6 +9,7 @@ import { useProfileUpload } from '../_hooks/useProfileUpload';
 import { useOnboardingContext } from '../_contexts/OnboardingContext';
 import { ROUTES } from '@/constants/routes';
 import { track } from '@/lib/analytics';
+import { useTrackPage } from '@/components/analytics/useTrackPage';
 import * as S from './page.styles';
 
 export default function ProfilePage() {
@@ -20,13 +21,9 @@ export default function ProfilePage() {
   const { uploadImage, saveProfile, isUploading } = useProfileUpload();
   const { setProfileData, markStepCompleted, completedSteps } = useOnboardingContext();
 
-  useEffect(() => {
-    track('screen_view_profile_setup', {
-      is_first_setup: !completedSteps.profile,
-    });
-    // 마운트 시 1회만 발송 — completedSteps 변경으로 재발송하지 않음
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useTrackPage('screen_view_profile_setup', {
+    is_first_setup: !completedSteps.profile,
+  });
 
   const handleImageSelect = useCallback((file: File) => {
     setImageFile(file);

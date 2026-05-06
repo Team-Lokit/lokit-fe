@@ -47,6 +47,7 @@ import { getCurrentPosition } from '@/utils/getCurrentPosition';
 import { getLocationInfo } from '@repo/api-client';
 import { useEffect, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
+import { useTrackPage } from '@/components/analytics/useTrackPage';
 
 interface PhotoNoteOverlayProps {
   onClose: () => void;
@@ -106,16 +107,15 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const hasAttemptedDefaultLocation = useRef(false);
   const [isMapPreviewOpen, setIsMapPreviewOpen] = useState(false);
 
-  // 사진 정보 기입 화면 진입 — 마운트 시 1회 발송
-  useEffect(() => {
-    if (!selectedPhoto) return;
-    track('screen_view_photo_info', {
-      photo_count: photos.length || 1,
-      has_metadata_location: !!selectedPhoto.location,
-    });
-    // selectedPhoto/photos는 마운트 시 한 번만 평가 — 이후 변경에는 재발송 X
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useTrackPage(
+    'screen_view_photo_info',
+    selectedPhoto
+      ? {
+          photo_count: photos.length || 1,
+          has_metadata_location: !!selectedPhoto.location,
+        }
+      : null,
+  );
 
   // 사진에 EXIF 위치 정보가 없고, 수동 선택 위치도 없으면 현재 위치를 기본값으로 설정
   useEffect(() => {

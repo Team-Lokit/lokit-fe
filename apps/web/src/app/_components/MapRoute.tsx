@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { getGetClusterPhotosQueryOptions, useGetMyPage } from '@repo/api-client';
 import MapView from '@/components/map/MapView';
@@ -23,6 +23,7 @@ import { MapPin } from '@/types/map.type';
 import { ROUTES } from '@/constants/routes';
 import { VIEW_CONTEXT_TYPE } from '@/constants/viewContext';
 import { track } from '@/lib/analytics';
+import { useTrackPage } from '@/components/analytics/useTrackPage';
 import * as S from '../page.styles';
 import { useMapRouteViewState } from '../_hooks/useMapRouteViewState';
 import { useMapRouteViewContext } from '../_hooks/useMapRouteViewContext';
@@ -51,7 +52,6 @@ export default function MapRoute() {
   // 사이드바 상태
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeView, setActiveView] = useState<ViewType>(VIEW_TYPE.MAP);
-  const homeViewedRef = useRef(false);
 
   // 사용자 프로필 데이터
   const { data: myPageData } = useGetMyPage();
@@ -167,32 +167,25 @@ export default function MapRoute() {
     initLocation();
   }, []);
 
-  // totalHistoryCount 첫 로드 시 1회 발송 (HOME 컨텍스트 한정)
-  useEffect(() => {
-    if (homeViewedRef.current) return;
-    if (viewContext.type !== VIEW_CONTEXT_TYPE.HOME) return;
-    if (totalHistoryCount === undefined) return;
-    homeViewedRef.current = true;
-    track('screen_view_home', {
-      view_mode: activeView,
-      total_records: totalHistoryCount ?? 0,
-    });
-  }, [totalHistoryCount, activeView, viewContext.type]);
+  useTrackPage(
+    'screen_view_home',
+    viewContext.type === VIEW_CONTEXT_TYPE.HOME && totalHistoryCount !== undefined
+      ? { view_mode: activeView, total_records: totalHistoryCount }
+      : null,
+  );
 
-  // 앨범 상세 진입 — albumDetail 첫 로드 시 albumId별 1회 발송
-  const albumDetailViewedRef = useRef<number | null>(null);
-  useEffect(() => {
-    if (viewContext.type !== VIEW_CONTEXT_TYPE.ALBUM_DETAIL) return;
-    if (!albumDetail || albumDetail.id === undefined) return;
-    if (albumDetailViewedRef.current === albumDetail.id) return;
-    albumDetailViewedRef.current = albumDetail.id;
-    track('screen_view_album_detail', {
-      album_id: String(albumDetail.id),
-      album_name: albumDetail.title ?? '',
-      record_count: albumDetail.photoCount ?? 0,
-      view_mode: activeView,
-    });
-  }, [albumDetail, activeView, viewContext.type]);
+  useTrackPage(
+    'screen_view_album_detail',
+    viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL && albumDetail?.id !== undefined
+      ? {
+          album_id: String(albumDetail.id),
+          album_name: albumDetail.title ?? '',
+          record_count: albumDetail.photoCount ?? 0,
+          view_mode: activeView,
+        }
+      : null,
+    albumDetail?.id,
+  );
 
   // 계산된 데이터
   const photoCount = useMemo(() => {

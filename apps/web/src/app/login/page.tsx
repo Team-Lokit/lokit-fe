@@ -6,6 +6,7 @@ import KakaoIcon from '@/assets/images/kakao.svg';
 import { API_URL } from '@/constants/apiUrl';
 import { useIsIOS } from '@/hooks/useIsIOS';
 import { track } from '@/lib/analytics';
+import { useTrackPage } from '@/components/analytics/useTrackPage';
 import { resolveLoginReferrer } from '@/utils/resolveLoginReferrer';
 import * as S from './page.styles';
 import OnboardingCarousel from './_components/loginCarousel/OnboardingCarousel';
@@ -15,9 +16,9 @@ const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 export default function LoginPage() {
   const isIOS = useIsIOS();
 
-  useEffect(() => {
-    track('screen_view_login', { referrer: resolveLoginReferrer() });
+  useTrackPage('screen_view_login', { referrer: resolveLoginReferrer() });
 
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const errorCode = params.get('error');
     if (errorCode) {
