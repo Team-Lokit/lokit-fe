@@ -12,8 +12,16 @@ import { getGetPhotoDetailQueryOptions, useGetPhotoDetail } from '@repo/api-clie
 import { AnimatePresence } from 'framer-motion';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { useTrackPage } from '@/hooks/analytics/useTrackPage';
+import type { PhotoDetailSource } from '@/lib/analytics/events';
 import DeleteConfirmModal from './_components/DeleteConfirmModal';
 import PhotoEditOverlay from './_components/PhotoEditOverlay';
+
+const VALID_SOURCES: readonly PhotoDetailSource[] = [
+  'home_map',
+  'home_grid',
+  'album_detail',
+];
 import {
   useLongPress,
   usePhotoData,
@@ -126,6 +134,21 @@ export default function PhotoViewPage() {
       setShowMoreButton(height > lineHeight * 2);
     }
   }, [resolvedDescription]);
+
+  const sourceParam = searchParams.get('source');
+  const source: PhotoDetailSource = VALID_SOURCES.includes(
+    sourceParam as PhotoDetailSource,
+  )
+    ? (sourceParam as PhotoDetailSource)
+    : 'home_map';
+
+  useTrackPage(
+    'screen_view_photo_detail',
+    photoDetail && displayPhotoId !== undefined
+      ? { photo_id: String(displayPhotoId), source, has_memo: !!resolvedDescription }
+      : null,
+    displayPhotoId,
+  );
 
   const handleBack = () => {
     if (activePendingId) {

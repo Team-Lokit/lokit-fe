@@ -22,6 +22,8 @@ import TextButton from '@/components/buttons/textButton/TextButton';
 import { MapPin } from '@/types/map.type';
 import { ROUTES } from '@/constants/routes';
 import { VIEW_CONTEXT_TYPE } from '@/constants/viewContext';
+import { track } from '@/lib/analytics';
+import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 import * as S from '../page.styles';
 import { useMapRouteViewState } from '../_hooks/useMapRouteViewState';
 import { useMapRouteViewContext } from '../_hooks/useMapRouteViewContext';
@@ -90,6 +92,12 @@ export default function MapRoute() {
     (newPhotos: SelectedPhoto[]) => {
       addPhotos(newPhotos);
       if (newPhotos.length > 0) {
+        const source =
+          viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL ? 'album_detail' : 'home';
+        track('select_photo', {
+          photo_count: newPhotos.length,
+          source,
+        });
         setSelectedPhoto(newPhotos[0]);
         resetPhotoNoteState(newPhotos[0]);
         const albumId =
@@ -159,6 +167,26 @@ export default function MapRoute() {
     initLocation();
   }, []);
 
+  useTrackPage(
+    'screen_view_home',
+    viewContext.type === VIEW_CONTEXT_TYPE.HOME && totalHistoryCount !== undefined
+      ? { view_mode: activeView, total_records: totalHistoryCount }
+      : null,
+  );
+
+  useTrackPage(
+    'screen_view_album_detail',
+    viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL && albumDetail?.id !== undefined
+      ? {
+          album_id: String(albumDetail.id),
+          album_name: albumDetail.title ?? '',
+          record_count: albumDetail.photoCount ?? 0,
+          view_mode: activeView,
+        }
+      : null,
+    albumDetail?.id,
+  );
+
   // 계산된 데이터
   const photoCount = useMemo(() => {
     return calculatePhotoCount(viewContext, albumDetail, 0, totalHistoryCount);
@@ -171,12 +199,24 @@ export default function MapRoute() {
 
   const handlePinClick = async (pin: MapPin) => {
     if (!pin.isCluster) {
-      router.push(ROUTES.PHOTO.VIEW(pin.id));
+      track('click_map_photo_pin', {
+        photo_id: String(pin.id),
+        location_name: address ?? '',
+      });
+      const pinSource =
+        viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL ? 'album_detail' : 'home_map';
+      const pinUrl = ROUTES.PHOTO.VIEW(pin.id);
+      router.push(`${pinUrl}${pinUrl.includes('?') ? '&' : '?'}source=${pinSource}`);
       return;
     }
 
     const clusterId = pin.clusterId;
     if (!clusterId) return;
+
+    track('click_photo_cluster', {
+      cluster_count: pin.imageCount,
+      location_name: address ?? '',
+    });
 
     let photos = clusterExpansionData?.get(clusterId);
 
@@ -195,10 +235,32 @@ export default function MapRoute() {
     const firstPhotoId = photos.find((photo) => !!photo.id)?.id;
     if (!firstPhotoId) return;
 
-    router.push(ROUTES.PHOTO.VIEW_WITH_CLUSTER(firstPhotoId, clusterId));
+    const clusterSource =
+      viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL ? 'album_detail' : 'home_map';
+    router.push(
+      `${ROUTES.PHOTO.VIEW_WITH_CLUSTER(firstPhotoId, clusterId)}&source=${clusterSource}`,
+    );
   };
 
-  const handleSelectAlbum = (albumId: number) => {
+  const handleOpenSidebar = () => {
+    track('click_sidebar_open', {
+      total_records: totalHistoryCount ?? 0,
+    });
+    setIsSidebarOpen(true);
+  };
+
+  const handleSidebarNewAlbum = () => {
+    track('click_sidebar_new_album', {});
+    setIsAddModalOpen(true);
+  };
+
+  const handleSelectAlbum = (albumId: number, position: number) => {
+    const album = mergedAlbumList.find((a) => a.id === albumId);
+    track('click_sidebar_album', {
+      album_id: String(albumId),
+      album_name: album?.title ?? '',
+      album_position: position,
+    });
     setViewContext({ type: VIEW_CONTEXT_TYPE.ALBUM_DETAIL, albumId });
     setIsSidebarOpen(false);
     router.push(`/album/${albumId}`);
@@ -238,7 +300,7 @@ export default function MapRoute() {
           viewContext={viewContext}
           selectedAlbumTitle={selectedAlbumTitle}
           address={address}
-          onOpenSidebar={() => setIsSidebarOpen(true)}
+          onOpenSidebar={handleOpenSidebar}
           onRenameAlbum={
             isCustomAlbumSelected ? () => handleRenameAlbum(selectedAlbumId) : undefined
           }
@@ -284,7 +346,20 @@ export default function MapRoute() {
                     key={photo.id}
                     src={photo.url ?? ''}
                     date={photo.takenAt}
-                    onClick={() => router.push(ROUTES.PHOTO.VIEW(photo.id!))}
+                    onClick={() => {
+                      track('click_grid_photo_thumb', {
+                        photo_id: String(photo.id),
+                        photo_date: photo.takenAt ?? '',
+                      });
+                      const url = ROUTES.PHOTO.VIEW(photo.id!);
+                      const gridSource =
+                        viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL
+                          ? 'album_detail'
+                          : 'home_grid';
+                      router.push(
+                        `${url}${url.includes('?') ? '&' : '?'}source=${gridSource}`,
+                      );
+                    }}
                   />
                 ),
               )}
@@ -307,7 +382,10 @@ export default function MapRoute() {
         >
           <TextButton
             text="사진 추가"
-            onClick={() => selectPhotosFromFile()}
+            onClick={() => {
+              track('screen_view_photo_picker', { source: 'home' });
+              selectPhotosFromFile();
+            }}
             textAlign="left"
           />
           <TextButton
@@ -327,7 +405,18 @@ export default function MapRoute() {
       </S.FloatingButtonWrapper>
 
       <S.ViewSwitcherWrapper>
-        <ViewSwitcher activeView={activeView} onChangeView={setActiveView} />
+        <ViewSwitcher
+          activeView={activeView}
+          onChangeView={(view) => {
+            if (view !== activeView) {
+              track('click_view_mode_switch', {
+                from_mode: activeView,
+                to_mode: view,
+              });
+            }
+            setActiveView(view);
+          }}
+        />
       </S.ViewSwitcherWrapper>
 
       <Sidebar
@@ -339,7 +428,7 @@ export default function MapRoute() {
         profileImageUrl={myPageData?.myProfileImageUrl ?? profileImageUrl}
         selectedAlbumId={selectedAlbumId}
         onExplore={() => router.push(ROUTES.EXPLORE)}
-        onNewAlbum={() => setIsAddModalOpen(true)}
+        onNewAlbum={handleSidebarNewAlbum}
         onSelectAlbum={handleSelectAlbum}
         onRenameAlbum={handleRenameAlbum}
         onDeleteAlbum={handleDeleteAlbum}
@@ -349,6 +438,7 @@ export default function MapRoute() {
       <AlbumAddModalContainer
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
+        currentAlbumCount={mergedAlbumList.length}
       />
       <AlbumRenameModalContainer
         isOpen={isRenameModalOpen}
