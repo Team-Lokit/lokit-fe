@@ -1,0 +1,16 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  justify-content: center;
+  min-height: 100dvh;
+  background-color: #242426; /* gray.1000 */
+}
+
+.actionSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 0 16px;
+}

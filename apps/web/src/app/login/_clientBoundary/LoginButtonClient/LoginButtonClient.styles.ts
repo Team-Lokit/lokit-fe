@@ -1,16 +1,6 @@
 import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  justify-content: center;
-  min-height: 100dvh;
-  padding: 24px;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
-`;
-
-export const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
