@@ -18,6 +18,7 @@ export const KakaoButton = styled.button`
   border-radius: 8px;
   background-color: #fee500;
   color: #000000;
+  height: 48px;
   ${({ theme }) => theme.typography.body16Semibold}
   cursor: pointer;
 
@@ -37,6 +38,7 @@ export const AppleButton = styled.button`
   border-radius: 8px;
   background-color: white;
   color: black;
+  height: 48px;
   ${({ theme }) => theme.typography.body16Semibold}
   cursor: pointer;
 
