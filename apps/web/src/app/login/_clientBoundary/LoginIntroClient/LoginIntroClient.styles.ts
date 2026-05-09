@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
   align-items: center;
 `;
 
-export const Title = styled.h1`
+export const Title = styled.p`
   ${({ theme }) => theme.typography.heading24Bold}
   color: ${({ theme }) => theme.colors.gray[100]};
   text-align: center;

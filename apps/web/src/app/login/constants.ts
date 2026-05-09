@@ -1,3 +1,4 @@
+export const PAGE_TITLE = '로그인 페이지';
 export const SERVICE_TERMS_URL =
   'https://wiry-packet-961.notion.site/LOKIT-34aa07715341808e8ca6c91b339f7637';
 export const PRIVACY_POLICY_URL =
