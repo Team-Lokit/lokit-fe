@@ -1,9 +1,9 @@
 import styles from './page.module.css';
-import PolicyNoticeClient from '@/app/login/_clientBoundary/PolicyNoticeClient/PolicyNoticeClient';
 import LoginButtonClient from '@/app/login/_clientBoundary/LoginButtonClient/LoginButtonClient';
 import LoginTrackerClient from '@/app/login/_clientBoundary/LoginTrackerClient/LoginTrackerClient';
-import LoginIntroClient from '@/app/login/_clientBoundary/LoginIntroClient/LoginIntroClient';
 import { PAGE_TITLE } from './constants';
+import LoginIntro from './_components/LoginIntro/LoginIntro';
+import PolicyNotice from './_components/PolicyNotice/PolicyNotice';
 
 export default function LoginPage() {
   return (
@@ -11,11 +11,11 @@ export default function LoginPage() {
       <h1 className={styles.srOnly}>{PAGE_TITLE}</h1>
 
       <LoginTrackerClient />
-      <LoginIntroClient />
+      <LoginIntro />
 
       <div className={styles.actionSection}>
         <LoginButtonClient />
-        <PolicyNoticeClient />
+        <PolicyNotice />
       </div>
     </main>
   );

@@ -1,0 +1,21 @@
+.infoText {
+  margin: 0;
+  color: #525156;
+  text-align: center;
+
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 160%;
+  letter-spacing: -0.02em;
+}
+
+.linkText {
+  color: #525156;
+
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: auto;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+  cursor: pointer;
+}
