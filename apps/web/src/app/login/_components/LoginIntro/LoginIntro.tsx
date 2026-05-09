@@ -12,7 +12,7 @@ export default function LoginIntro() {
       </p>
 
       <div className={styles.imageWrapper}>
-        <Image src={ScreenImage} alt="커플지도 화면 미리보기" priority width={154} />
+        <Image src={ScreenImage} alt="커플지도 화면 미리보기" priority />
       </div>
     </section>
   );
