@@ -3,6 +3,8 @@
   flex-direction: column;
   gap: 28px;
   justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
   min-height: 100dvh;
   background-color: #0f1014;
 }
