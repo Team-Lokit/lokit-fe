@@ -19,3 +19,26 @@ export const MainText = styled.span`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
+
+export const ImageWrapper = styled.div`
+  position: relative;
+  width: 154px;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 100vw;
+    height: 40px;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, rgba(15, 16, 20, 0) 0%, #0f1014 100%);
+    pointer-events: none;
+  }
+`;
