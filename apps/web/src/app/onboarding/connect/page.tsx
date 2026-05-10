@@ -10,6 +10,7 @@ import { useOnboardingContext } from '../_contexts/OnboardingContext';
 import { useToast } from '@/components/toast';
 import { ROUTES } from '@/constants/routes';
 import { KAKAO_TEMPLATE_ID } from '@/constants/kakao';
+import { track } from '@/lib/analytics';
 import CopySvg from '@/assets/images/copy.svg';
 import * as S from './page.styles';
 import KakaoSvg from '@/assets/images/kakao.svg';
@@ -43,10 +44,14 @@ export default function ConnectPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // coupled 상태 변경 감지 - false에서 true로 변경되면 토스트 표시
+  // coupled 상태 변경 감지 - false에서 true로 변경되면 토스트 표시 + 트래킹
   useEffect(() => {
     if (previousCoupledRef.current === false && isCoupled === true) {
       showToast('이제 시작할 수 있어요!', 3000, 'success');
+      track('couple_connect_success', {
+        invite_method: 'link',
+        // TODO: days_since_signup은 클라이언트가 알 수 없어 제외 (백엔드 응답에 가입일 추가 후 적용)
+      });
     }
     previousCoupledRef.current = isCoupled;
   }, [isCoupled, showToast]);

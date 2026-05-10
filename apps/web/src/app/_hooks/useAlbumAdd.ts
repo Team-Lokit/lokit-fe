@@ -1,12 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { ApiError, useCreate1, getGetMapMeQueryKey } from '@repo/api-client';
+import {
+  ApiError,
+  useCreate1,
+  getGetMapMeQueryKey,
+  type IdResponse,
+} from '@repo/api-client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/toast';
 import { getMapMeAlbumsQueryKey } from '@/hooks/queries/useMapMeAlbums';
 
-const useAlbumAdd = (onSuccess?: () => void) => {
+interface UseAlbumAddOptions {
+  onSuccess?: () => void;
+  onCreated?: (response: IdResponse, title: string) => void;
+}
+
+const useAlbumAdd = ({ onSuccess, onCreated }: UseAlbumAddOptions = {}) => {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const [albumName, setAlbumName] = useState('');
@@ -20,12 +30,13 @@ const useAlbumAdd = (onSuccess?: () => void) => {
     create(
       { data: { title: nextTitle } },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
           // getMapMe 관련 모든 쿼리 invalidate (params 무관)
           queryClient.invalidateQueries({ queryKey: getGetMapMeQueryKey() });
           // 앨범 리스트 쿼리도 invalidate
           queryClient.invalidateQueries({ queryKey: getMapMeAlbumsQueryKey() });
           showToast('앨범이 생성되었어요');
+          onCreated?.(response, nextTitle);
           onSuccess?.();
         },
         onError: (error) => {

@@ -1,40 +1,22 @@
-'use client';
-
-import AppleIcon from '@/assets/images/apple.svg';
-import KakaoIcon from '@/assets/images/kakao.svg';
-import { API_URL } from '@/constants/apiUrl';
-import { useIsIOS } from '@/hooks/useIsIOS';
-import * as S from './page.styles';
-import OnboardingCarousel from './_components/loginCarousel/OnboardingCarousel';
-
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+import styles from './page.module.css';
+import LoginButtonClient from '@/app/login/_clientBoundary/LoginButtonClient/LoginButtonClient';
+import LoginTrackerClient from '@/app/login/_clientBoundary/LoginTrackerClient/LoginTrackerClient';
+import { PAGE_TITLE } from './constants';
+import LoginIntro from './_components/LoginIntro/LoginIntro';
+import PolicyNotice from './_components/PolicyNotice/PolicyNotice';
 
 export default function LoginPage() {
-  const isIOS = useIsIOS();
-
-  const handleKakaoLogin = () => {
-    window.location.href = `${apiBaseUrl}${API_URL.AUTH.KAKAO}`;
-  };
-
-  const handleAppleLogin = () => {
-    window.location.href = `${apiBaseUrl}${API_URL.AUTH.APPLE}`;
-  };
-
   return (
-    <S.Wrapper>
-      <OnboardingCarousel />
-      <S.ButtonWrapper>
-        <S.KakaoButton onClick={handleKakaoLogin}>
-          <KakaoIcon width={16} height={16} />
-          <span>카카오로 계속하기</span>
-        </S.KakaoButton>
-        {isIOS && (
-          <S.AppleButton onClick={handleAppleLogin}>
-            <AppleIcon width={16} height={16} />
-            <span>Apple로 계속하기</span>
-          </S.AppleButton>
-        )}
-      </S.ButtonWrapper>
-    </S.Wrapper>
+    <main className={styles.wrapper}>
+      <h1 className={styles.srOnly}>{PAGE_TITLE}</h1>
+
+      <LoginTrackerClient />
+      <LoginIntro />
+
+      <div className={styles.actionSection}>
+        <LoginButtonClient />
+        <PolicyNotice />
+      </div>
+    </main>
   );
 }

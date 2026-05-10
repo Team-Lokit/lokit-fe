@@ -11,6 +11,12 @@ import { useOnboardingContext } from '../_contexts/OnboardingContext';
 import { useToast } from '@/components/toast/ToastProvider';
 import { ROUTES } from '@/constants/routes';
 import { INVITE_CODE_LENGTH } from '@/constants/onboarding';
+import { track } from '@/lib/analytics';
+import {
+  COUPLE_CONNECT_ERROR_TYPE_BY_CODE,
+  type CoupleConnectErrorCode,
+  type CoupleConnectErrorType,
+} from '@/lib/analytics/events';
 import DefaultProfile from '@/assets/images/defaultProfile.svg';
 import * as S from './page.styles';
 
@@ -54,7 +60,12 @@ export default function VerifyPage() {
         setState('preConfirm');
         hasVerifiedRef.current = true;
       } else {
-        const errorCode = result.errorCode;
+        const errorCode = result.errorCode as CoupleConnectErrorCode | undefined;
+        const errorType: CoupleConnectErrorType =
+          (errorCode ? COUPLE_CONNECT_ERROR_TYPE_BY_CODE[errorCode] : undefined) ??
+          'invalid_code';
+        track('couple_connect_fail', { error_type: errorType });
+
         if (errorCode === 'INVITE_001') {
           showToast('잘못된 코드예요', 3000, 'warn');
         } else if (errorCode === 'INVITE_002') {
@@ -75,12 +86,21 @@ export default function VerifyPage() {
   const handleConfirm = useCallback(async () => {
     const result = await joinCode(code);
     if (result.success) {
+      track('couple_connect_success', {
+        invite_method: 'code',
+        // TODO: days_since_signup은 클라이언트가 알 수 없어 제외 (백엔드 응답에 가입일 추가 후 적용)
+      });
       markStepCompleted('verify');
 
       setTimeout(() => {
         router.push(ROUTES.HOME);
       }, 1500);
     } else {
+      const errorCode = result.errorCode as CoupleConnectErrorCode | undefined;
+      const errorType: CoupleConnectErrorType =
+        (errorCode ? COUPLE_CONNECT_ERROR_TYPE_BY_CODE[errorCode] : undefined) ??
+        'invalid_code';
+      track('couple_connect_fail', { error_type: errorType });
       showToast('잘못된 코드예요', 3000, 'warn');
       handleRetry();
     }

@@ -46,6 +46,8 @@ import { useToast } from '@/components/toast';
 import { getCurrentPosition } from '@/utils/getCurrentPosition';
 import { getLocationInfo } from '@repo/api-client';
 import { useEffect, useRef, useState } from 'react';
+import { track } from '@/lib/analytics';
+import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 
 interface PhotoNoteOverlayProps {
   onClose: () => void;
@@ -54,7 +56,8 @@ interface PhotoNoteOverlayProps {
 export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const router = useRouter();
   const { showToast } = useToast();
-  const { selectedPhoto, selectedPhotoRect, updatePhotoNoteState } = usePhotoContext();
+  const { selectedPhoto, selectedPhotoRect, updatePhotoNoteState, photos } =
+    usePhotoContext();
   const {
     memo,
     tempMemo,
@@ -104,6 +107,16 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const hasAttemptedDefaultLocation = useRef(false);
   const [isMapPreviewOpen, setIsMapPreviewOpen] = useState(false);
 
+  useTrackPage(
+    'screen_view_photo_info',
+    selectedPhoto
+      ? {
+          photo_count: photos.length || 1,
+          has_metadata_location: !!selectedPhoto.location,
+        }
+      : null,
+  );
+
   // 사진에 EXIF 위치 정보가 없고, 수동 선택 위치도 없으면 현재 위치를 기본값으로 설정
   useEffect(() => {
     if (hasAttemptedDefaultLocation.current) return;
@@ -142,6 +155,14 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
     if (!selectedPhoto || !hasLocation || isSubmittingRef.current) return;
     isSubmittingRef.current = true;
 
+    track('click_photo_upload_submit', {
+      photo_count: 1,
+      has_memo: !!memo,
+      has_location: hasLocation,
+      has_album: !!selectedAlbum,
+      ...(selectedAlbum ? { album_id: String(selectedAlbum.id) } : {}),
+    });
+
     addPendingPhoto({
       photo: selectedPhoto,
       description: memo || undefined,
@@ -161,6 +182,33 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
     } else {
       router.replace(ROUTES.HOME);
     }
+  };
+
+  const handleClickClose = () => {
+    track('click_photo_upload_close', {
+      photo_count: 1,
+      has_memo: !!memo,
+      has_location: hasLocation,
+      has_album: !!selectedAlbum,
+    });
+    onClose();
+  };
+
+  const handleClickAddLocation = () => {
+    track('click_location_tag', {
+      has_auto_location: !!selectedLocation,
+    });
+    handleAddLocation();
+  };
+
+  const handleClickAddMemo = () => {
+    track('click_memo_input', {});
+    handleAddMemo();
+  };
+
+  const handleClickAlbumSelect = () => {
+    track('click_album_select', {});
+    handleAlbumSelect();
   };
 
   const handleMapPreview = () => {
@@ -265,14 +313,14 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
           <S.TopOverlay>
             <PhotoAddHeader
               left={
-                <HeaderStyles.CloseButton onClick={onClose}>
+                <HeaderStyles.CloseButton onClick={handleClickClose}>
                   <CloseIcon width={22} height={22} />
                 </HeaderStyles.CloseButton>
               }
               locationText={locationText}
               isLoading={isAddressLoading}
               hasLocation={hasLocation}
-              onClickLocation={handleAddLocation}
+              onClickLocation={handleClickAddLocation}
             />
 
             {/* 말풍선 */}
@@ -288,7 +336,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
                         ? '위치가 저장되었어요.'
                         : '위치가 자동으로 저장되었어요.'}
                     </S.TooltipText>
-                    <S.TooltipButton type="button" onClick={handleAddLocation}>
+                    <S.TooltipButton type="button" onClick={handleClickAddLocation}>
                       위치 수정
                     </S.TooltipButton>
                   </>
@@ -298,7 +346,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
                       <WarningIcon width={22} height={22} />
                     </S.TooltipIcon>
                     <S.TooltipText>위치를 추가해주세요.</S.TooltipText>
-                    <S.TooltipButton type="button" onClick={handleAddLocation}>
+                    <S.TooltipButton type="button" onClick={handleClickAddLocation}>
                       위치 추가
                     </S.TooltipButton>
                   </>
@@ -309,12 +357,12 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
 
           {/* 메모, 앨범 오버레이 (사진에 오버레이) */}
           <S.MemoAlbumOverlay>
-            <S.MemoButton type="button" onClick={handleAddMemo}>
+            <S.MemoButton type="button" onClick={handleClickAddMemo}>
               {memo || '메모 추가...'}
             </S.MemoButton>
 
             <S.AlbumButtonWrapper>
-              <S.AlbumChip onClick={handleAlbumSelect}>
+              <S.AlbumChip onClick={handleClickAlbumSelect}>
                 <S.AlbumIconWrapper>
                   <AlbumSmallIcon />
                 </S.AlbumIconWrapper>

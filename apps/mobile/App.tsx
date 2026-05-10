@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import BootSplash from 'react-native-bootsplash';
 import { buildBridgeInjection } from './bridge';
+import useAppLifecycleTracking from './useAppLifecycleTracking';
+import useDeepLinkHandling from './useDeepLinkHandling';
 
 function App() {
   useEffect(() => {
@@ -16,7 +18,7 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container} edges={['left', 'right']}>
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
         <AppContent />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -24,14 +26,25 @@ function App() {
 }
 
 function AppContent() {
-  const webAppUrl = getWebAppUrl();
+  const defaultUrl = getWebAppUrl();
+  const webViewRef = useRef<WebView>(null);
+  const { onWebViewLoad } = useAppLifecycleTracking(webViewRef);
+  const { initialUrl } = useDeepLinkHandling(webViewRef);
+
+  // Linking이 resolve되기 전에는 WebView를 띄우지 않음(스플래시가 가려줌).
+  // 콜드 스타트 딥링크는 buildBridgeInjection에서 페이지 로드 전 주입돼야 정확하다.
+  if (initialUrl === null) {
+    return <View style={styles.content} />;
+  }
 
   return (
     <View style={styles.content}>
       <WebView
-        source={{ uri: webAppUrl }}
+        ref={webViewRef}
+        source={{ uri: initialUrl ?? defaultUrl }}
         style={styles.webView}
-        injectedJavaScriptBeforeContentLoaded={buildBridgeInjection()}
+        injectedJavaScriptBeforeContentLoaded={buildBridgeInjection(initialUrl)}
+        onLoad={onWebViewLoad}
         // dvh 단위가 모바일 웹뷰에서 제대로 작동하지 않는 문제를 해결
         injectedJavaScript={`
           (function() {
@@ -64,10 +77,6 @@ function AppContent() {
 }
 
 function getWebAppUrl() {
-  if (!__DEV__) {
-    return 'https://develop.lokit.co.kr';
-  }
-
   return (
     Platform.select({
       ios: 'https://local.lokit.co.kr:3000/',

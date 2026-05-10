@@ -6,6 +6,7 @@ node_modules
 .pnp.*
 .DS_Store
 .claude/
+.idea/
 .next
 .expo
 .turbo

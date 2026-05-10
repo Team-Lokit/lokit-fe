@@ -4,6 +4,8 @@ import { pretendard } from '@/theme/font';
 import EmotionRegistry from './emotion-registry';
 import LayoutClient from '@/components/layout/Layout.client';
 import Script from 'next/script';
+import GtmScript from '@/components/analytics/GtmScript';
+import GtmNoScript from '@/components/analytics/GtmNoScript';
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -41,12 +43,14 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        <GtmScript />
         <Script
           src="https://developers.kakao.com/sdk/js/kakao.js"
           strategy="afterInteractive"
         />
       </head>
       <body className={pretendard.variable}>
+        <GtmNoScript />
         <AppProviders enableMocking={enableMocking}>
           <EmotionRegistry>
             <LayoutClient>{children}</LayoutClient>

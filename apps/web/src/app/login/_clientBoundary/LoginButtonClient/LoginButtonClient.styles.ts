@@ -1,16 +1,6 @@
 import styled from '@emotion/styled';
 
 export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  justify-content: center;
-  min-height: 100dvh;
-  padding: 24px;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
-`;
-
-export const ButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -28,6 +18,7 @@ export const KakaoButton = styled.button`
   border-radius: 8px;
   background-color: #fee500;
   color: #000000;
+  height: 48px;
   ${({ theme }) => theme.typography.body16Semibold}
   cursor: pointer;
 
@@ -47,6 +38,7 @@ export const AppleButton = styled.button`
   border-radius: 8px;
   background-color: white;
   color: black;
+  height: 48px;
   ${({ theme }) => theme.typography.body16Semibold}
   cursor: pointer;
 
