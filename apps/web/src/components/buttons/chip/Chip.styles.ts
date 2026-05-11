@@ -22,7 +22,7 @@ const sizeStyles = {
   `,
   medium: (theme: Theme) => css`
     ${theme.typography.body15Semibold}
-    padding: 8px 14px;
+    padding: 6px 14px;
     gap: 6px;
   `,
 };
