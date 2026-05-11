@@ -112,8 +112,8 @@ export const Tooltip = styled.div`
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  background: ${({ theme }) => theme.colors.gray.a80};
-  border-radius: 10px;
+  background: ${({ theme }) => theme.colors.gray[900]};
+  border-radius: 99px;
   backdrop-filter: blur(5px);
 
   &::before {
@@ -124,21 +124,21 @@ export const Tooltip = styled.div`
     transform: translateX(-50%) rotate(45deg);
     width: 10px;
     height: 10px;
-    background: ${({ theme }) => theme.colors.gray.a80};
+    background: ${({ theme }) => theme.colors.gray[900]};
     border-radius: 2px;
   }
 `;
 
 export const TooltipIcon = styled.div`
-  width: 22px;
-  height: 22px;
+  width: 14px;
+  height: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
 export const TooltipText = styled.span`
-  ${({ theme }) => theme.typography.body15Semibold};
+  ${({ theme }) => theme.typography.body14Semibold};
   color: ${({ theme }) => theme.colors.gray[0]};
 `;
 

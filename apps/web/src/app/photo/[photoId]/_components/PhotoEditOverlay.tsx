@@ -232,7 +232,7 @@ export default function PhotoEditOverlay({
             <S.TooltipWrapper>
               <S.Tooltip>
                 <S.TooltipIcon>
-                  <SuccessIcon width={22} height={22} />
+                  <SuccessIcon width={14} height={14} />
                 </S.TooltipIcon>
                 <S.TooltipText>{getTooltipText()}</S.TooltipText>
                 <S.TooltipButton type="button" onClick={handleAddLocation}>
