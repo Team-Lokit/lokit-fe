@@ -32,9 +32,7 @@ const PhotoAddHeader = ({
     if (hasLocation && locationText) {
       return (
         <E.LocationWrapper>
-          <E.LocationIconWrapper>
-            <LocationIcon width={16} height={16} />
-          </E.LocationIconWrapper>
+          <E.LocationArrowIcon />
           <E.LocationText>{locationText}</E.LocationText>
         </E.LocationWrapper>
       );

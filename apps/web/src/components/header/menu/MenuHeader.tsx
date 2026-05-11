@@ -1,6 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
 import ChevronLeftIcon from '@/assets/images/chevronLeft.svg';
-import LocationIcon from '@/assets/images/location.svg';
 import MenuIcon from '@/assets/images/menu.svg';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import CrossfadeText from '@/components/common/crossfadeText/CrossfadeText';
@@ -69,11 +68,7 @@ const MenuHeaderMain = ({
           }
           center={
             <B.CenterSection>
-              {showLocation && (
-                <E.LocationIconWrapper>
-                  <LocationIcon width={16} height={16} />
-                </E.LocationIconWrapper>
-              )}
+              {showLocation && <E.LocationArrowIcon />}
               {title && (
                 <B.Title>
                   <CrossfadeText text={title} />

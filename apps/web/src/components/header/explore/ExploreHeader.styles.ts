@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import LocationArrowSvg from '@/assets/images/locationArrow.svg';
 
 export const LocationWrapper = styled.div`
   display: flex;
@@ -9,14 +10,11 @@ export const LocationWrapper = styled.div`
   overflow: hidden;
 `;
 
-export const LocationIconWrapper = styled.div`
+export const LocationArrowIcon = styled(LocationArrowSvg)`
   width: 16px;
   height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: ${({ theme }) => theme.colors.gray[200]};
+  display: block;
+  color: ${({ theme }) => theme.colors.gray[100]};
 `;
 
 export const LocationText = styled.span`

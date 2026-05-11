@@ -44,6 +44,7 @@ import { saveClusterToSession } from '@/utils/sessionStorage';
 import { usePhotoContext } from '@/app/photo/_contexts/PhotoContext';
 import { usePhotoSelect } from '@/app/photo/add/_hooks/usePhotoSelect';
 import type { SelectedPhoto } from '@/app/photo/add/_types/photo';
+import Chip from '@/components/buttons/chip/Chip';
 
 export default function MapRoute() {
   const router = useRouter();
@@ -401,7 +402,7 @@ export default function MapRoute() {
       </S.ActionColumn>
 
       <S.FloatingButtonWrapper>
-        <FloatingButton text={`기록 ${photoCount}개`} />
+        <Chip text={`기록 ${photoCount}개`} size="medium" />
       </S.FloatingButtonWrapper>
 
       <S.ViewSwitcherWrapper>
