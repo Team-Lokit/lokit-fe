@@ -1,4 +1,5 @@
 import * as S from './Check.styles';
+import CheckIcon from '@/assets/images/check.svg';
 
 interface CheckProps {
   /** 체크 여부 */
@@ -15,7 +16,7 @@ const Check = ({ checked, onChange }: CheckProps) => {
         onChange={(e) => onChange(e.target.checked)}
         hidden
       />
-      <S.CheckIcon checked={checked} />
+      {checked && <CheckIcon />}
     </S.Wrapper>
   );
 };

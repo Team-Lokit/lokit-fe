@@ -1,30 +1,30 @@
 import { css, Theme } from '@emotion/react';
 import styled from '@emotion/styled';
-import CheckSvg from '@/assets/images/check.svg';
 
 const variantStyles = {
   checked: (theme: Theme) => css`
-    background: ${theme.colors.gradient.mint};
+    background: ${theme.colors.gray[0]};
+    border: none;
   `,
   unchecked: (theme: Theme) => css`
-    background: ${theme.colors.gray[900]};
-    border: 1px solid ${theme.colors.gray[700]};
+    background-color: ${theme.colors.blueWhite['bg5']};
+    border: 2px solid ${theme.colors.blueWhite['bg5']};
   `,
 };
 
 export const Wrapper = styled.label<{ checked: boolean }>`
-  border-radius: 47px;
+  border-radius: 4px;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
+
   ${({ checked, theme }) =>
     checked ? variantStyles.checked(theme) : variantStyles.unchecked(theme)}
 `;
 
-export const InputContainer = styled.input``;
-
-export const CheckIcon = styled(CheckSvg)<{ checked: boolean }>`
-  fill: ${({ checked, theme }) =>
-    checked ? theme.colors.gray[900] : theme.colors.gray[300]};
+export const InputContainer = styled.input`
+  display: none;
 `;
