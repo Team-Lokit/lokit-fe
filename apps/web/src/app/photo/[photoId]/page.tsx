@@ -240,10 +240,10 @@ export default function PhotoViewPage() {
               {!isPendingMode && resolvedDetail?.isEditable && (
                 <MenuHeader.Menu>
                   <MenuHeader.Item onClick={() => openEditOverlay(displayPhotoId)}>
-                    기록 수정하기
+                    기록 수정
                   </MenuHeader.Item>
                   <MenuHeader.Item variant="danger" onClick={openDeleteModal}>
-                    사진 삭제하기
+                    사진 삭제
                   </MenuHeader.Item>
                 </MenuHeader.Menu>
               )}
