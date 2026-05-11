@@ -48,8 +48,8 @@ const Container = styled.div`
 `;
 
 const ProfileCircle = styled.div`
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
   flex-shrink: 0;
   background-color: ${({ theme }) => theme.colors.blueWhite.bg8};

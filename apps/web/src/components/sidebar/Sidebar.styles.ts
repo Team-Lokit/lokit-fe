@@ -36,7 +36,8 @@ export const Container = styled.aside<{ $isOpen: boolean; $isClosing: boolean }>
   left: 0;
   width: ${({ theme }) => theme.layout.sidebarWidth};
   height: 100%;
-  background-color: ${({ theme }) => theme.colors.gray.a80};
+  padding: 16px 0;
+  background-color: ${({ theme }) => theme.colors.overlay[80]};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
   border-right: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
   z-index: ${({ theme }) => theme.zIndex.overlay};
@@ -52,7 +53,6 @@ export const Content = styled.div`
   gap: 20px;
   flex: 1;
   overflow: hidden;
-  padding-top: 48px;
 `;
 
 export const Section = styled.div`
@@ -71,5 +71,4 @@ export const SearchWrapper = styled.div`
 export const Footer = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
   padding: 8px;
-  margin-bottom: 20px;
 `;

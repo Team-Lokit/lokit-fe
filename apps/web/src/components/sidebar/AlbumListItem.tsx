@@ -42,7 +42,7 @@ export default AlbumListItem;
 const Container = styled.div<{ $isSelected: boolean }>`
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
   padding: 10px 12px;
   border-radius: 12px;
   cursor: pointer;
