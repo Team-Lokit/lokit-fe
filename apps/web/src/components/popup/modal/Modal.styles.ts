@@ -4,7 +4,8 @@ export const Content = styled.div`
   width: min(calc(100% - 40px), calc(${({ theme }) => theme.layout.maxWidth} - 40px));
   max-height: calc(100% - 40px);
   padding: 24px;
-  background: ${({ theme }) => theme.colors.gray[1000]};
+  background: ${({ theme }) => theme.colors.overlay[50]};
+  backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[25]};
   border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
   border-radius: 20px;
   display: flex;

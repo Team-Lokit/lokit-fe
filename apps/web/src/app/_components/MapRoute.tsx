@@ -10,7 +10,6 @@ import ViewSwitcher, {
   VIEW_TYPE,
   type ViewType,
 } from '@/components/viewSwitcher/ViewSwitcher';
-import FloatingButton from '@/components/buttons/floatingButton/FloatingButton';
 import PhotoGridContainer from '@/components/photoGridContainer/PhotoGridContainer';
 import PhotoGridItem from '@/components/photoGridItem/PhotoGridItem';
 import HomeEmptyState from '@/components/common/homeEmptyState/HomeEmptyState';

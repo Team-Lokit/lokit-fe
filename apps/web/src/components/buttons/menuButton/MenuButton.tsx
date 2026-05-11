@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import * as S from './MenuButton.styles';
+import CircleButton from '@/components/buttons/circleButton/CircleButton';
 
 export type MenuPlacement = 'top' | 'bottom';
 
@@ -33,14 +34,14 @@ const MenuButton = ({
 
   return (
     <S.Container>
-      <S.TriggerButton
+      <CircleButton
         type="button"
         aria-haspopup="menu"
         aria-expanded={isOpen}
         onClick={handleToggle}
       >
         {triggerIcon(isOpen)}
-      </S.TriggerButton>
+      </CircleButton>
 
       {isOpen && (
         <>
