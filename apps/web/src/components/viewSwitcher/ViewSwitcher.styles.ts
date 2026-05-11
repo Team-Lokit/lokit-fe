@@ -6,8 +6,7 @@ export const Container = styled.div`
   height: 44px;
   padding: 4px;
   border-radius: 99px;
-  background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
+  background-color: ${({ theme }) => theme.colors.overlay[50]};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[25]};
 `;
 
