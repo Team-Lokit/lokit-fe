@@ -79,7 +79,7 @@ export const MoreOverlay = styled.div<{ type: AlbumContainerType }>`
   color: ${({ theme }) => theme.colors.gray[0]};
   ${({ type, theme }) =>
     type === ALBUM_CONTAINER_TYPE.SMALL
-      ? theme.typography.caption12Bold
+      ? theme.typography.caption12Semibold
       : theme.typography.heading18Bold}
 `;
 

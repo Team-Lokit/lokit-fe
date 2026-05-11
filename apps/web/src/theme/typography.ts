@@ -147,7 +147,7 @@ export const typography = {
     letterSpacing: '-0.02em',
   },
 
-  caption12Bold: {
+  caption12Semibold: {
     fontSize: '12px',
     fontWeight: 700,
     lineHeight: '160%',

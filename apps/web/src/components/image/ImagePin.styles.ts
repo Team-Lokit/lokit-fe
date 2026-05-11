@@ -46,7 +46,7 @@ export const Badge = styled.div`
   height: 19px;
   padding: 0px 4px;
   background-color: ${({ theme }) => theme.colors.gray[100]};
-  ${({ theme }) => theme.typography.caption12Bold};
+  ${({ theme }) => theme.typography.caption12Semibold};
   color: ${({ theme }) => theme.colors.gray[900]};
   border-radius: 8px;
   z-index: 1;
