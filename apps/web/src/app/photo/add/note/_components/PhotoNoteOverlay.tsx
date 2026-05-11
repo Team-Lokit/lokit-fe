@@ -329,7 +329,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
                 {hasLocation ? (
                   <>
                     <S.TooltipIcon>
-                      <SuccessIcon width={22} height={22} />
+                      <SuccessIcon width={14} height={14} />
                     </S.TooltipIcon>
                     <S.TooltipText>
                       {hasSelectedLocation
@@ -343,7 +343,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
                 ) : (
                   <>
                     <S.TooltipIcon>
-                      <WarningIcon width={22} height={22} />
+                      <WarningIcon width={14} height={14} />
                     </S.TooltipIcon>
                     <S.TooltipText>위치를 추가해주세요.</S.TooltipText>
                     <S.TooltipButton type="button" onClick={handleClickAddLocation}>
