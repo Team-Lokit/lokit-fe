@@ -7,7 +7,6 @@ const variantStyles = {
   highlight: (theme: Theme) => css`
     background: ${theme.colors.gradient.mint};
     color: ${theme.colors.gray[1000]};
-    border-radius: 8px;
 
     &:hover:not(:disabled) {
       background: ${theme.colors.gradient.mintHover};
@@ -27,7 +26,6 @@ const variantStyles = {
   primary: (theme: Theme) => css`
     background: ${theme.colors.gray[0]};
     color: ${theme.colors.gray[1000]};
-    border-radius: 8px;
 
     &:hover:not(:disabled) {
       background: ${theme.colors.gray[100]};
@@ -46,9 +44,7 @@ const variantStyles = {
 
   secondary: (theme: Theme) => css`
     background: ${theme.colors.gray[900]};
-    color: ${theme.colors.gray[0]};
-    border-radius: 8px;
-    border: 1px solid ${theme.colors.blueWhite.border10};
+    color: ${theme.colors.gray[100]};
 
     &:hover:not(:disabled) {
       background: ${theme.colors.gray[800]};
@@ -68,7 +64,6 @@ const variantStyles = {
   danger: (theme: Theme) => css`
     background: ${theme.colors.status.red[200]};
     color: ${theme.colors.gray[0]};
-    border-radius: 8px;
 
     &:hover:not(:disabled) {
       background: ${theme.colors.status.red[300]};
@@ -90,14 +85,17 @@ const sizeStyles = {
   small: (theme: Theme) => css`
     ${theme.typography.button14Bold}
     padding: 7px 12px;
+    border-radius: 8px;
   `,
   medium: (theme: Theme) => css`
     ${theme.typography.button14Bold}
     padding: 10px 16px;
+    border-radius: 8px;
   `,
   large: (theme: Theme) => css`
-    ${theme.typography.button16Bold}
+    ${theme.typography.body16Semibold}
     padding: 12px 16px;
+    border-radius: 12px;
   `,
 };
 
