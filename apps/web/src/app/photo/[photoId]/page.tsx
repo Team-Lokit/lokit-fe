@@ -280,14 +280,12 @@ export default function PhotoViewPage() {
             <S.ContainerB>
               <Chip
                 text={formatDate(resolvedTakenAt)}
-                variant="white"
                 size="small"
                 icon={<DateIcon width={14} height={14} />}
               />
               {!isPendingMode && (
                 <Chip
                   text={resolvedDetail?.albumName || '앨범 없음'}
-                  variant="white"
                   size="small"
                   icon={<AlbumSmallIcon />}
                 />

@@ -7,14 +7,8 @@ import CancelSvg from '@/assets/images/cancel.svg';
 
 const variantStyles = {
   black: (theme: Theme) => css`
-    background: ${theme.colors.gray.a80};
+    background: ${theme.colors.overlay[20]};
     color: ${theme.colors.text.primary};
-    backdrop-filter: ${theme.effects.backdropBlur[5]};
-    -webkit-backdrop-filter: ${theme.effects.backdropBlur[5]};
-  `,
-  white: (theme: Theme) => css`
-    background: ${theme.colors.blueWhite.bg5};
-    color: ${theme.colors.gray[0]};
     backdrop-filter: ${theme.effects.backdropBlur[25]};
     -webkit-backdrop-filter: ${theme.effects.backdropBlur[25]};
   `,
@@ -22,12 +16,14 @@ const variantStyles = {
 
 const sizeStyles = {
   small: (theme: Theme) => css`
-    ${theme.typography.caption12Regular}
-    gap: 6px;
+    ${theme.typography.caption12Semibold}
+    padding: 6px 10px;
+    gap: 4px;
   `,
   medium: (theme: Theme) => css`
     ${theme.typography.body15Semibold}
-    gap: 8px;
+    padding: 8px 14px;
+    gap: 6px;
   `,
 };
 
@@ -42,9 +38,7 @@ export const Wrapper = styled.div<{
   align-items: center;
   ${({ variant, theme }) => variantStyles[variant](theme)}
   ${({ size, theme }) => sizeStyles[size](theme)}
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
-  border-radius: 8px;
-  padding: 6px 10px;
+  border-radius: 99px;
   cursor: ${({ $clickable }) => ($clickable ? 'pointer' : 'default')};
 `;
 
@@ -58,7 +52,7 @@ export const IconWrapper = styled.div`
 export const LocationIcon = styled(LocationSvg)`
   width: 14px;
   height: 14px;
-  fill: ${({ theme }) => theme.colors.gray[400]};
+  fill: ${({ theme }) => theme.colors.gray[100]};
 `;
 
 export const CancelIcon = styled(CancelSvg)`
