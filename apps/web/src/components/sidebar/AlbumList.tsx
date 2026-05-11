@@ -71,7 +71,7 @@ const Container = styled.div`
 
 const SectionLabel = styled.div`
   ${({ theme }) => theme.typography.body14Regular};
-  color: ${({ theme }) => theme.colors.gray[500]};
+  color: ${({ theme }) => theme.colors.grayScale[500]};
   padding: 0 12px;
 `;
 
@@ -83,7 +83,7 @@ const List = styled.div`
 
 const EmptyMessage = styled.div`
   ${({ theme }) => theme.typography.body14Regular};
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
   padding: 12px;
   text-align: center;
 `;

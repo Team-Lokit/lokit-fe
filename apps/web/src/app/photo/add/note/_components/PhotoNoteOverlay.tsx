@@ -18,7 +18,6 @@
 'use client';
 
 import { PhotoAddHeader } from '@/components/header';
-import * as HeaderStyles from '@/components/header/photoAdd/PhotoAddHeader.styles';
 import { ROUTES } from '@/constants';
 import MapPreviewSheet from '@/components/map/mapPreview/MapPreviewSheet';
 import { usePendingPhotos } from '@/stores/pendingPhotos/PendingPhotosContext';
@@ -34,7 +33,7 @@ import AlbumSelectOverlay from './AlbumSelectOverlay';
 import LocationSelectOverlay from './LocationSelectOverlay';
 import MemoModal from './MemoModal';
 import * as S from './PhotoNoteOverlay.styles';
-
+import * as E from '@/components/header/explore/ExploreHeader.styles';
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
 import CloseIcon from '@/assets/images/close.svg';
@@ -47,11 +46,12 @@ import { useEffect, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 import Chip from '@/components/buttons/chip/Chip';
+import CircleButton from '@/components/buttons/circleButton/CircleButton';
 
 interface PhotoNoteOverlayProps {
   onClose: () => void;
 }
-
+//TODO: 위치 정보 수정 시 토스트 + 툴팁
 export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -312,14 +312,10 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
           <S.TopOverlay>
             <PhotoAddHeader
               left={
-                <HeaderStyles.CloseButton onClick={handleClickClose}>
+                <CircleButton onClick={handleClickClose}>
                   <CloseIcon width={22} height={22} />
-                </HeaderStyles.CloseButton>
+                </CircleButton>
               }
-              locationText={locationText}
-              isLoading={isAddressLoading}
-              hasLocation={hasLocation}
-              onClickLocation={handleClickAddLocation}
             />
 
             {/* 말풍선 */}
@@ -360,17 +356,28 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
               {memo || '메모 추가...'}
             </S.MemoButton>
 
-            <Chip
-              size="small"
-              icon={
-                <S.AlbumIconWrapper>
-                  <AlbumSmallIcon />
-                </S.AlbumIconWrapper>
-              }
-              text={selectedAlbum?.title || '앨범 선택...'}
-              onClick={!selectedAlbum ? handleClickAlbumSelect : undefined}
-              onCancel={selectedAlbum ? handleAlbumReset : undefined}
-            />
+            <S.ChipContainer>
+              <Chip
+                size="small"
+                icon={
+                  <S.ChipIconWrapper>
+                    <S.LocationArrowIcon />
+                  </S.ChipIconWrapper>
+                }
+                text={hasLocation ? (locationText ?? '') : '위치 추가'}
+              />
+              <Chip
+                size="small"
+                icon={
+                  <S.ChipIconWrapper>
+                    <AlbumSmallIcon />
+                  </S.ChipIconWrapper>
+                }
+                text={selectedAlbum?.title || '앨범 선택...'}
+                onClick={!selectedAlbum ? handleClickAlbumSelect : undefined}
+                onCancel={selectedAlbum ? handleAlbumReset : undefined}
+              />
+            </S.ChipContainer>
           </S.MemoAlbumOverlay>
         </S.PhotoSection>
 

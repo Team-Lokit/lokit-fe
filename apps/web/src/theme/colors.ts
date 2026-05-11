@@ -25,7 +25,7 @@ export const colors = {
     black2: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.20) 70%)',
   },
 
-  gray: {
+  grayScale: {
     /** White */
     0: '#FFFFFF',
 
@@ -65,14 +65,14 @@ export const colors = {
     secondary: '#B2B2B4',
   },
 
-  blueWhite: {
+  blueWhiteOpacity: {
     bg5: 'rgba(226,230,255,0.05)',
     bg8: 'rgba(226,230,255,0.08)',
     bg20: 'rgba(226,230,255,0.2)',
     border10: 'rgba(226,230,255,0.10)',
   },
 
-  overlay: {
+  blackOpacity: {
     20: 'rgba(0,0,0,0.2)',
     50: 'rgba(0,0,0,0.5)',
     80: 'rgba(0,0,0,0.8)',

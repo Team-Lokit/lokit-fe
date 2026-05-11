@@ -47,7 +47,7 @@ const MenuItem = styled.button`
   transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+    background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   }
 `;
 

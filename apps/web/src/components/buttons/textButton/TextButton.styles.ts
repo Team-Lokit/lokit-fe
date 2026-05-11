@@ -37,15 +37,15 @@ export const Wrapper = styled.button<{
   text-align: ${({ textAlign }) => textAlign};
 
   &:disabled {
-    color: ${({ theme }) => theme.colors.gray[600]};
+    color: ${({ theme }) => theme.colors.grayScale[600]};
     cursor: not-allowed;
   }
 
   &:hover {
-    background: ${({ theme }) => theme.colors.blueWhite.bg8};
+    background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   }
 
   &:active {
-    background: ${({ theme }) => theme.colors.blueWhite.bg8};
+    background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   }
 `;

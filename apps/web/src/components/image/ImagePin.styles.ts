@@ -13,7 +13,7 @@ export const PinButton = styled.button`
   }
 
   &:focus-visible {
-    outline: 2px solid ${({ theme }) => theme.colors.gray[500]};
+    outline: 2px solid ${({ theme }) => theme.colors.grayScale[500]};
     border-radius: 20px;
   }
 `;
@@ -22,7 +22,7 @@ export const ImageWrapper = styled.div`
   position: relative;
   width: 60px;
   height: 80px;
-  border: 1px solid ${({ theme }) => theme.colors.gray[100]};
+  border: 1px solid ${({ theme }) => theme.colors.grayScale[100]};
   border-radius: 11px;
   z-index: 2;
 `;
@@ -45,9 +45,9 @@ export const Badge = styled.div`
   min-width: 21px;
   height: 19px;
   padding: 0px 4px;
-  background-color: ${({ theme }) => theme.colors.gray[100]};
+  background-color: ${({ theme }) => theme.colors.grayScale[100]};
   ${({ theme }) => theme.typography.caption12Semibold};
-  color: ${({ theme }) => theme.colors.gray[900]};
+  color: ${({ theme }) => theme.colors.grayScale[900]};
   border-radius: 8px;
   z-index: 1;
 `;
@@ -55,7 +55,7 @@ export const Badge = styled.div`
 export const Tail = styled.div`
   width: 10px;
   height: 10px;
-  background-color: ${({ theme }) => theme.colors.gray[100]};
+  background-color: ${({ theme }) => theme.colors.grayScale[100]};
   border-radius: 3px;
   transform: rotate(45deg);
   margin-top: -6px;

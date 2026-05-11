@@ -7,7 +7,7 @@ export const Container = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.layout.maxWidth};
   height: 100dvh;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
   overflow: hidden;
 `;
 
@@ -23,7 +23,7 @@ export const PhotoFrame = styled.div`
   height: 100%;
   aspect-ratio: 9 / 16;
   overflow: hidden;
-  background-color: ${({ theme }) => theme.colors.overlay[100]};
+  background-color: ${({ theme }) => theme.colors.blackOpacity[100]};
 `;
 
 export const PhotoBlurBackground = styled.div`
@@ -96,8 +96,10 @@ export const BottomContainer = styled.div`
   right: 0;
   bottom: 0;
   padding: 12px 16px 57px;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
   z-index: 20;
+  display: flex;
+  justify-content: end;
 `;
 
 export const TooltipWrapper = styled.div`
@@ -112,7 +114,7 @@ export const Tooltip = styled.div`
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  background: ${({ theme }) => theme.colors.gray[900]};
+  background: ${({ theme }) => theme.colors.grayScale[900]};
   border-radius: 99px;
   backdrop-filter: blur(5px);
 
@@ -124,7 +126,7 @@ export const Tooltip = styled.div`
     transform: translateX(-50%) rotate(45deg);
     width: 10px;
     height: 10px;
-    background: ${({ theme }) => theme.colors.gray[900]};
+    background: ${({ theme }) => theme.colors.grayScale[900]};
     border-radius: 2px;
   }
 `;
@@ -139,12 +141,12 @@ export const TooltipIcon = styled.div`
 
 export const TooltipText = styled.span`
   ${({ theme }) => theme.typography.body14Semibold};
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
 `;
 
 export const TooltipButton = styled.button`
   ${({ theme }) => theme.typography.body15Semibold};
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
   background: none;
   border: none;
   padding: 0;
@@ -157,7 +159,7 @@ export const TooltipButton = styled.button`
 
 export const MemoButton = styled.button`
   ${({ theme }) => theme.typography.body15Regular};
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
   background: none;
   border: none;
   padding: 0;
@@ -179,13 +181,13 @@ export const AlbumButton = styled.div`
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
-  background: ${({ theme }) => theme.colors.gray[900]};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
+  background: ${({ theme }) => theme.colors.grayScale[900]};
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
   border-radius: 8px;
   cursor: pointer;
 
   &:active {
-    background: ${({ theme }) => theme.colors.gray[800]};
+    background: ${({ theme }) => theme.colors.grayScale[800]};
   }
 `;
 
@@ -195,12 +197,12 @@ export const AlbumIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;
 
 export const AlbumText = styled.span`
   ${({ theme }) => theme.typography.body15Semibold};
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
 `;
 
 export const AlbumResetButton = styled.button`
@@ -231,13 +233,13 @@ export const MapPreviewButton = styled.button`
   justify-content: center;
   gap: 8px;
   padding: 12px 16px;
-  background: ${({ theme }) => theme.colors.gray[900]};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
+  background: ${({ theme }) => theme.colors.grayScale[900]};
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
   border-radius: 999px;
   cursor: pointer;
 
   &:active {
-    background: ${({ theme }) => theme.colors.gray[800]};
+    background: ${({ theme }) => theme.colors.grayScale[800]};
   }
 `;
 
@@ -247,12 +249,12 @@ export const MapIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;
 
 export const MapPreviewText = styled.span`
   ${({ theme }) => theme.typography.body16Semibold};
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
 `;
 
 export const SaveButton = styled.button`
@@ -271,7 +273,7 @@ export const SaveButton = styled.button`
   }
 
   &:disabled {
-    background: ${({ theme }) => theme.colors.gray[700]};
+    background: ${({ theme }) => theme.colors.grayScale[700]};
     cursor: not-allowed;
   }
 `;

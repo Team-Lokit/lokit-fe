@@ -43,7 +43,7 @@ const Container = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+    background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   }
 `;
 
@@ -52,9 +52,9 @@ const ProfileCircle = styled.div`
   height: 40px;
   border-radius: 999px;
   flex-shrink: 0;
-  background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[25]};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,7 +76,7 @@ const InfoGroup = styled.div`
 
 const Nickname = styled.span`
   ${({ theme }) => theme.typography.body16Medium};
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -88,18 +88,18 @@ const DdayBadge = styled.div`
   gap: 6px;
   padding: 2px 8px;
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
 `;
 
 const HeartSmallIconWrapper = styled.div`
   width: 12px;
   height: 12px;
   flex-shrink: 0;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;
 
 const DdayText = styled.span`
   ${({ theme }) => theme.typography.body15Medium};
-  color: ${({ theme }) => theme.colors.gray[300]};
+  color: ${({ theme }) => theme.colors.grayScale[300]};
   white-space: nowrap;
 `;

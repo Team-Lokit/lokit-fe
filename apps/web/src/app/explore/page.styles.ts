@@ -36,6 +36,6 @@ export const Title = styled.p`
 
 export const Subtitle = styled.p`
   ${({ theme }) => theme.typography.body15Regular}
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
   text-align: center;
 `;

@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
   padding: 16px 20px;
   border-radius: 16px;
   border: 1px solid rgba(226, 230, 255, 0.1);
-  background: ${({ theme }) => theme.colors.blueWhite.bg5};
+  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg5};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
   cursor: pointer;
 `;
@@ -24,7 +24,7 @@ export const ContentContainer = styled.div`
 export const CalendarContainer = styled.div`
   padding: 6px;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.colors.blueWhite['bg8']};
+  background-color: ${({ theme }) => theme.colors.blueWhiteOpacity['bg8']};
   justify-content: center;
   align-items: center;
   aspect-ratio: 1/1;
@@ -38,12 +38,12 @@ export const TextContainer = styled.div`
 
 export const Title = styled.span`
   ${({ theme }) => theme.typography.body16Semibold}
-  color: ${({ theme }) => theme.colors.gray[200]};
+  color: ${({ theme }) => theme.colors.grayScale[200]};
 `;
 
 export const Description = styled.p`
   ${({ theme }) => theme.typography.body14Medium}
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;
 
 export const ChevronIcon = styled.span`
@@ -51,5 +51,5 @@ export const ChevronIcon = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;

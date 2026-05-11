@@ -3,12 +3,12 @@ import styled from '@emotion/styled';
 
 const variantStyles = {
   checked: (theme: Theme) => css`
-    background: ${theme.colors.gray[0]};
+    background: ${theme.colors.grayScale[0]};
     border: none;
   `,
   unchecked: (theme: Theme) => css`
-    background-color: ${theme.colors.blueWhite['bg5']};
-    border: 2px solid ${theme.colors.blueWhite['bg5']};
+    background-color: ${theme.colors.blueWhiteOpacity['bg5']};
+    border: 2px solid ${theme.colors.blueWhiteOpacity['bg5']};
   `,
 };
 

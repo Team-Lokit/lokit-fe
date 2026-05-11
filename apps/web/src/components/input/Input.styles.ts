@@ -28,14 +28,14 @@ export const InputWrapper = styled.div<{ isError: boolean }>`
   align-items: center;
   gap: ${SPACING.GAP}px;
   padding: ${SPACING.PADDING_VERTICAL}px ${SPACING.PADDING_HORIZONTAL}px;
-  background: ${({ theme }) => theme.colors.blueWhite.bg5};
+  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg5};
   border: 1px solid
     ${({ theme, isError }) => (isError ? theme.colors.status.red[200] : 'transparent')};
   border-radius: ${SIZES.BORDER_RADIUS}px;
 
   &:focus-within {
     border-color: ${({ theme, isError }) =>
-      isError ? theme.colors.status.red[200] : theme.colors.gray[400]};
+      isError ? theme.colors.status.red[200] : theme.colors.grayScale[400]};
   }
 `;
 
@@ -45,11 +45,11 @@ const baseInputStyles = (theme: Theme) => css`
   border: none;
   outline: none;
   font-family: inherit;
-  color: ${theme.colors.gray[100]};
+  color: ${theme.colors.grayScale[100]};
   ${theme.typography.body16Regular}
 
   &::placeholder {
-    color: ${theme.colors.gray[400]};
+    color: ${theme.colors.grayScale[400]};
   }
 `;
 
@@ -71,7 +71,7 @@ export const SearchIcon = styled(SearchSvg)`
   height: ${SIZES.SEARCH_ICON}px;
 
   path {
-    fill: ${({ theme }) => theme.colors.gray[400]};
+    fill: ${({ theme }) => theme.colors.grayScale[400]};
   }
 `;
 
@@ -94,7 +94,7 @@ export const ResetButton = styled.button`
 
 export const CharCount = styled.span`
   ${({ theme }) => theme.typography.body16Regular}
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
   flex-shrink: 0;
 `;
 

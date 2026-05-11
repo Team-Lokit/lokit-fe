@@ -15,15 +15,14 @@ import useAlbumModal from '../../add/note/_hooks/useAlbumModal';
 import useLocationModal from '../../add/note/_hooks/useLocationModal';
 import useMemoModal from '../../add/note/_hooks/useMemoModal';
 import * as S from './PhotoEditOverlay.styles';
-
 import type { PhotoLocation } from '@/app/photo/add/_types/photo';
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
 import CloseIcon from '@/assets/images/close.svg';
 import CloseSmallIcon from '@/assets/images/closeSmall.svg';
-import MapPinIcon from '@/assets/images/mapPin.svg';
 import SuccessIcon from '@/assets/images/success.svg';
 import MapPreviewSheet from '@/components/map/mapPreview/MapPreviewSheet';
+import CircleButton from '@/components/buttons/circleButton/CircleButton';
 
 interface PhotoEditOverlayProps {
   photoId: number;
@@ -36,7 +35,7 @@ interface PhotoEditOverlayProps {
   }) => void;
   isSaving?: boolean;
 }
-
+//TODO: 위치 정보 수정 시 토스트 + 툴팁
 export default function PhotoEditOverlay({
   photoId,
   onClose,
@@ -219,14 +218,14 @@ export default function PhotoEditOverlay({
           <S.TopOverlay>
             <PhotoAddHeader
               left={
-                <HeaderStyles.CloseButton onClick={onClose}>
+                <CircleButton onClick={onClose}>
                   <CloseIcon width={22} height={22} />
-                </HeaderStyles.CloseButton>
+                </CircleButton>
               }
-              locationText={locationText}
-              isLoading={false}
-              hasLocation={hasLocation}
-              onClickLocation={handleAddLocation}
+              // locationText={locationText}
+              // isLoading={false}
+              // hasLocation={hasLocation}
+              // onClickLocation={handleAddLocation}
             />
 
             <S.TooltipWrapper>
@@ -271,28 +270,15 @@ export default function PhotoEditOverlay({
         </S.PhotoSection>
 
         <S.BottomContainer>
-          <S.ActionButtons>
-            <S.MapPreviewButton
-              type="button"
-              onClick={handleMapPreview}
-              disabled={!photoDetail}
-            >
-              <S.MapIcon>
-                <MapPinIcon width={16} height={17} />
-              </S.MapIcon>
-              <S.MapPreviewText>지도뷰 미리보기</S.MapPreviewText>
-            </S.MapPreviewButton>
-
-            <S.SaveButton
-              type="button"
-              onClick={handleSave}
-              disabled={isSaving || !selectedLocation}
-            >
-              <S.SaveIcon>
-                <ArrowRightIcon width={24} height={24} />
-              </S.SaveIcon>
-            </S.SaveButton>
-          </S.ActionButtons>
+          <S.SaveButton
+            type="button"
+            onClick={handleSave}
+            disabled={isSaving || !selectedLocation}
+          >
+            <S.SaveIcon>
+              <ArrowRightIcon width={24} height={24} />
+            </S.SaveIcon>
+          </S.SaveButton>
         </S.BottomContainer>
       </S.Container>
 

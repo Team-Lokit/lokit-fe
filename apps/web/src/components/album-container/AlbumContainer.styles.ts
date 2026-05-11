@@ -41,7 +41,7 @@ export const PhotoGrid = styled.div<{ type: AlbumContainerType }>`
   border-radius: 12px;
   overflow: hidden;
   box-sizing: border-box;
-  background: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   ${({ type }) => gridTypeStyles[type]()}
 `;
 
@@ -57,13 +57,13 @@ export const Photo = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  background: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
 `;
 
 export const EmptyPhoto = styled.div`
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
 `;
 
 export const MoreOverlay = styled.div<{ type: AlbumContainerType }>`
@@ -76,7 +76,7 @@ export const MoreOverlay = styled.div<{ type: AlbumContainerType }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
   ${({ type, theme }) =>
     type === ALBUM_CONTAINER_TYPE.SMALL
       ? theme.typography.caption12Semibold
@@ -103,7 +103,7 @@ export const TitleRow = styled.div`
 
 export const Title = styled.span`
   ${({ theme }) => theme.typography.body16Medium}
-  color: ${({ theme }) => theme.colors.gray[200]};
+  color: ${({ theme }) => theme.colors.grayScale[200]};
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -113,5 +113,5 @@ export const Title = styled.span`
 
 export const PhotoCount = styled.span`
   ${({ theme }) => theme.typography.body14Semibold}
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;

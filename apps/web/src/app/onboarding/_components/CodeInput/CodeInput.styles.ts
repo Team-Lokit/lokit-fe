@@ -15,13 +15,13 @@ export const Input = styled.input<{ isFocused: boolean }>`
   text-align: center;
   border: 2px solid
     ${({ theme, isFocused }) =>
-      isFocused ? theme.colors.primary[500] : theme.colors.blueWhite.border10};
+      isFocused ? theme.colors.primary[500] : theme.colors.blueWhiteOpacity.border10};
   border-radius: 8px;
   outline: none;
-  background-color: ${({ theme }) => theme.colors.blueWhite.bg5};
+  background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg5};
   transition: border-color 0.2s;
   font-family: inherit;
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
 
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary[500]};

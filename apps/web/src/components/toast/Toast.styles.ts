@@ -47,7 +47,7 @@ export const ToastItem = styled.div<{
   animation: ${({ isExiting }) => (isExiting ? slideDown : slideUp)} 0.3s ease;
   pointer-events: auto;
 
-  background: ${({ theme }) => theme.colors.gray[900]};
+  background: ${({ theme }) => theme.colors.grayScale[900]};
 `;
 
 export const ToastIcon = styled.div`
@@ -59,6 +59,6 @@ export const ToastIcon = styled.div`
 
 export const ToastText = styled.span`
   ${({ theme }) => theme.typography.body14Semibold};
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
   white-space: nowrap;
 `;

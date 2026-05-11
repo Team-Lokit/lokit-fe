@@ -4,7 +4,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
 `;
 
 export const Content = styled.main`
@@ -17,16 +17,16 @@ export const Content = styled.main`
 export const AddPhotoButton = styled.button`
   aspect-ratio: 118 / 157;
   border: none;
-  background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.blueWhite.bg5};
+    background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg5};
   }
 `;
 

@@ -7,7 +7,7 @@ import CancelSvg from '@/assets/images/cancel.svg';
 
 const variantStyles = {
   black: (theme: Theme) => css`
-    background: ${theme.colors.overlay[20]};
+    background: ${theme.colors.blackOpacity[20]};
     color: ${theme.colors.text.primary};
     backdrop-filter: ${theme.effects.backdropBlur[25]};
     -webkit-backdrop-filter: ${theme.effects.backdropBlur[25]};
@@ -46,19 +46,19 @@ export const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;
 
 export const LocationIcon = styled(LocationSvg)`
   width: 14px;
   height: 14px;
-  fill: ${({ theme }) => theme.colors.gray[100]};
+  fill: ${({ theme }) => theme.colors.grayScale[100]};
 `;
 
 export const CancelIcon = styled(CancelSvg)`
   width: 14px;
   height: 14px;
-  fill: ${({ theme }) => theme.colors.gray[400]};
+  fill: ${({ theme }) => theme.colors.grayScale[400]};
 `;
 
 export const IconButton = styled.button`

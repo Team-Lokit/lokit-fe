@@ -17,7 +17,7 @@ export const Wrapper = styled.div`
   align-items: center;
   min-height: 100dvh;
   padding: 24px;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
   position: relative;
   overflow: hidden;
 
@@ -56,6 +56,6 @@ export const Content = styled.div`
 
 export const Title = styled.h1`
   ${({ theme }) => theme.typography.heading24Bold}
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
   margin: 0 0 16px 0;
 `;

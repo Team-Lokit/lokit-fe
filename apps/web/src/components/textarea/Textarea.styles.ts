@@ -24,17 +24,17 @@ export const TextareaWrapper = styled.label<{ isError: boolean }>`
   flex-direction: column;
   min-height: ${SIZES.MIN_HEIGHT}px;
   padding: ${SPACING.PADDING_VERTICAL}px ${SPACING.PADDING_HORIZONTAL}px;
-  background: ${({ theme }) => theme.colors.blueWhite.bg5};
+  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg5};
   border: 1px solid
     ${({ theme, isError }) =>
-      isError ? theme.colors.status.red[200] : theme.colors.blueWhite.border10};
+      isError ? theme.colors.status.red[200] : theme.colors.blueWhiteOpacity.border10};
   border-radius: ${SIZES.BORDER_RADIUS}px;
   box-sizing: border-box;
   cursor: text;
 
   &:focus-within {
     border-color: ${({ theme, isError }) =>
-      isError ? theme.colors.status.red[200] : theme.colors.gray[400]};
+      isError ? theme.colors.status.red[200] : theme.colors.grayScale[400]};
   }
 `;
 
@@ -43,12 +43,12 @@ const baseTextareaStyles = (theme: Theme) => css`
   background: transparent;
   border: none;
   outline: none;
-  color: ${theme.colors.gray[100]};
+  color: ${theme.colors.grayScale[100]};
   font-family: inherit;
   ${theme.typography.body16Medium}
 
   &::placeholder {
-    color: ${theme.colors.gray[400]};
+    color: ${theme.colors.grayScale[400]};
   }
 `;
 
@@ -71,11 +71,11 @@ export const CharCount = styled.span`
 `;
 
 export const CurrentCount = styled.span`
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
 `;
 
 export const MaxCount = styled.span`
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;
 
 export const ErrorMessage = styled.span`

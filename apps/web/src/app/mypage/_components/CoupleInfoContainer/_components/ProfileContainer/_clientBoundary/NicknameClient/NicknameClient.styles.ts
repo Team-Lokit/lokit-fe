@@ -11,7 +11,7 @@ export const Wrapper = styled.div`
 
 export const Text = styled.span`
   ${({ theme }) => theme.typography.body16Semibold}
-  color: ${({ theme }) => theme.colors.gray[200]};
+  color: ${({ theme }) => theme.colors.grayScale[200]};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -20,5 +20,5 @@ export const Text = styled.span`
 export const EditIcon = styled.span`
   display: flex;
   align-items: center;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;

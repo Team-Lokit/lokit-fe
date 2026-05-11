@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
-
+import LocationArrowSvg from '@/assets/images/locationArrow.svg';
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: ${({ theme }) => theme.layout.maxWidth};
   height: 100dvh;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
   overflow: hidden;
 `;
 
@@ -22,7 +22,7 @@ export const PhotoFrame = styled.div`
   aspect-ratio: 9 / 16;
   overflow: hidden;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.colors.overlay[100]};
+  background-color: ${({ theme }) => theme.colors.blackOpacity[100]};
 `;
 
 export const PhotoBlurBackground = styled.div`
@@ -86,11 +86,17 @@ export const MemoAlbumOverlay = styled.div`
   background: ${({ theme }) => theme.colors.gradient.black2};
 `;
 
+export const ChipContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
 export const BottomContainer = styled.div`
   display: flex;
   justify-content: end;
   padding: 12px 16px 57px;
-  background-color: ${({ theme }) => theme.colors.overlay[100]};
+  background-color: ${({ theme }) => theme.colors.blackOpacity[100]};
 `;
 
 // 말풍선
@@ -106,7 +112,7 @@ export const Tooltip = styled.div`
   align-items: center;
   gap: 8px;
   padding: 8px 14px;
-  background: ${({ theme }) => theme.colors.gray[900]};
+  background: ${({ theme }) => theme.colors.grayScale[900]};
   border-radius: 99px;
   backdrop-filter: blur(5px);
   max-width: calc(100% - 32px);
@@ -119,7 +125,7 @@ export const Tooltip = styled.div`
     transform: translateX(-50%) rotate(45deg);
     width: 10px;
     height: 10px;
-    background: ${({ theme }) => theme.colors.gray[900]};
+    background: ${({ theme }) => theme.colors.grayScale[900]};
     border-radius: 2px;
   }
 `;
@@ -134,7 +140,7 @@ export const TooltipIcon = styled.div`
 
 export const TooltipText = styled.span`
   ${({ theme }) => theme.typography.body14Semibold};
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -144,7 +150,7 @@ export const TooltipText = styled.span`
 
 export const TooltipButton = styled.button`
   ${({ theme }) => theme.typography.body15Semibold};
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
   background: none;
   border: none;
   padding: 0;
@@ -160,7 +166,7 @@ export const TooltipButton = styled.button`
 export const MemoButton = styled.button`
   ${({ theme }) => theme.typography.body14Medium};
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
   background: none;
   border: none;
   padding: 0;
@@ -177,19 +183,35 @@ export const AlbumButtonWrapper = styled.div`
   display: flex;
 `;
 
-export const AlbumIconWrapper = styled.div`
-  width: 14px;
-  height: 14px;
+export const ChipIconWrapper = styled.div`
+  width: 12px;
+  height: 12px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
+`;
+
+export const LocationArrowIcon = styled(LocationArrowSvg)`
+  width: 12px;
+  height: 12px;
+  display: block;
+  color: ${({ theme }) => theme.colors.grayScale[100]};
+`;
+export const AlbumIconWrapper = styled.div`
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.grayScale[100]};
 `;
 
 export const AlbumText = styled.span`
   ${({ theme }) => theme.typography.body15Semibold};
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
 `;
 
 export const AlbumResetButton = styled.button`
@@ -220,13 +242,13 @@ export const MapPreviewButton = styled.button`
   justify-content: center;
   gap: 8px;
   padding: 12px 16px;
-  background: ${({ theme }) => theme.colors.blueWhite.bg5};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
+  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg5};
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
   border-radius: 999px;
   cursor: pointer;
 
   &:active:not(:disabled) {
-    background: ${({ theme }) => theme.colors.gray[800]};
+    background: ${({ theme }) => theme.colors.grayScale[800]};
   }
 
   &:disabled {
@@ -240,12 +262,12 @@ export const MapIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;
 
 export const MapPreviewText = styled.span`
   ${({ theme }) => theme.typography.body15Medium};
-  color: ${({ theme }) => theme.colors.gray[200]};
+  color: ${({ theme }) => theme.colors.grayScale[200]};
 `;
 
 export const UploadButton = styled.button`
@@ -264,7 +286,7 @@ export const UploadButton = styled.button`
   }
 
   &:disabled {
-    background: ${({ theme }) => theme.colors.gray[600]};
+    background: ${({ theme }) => theme.colors.grayScale[600]};
     cursor: not-allowed;
   }
 `;
@@ -275,10 +297,10 @@ export const UploadIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.gray[1000]};
+  color: ${({ theme }) => theme.colors.grayScale[1000]};
 
   &:disabled {
-    color: ${({ theme }) => theme.colors.gray[700]};
+    color: ${({ theme }) => theme.colors.grayScale[700]};
   }
 `;
 
@@ -289,10 +311,10 @@ export const EmptyContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 100dvh;
-  background-color: ${({ theme }) => theme.colors.gray[900]};
+  background-color: ${({ theme }) => theme.colors.grayScale[900]};
 `;
 
 export const EmptyText = styled.span`
   ${({ theme }) => theme.typography.body16Medium};
-  color: ${({ theme }) => theme.colors.gray[500]};
+  color: ${({ theme }) => theme.colors.grayScale[500]};
 `;

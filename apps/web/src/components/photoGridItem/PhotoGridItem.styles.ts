@@ -23,7 +23,7 @@ export const Photo = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
 `;
 
 export const DateBadge = styled.div`
@@ -33,12 +33,12 @@ export const DateBadge = styled.div`
   width: 41px;
   height: 41px;
   border-radius: 6px;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
 `;
 
 export const Day = styled.span`
@@ -71,7 +71,7 @@ export const ProgressBarTrack = styled.div`
 
 export const ProgressBarFill = styled.div`
   height: 100%;
-  background: ${({ theme }) => theme.colors.gray[0]};
+  background: ${({ theme }) => theme.colors.grayScale[0]};
   border-radius: 1.5px;
   transition: width 0.3s ease;
 `;
@@ -90,7 +90,7 @@ export const ErrorText = styled.span`
   height: 24px;
   border-radius: 50%;
   background: ${({ theme }) => theme.colors.status.red[200]};
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -101,7 +101,7 @@ export const ErrorText = styled.span`
 export const Fallback = styled.div`
   width: 100%;
   height: 100%;
-  background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   display: flex;
   align-items: center;
   justify-content: center;

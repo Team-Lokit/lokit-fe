@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 const variantStyles = {
   highlight: (theme: Theme) => css`
     background: ${theme.colors.gradient.mint};
-    color: ${theme.colors.gray[1000]};
+    color: ${theme.colors.grayScale[1000]};
 
     &:hover:not(:disabled) {
       background: ${theme.colors.gradient.mintHover};
@@ -17,53 +17,53 @@ const variantStyles = {
     }
 
     &:disabled {
-      color: ${theme.colors.gray[600]};
-      background: ${theme.colors.gray[700]};
+      color: ${theme.colors.grayScale[600]};
+      background: ${theme.colors.grayScale[700]};
       cursor: not-allowed;
     }
   `,
 
   primary: (theme: Theme) => css`
-    background: ${theme.colors.gray[0]};
-    color: ${theme.colors.gray[1000]};
+    background: ${theme.colors.grayScale[0]};
+    color: ${theme.colors.grayScale[1000]};
 
     &:hover:not(:disabled) {
-      background: ${theme.colors.gray[100]};
+      background: ${theme.colors.grayScale[100]};
     }
 
     &:active:not(:disabled) {
-      background: ${theme.colors.gray[100]};
+      background: ${theme.colors.grayScale[100]};
     }
 
     &:disabled {
-      color: ${theme.colors.gray[600]};
-      background: ${theme.colors.gray[700]};
+      color: ${theme.colors.grayScale[600]};
+      background: ${theme.colors.grayScale[700]};
       cursor: not-allowed;
     }
   `,
 
   secondary: (theme: Theme) => css`
-    background: ${theme.colors.gray[900]};
-    color: ${theme.colors.gray[100]};
+    background: ${theme.colors.grayScale[900]};
+    color: ${theme.colors.grayScale[100]};
 
     &:hover:not(:disabled) {
-      background: ${theme.colors.gray[800]};
+      background: ${theme.colors.grayScale[800]};
     }
 
     &:active:not(:disabled) {
-      background: ${theme.colors.gray[800]};
+      background: ${theme.colors.grayScale[800]};
     }
 
     &:disabled {
-      background: ${theme.colors.gray[700]};
-      color: ${theme.colors.gray[600]};
+      background: ${theme.colors.grayScale[700]};
+      color: ${theme.colors.grayScale[600]};
       cursor: not-allowed;
     }
   `,
 
   danger: (theme: Theme) => css`
     background: ${theme.colors.status.red[200]};
-    color: ${theme.colors.gray[0]};
+    color: ${theme.colors.grayScale[0]};
 
     &:hover:not(:disabled) {
       background: ${theme.colors.status.red[300]};
@@ -74,8 +74,8 @@ const variantStyles = {
     }
 
     &:disabled {
-      background: ${theme.colors.gray[700]};
-      color: ${theme.colors.gray[600]};
+      background: ${theme.colors.grayScale[700]};
+      color: ${theme.colors.grayScale[600]};
       cursor: not-allowed;
     }
   `,

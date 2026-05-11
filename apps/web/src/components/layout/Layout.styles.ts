@@ -6,7 +6,7 @@ export const Container = styled.main`
   max-width: ${({ theme }) => theme.layout.maxWidth};
   width: 100%;
   min-height: 100dvh;
-  background: ${({ theme }) => theme.colors.gray[1000]};
+  background: ${({ theme }) => theme.colors.grayScale[1000]};
   display: flex;
   flex-direction: column;
   overflow: hidden;

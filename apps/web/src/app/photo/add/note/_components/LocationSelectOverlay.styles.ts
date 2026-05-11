@@ -56,23 +56,23 @@ export const CheckIcon = styled.div`
   flex-shrink: 0;
 
   svg path {
-    fill: ${({ theme }) => theme.colors.gray[100]};
+    fill: ${({ theme }) => theme.colors.grayScale[100]};
   }
 `;
 
 export const LocationTitle = styled.span`
   ${({ theme }) => theme.typography.body16Semibold};
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
 `;
 
 export const LocationDetail = styled.span`
   ${({ theme }) => theme.typography.body14Regular};
-  color: ${({ theme }) => theme.colors.gray[300]};
+  color: ${({ theme }) => theme.colors.grayScale[300]};
 `;
 
 export const LoadingText = styled.p`
   ${({ theme }) => theme.typography.body16Medium};
-  color: ${({ theme }) => theme.colors.gray[300]};
+  color: ${({ theme }) => theme.colors.grayScale[300]};
   flex: 1;
   display: flex;
   align-items: center;
@@ -81,7 +81,7 @@ export const LoadingText = styled.p`
 
 export const EmptyText = styled.p`
   ${({ theme }) => theme.typography.body15Medium};
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
   flex: 1;
   display: flex;
   align-items: center;

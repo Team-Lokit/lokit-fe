@@ -36,7 +36,7 @@ export const Container = styled.div`
   align-items: center;
   min-height: 100vh;
   padding: 0;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
   overflow: hidden;
 
   &::before {
@@ -84,7 +84,7 @@ export const LoadingWrapper = styled.div`
 export const Spinner = styled.div`
   width: 48px;
   height: 48px;
-  border: 4px solid ${({ theme }) => theme.colors.blueWhite.border10};
+  border: 4px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
   border-top: 4px solid ${({ theme }) => theme.colors.primary[500]};
   border-radius: 50%;
   animation: ${spin} 1s linear infinite;
@@ -92,7 +92,7 @@ export const Spinner = styled.div`
 
 export const LoadingText = styled.p`
   margin-top: 16px;
-  color: ${({ theme }) => theme.colors.gray[700]};
+  color: ${({ theme }) => theme.colors.grayScale[700]};
   font-size: 14px;
 `;
 
@@ -129,7 +129,7 @@ export const ProfileImage = styled.img`
 
 export const Question = styled.h2`
   ${({ theme }) => theme.typography.heading24Bold}
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
   margin: 0;
   text-align: center;
 `;
@@ -179,7 +179,7 @@ export const SuccessMessage = styled.p`
     line-height: ${theme.typography.body16Regular.lineHeight};
     letter-spacing: ${theme.typography.body16Regular.letterSpacing};
   `}
-  color: ${({ theme }) => theme.colors.gray[700]};
+  color: ${({ theme }) => theme.colors.grayScale[700]};
   margin: 0;
 `;
 

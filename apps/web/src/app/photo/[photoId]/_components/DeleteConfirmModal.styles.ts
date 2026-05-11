@@ -8,10 +8,10 @@ export const TextWrapper = styled.div`
 
 export const Title = styled.h2`
   ${({ theme }) => theme.typography.heading18Bold};
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
 `;
 
 export const Description = styled.p`
   ${({ theme }) => theme.typography.body14Medium};
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;
