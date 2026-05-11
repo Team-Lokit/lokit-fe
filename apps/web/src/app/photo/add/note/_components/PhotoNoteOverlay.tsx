@@ -38,8 +38,6 @@ import * as S from './PhotoNoteOverlay.styles';
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
 import CloseIcon from '@/assets/images/close.svg';
-import CloseSmallIcon from '@/assets/images/closeSmall.svg';
-import MapPinIcon from '@/assets/images/mapPin.svg';
 import SuccessIcon from '@/assets/images/success.svg';
 import WarningIcon from '@/assets/images/warning.svg';
 import { useToast } from '@/components/toast';
@@ -48,6 +46,7 @@ import { getLocationInfo } from '@repo/api-client';
 import { useEffect, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { useTrackPage } from '@/hooks/analytics/useTrackPage';
+import Chip from '@/components/buttons/chip/Chip';
 
 interface PhotoNoteOverlayProps {
   onClose: () => void;
@@ -361,48 +360,27 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
               {memo || '메모 추가...'}
             </S.MemoButton>
 
-            <S.AlbumButtonWrapper>
-              <S.AlbumChip onClick={handleClickAlbumSelect}>
+            <Chip
+              size="small"
+              icon={
                 <S.AlbumIconWrapper>
                   <AlbumSmallIcon />
                 </S.AlbumIconWrapper>
-                <S.AlbumText>{selectedAlbum?.title || '앨범 선택...'}</S.AlbumText>
-                {selectedAlbum && (
-                  <S.AlbumResetButton
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAlbumReset();
-                    }}
-                  >
-                    <CloseSmallIcon />
-                  </S.AlbumResetButton>
-                )}
-              </S.AlbumChip>
-            </S.AlbumButtonWrapper>
+              }
+              text={selectedAlbum?.title || '앨범 선택...'}
+              onClick={!selectedAlbum ? handleClickAlbumSelect : undefined}
+              onCancel={selectedAlbum ? handleAlbumReset : undefined}
+            />
           </S.MemoAlbumOverlay>
         </S.PhotoSection>
 
         {/* 최하단 컨테이너 (사진 밑에 위치) */}
         <S.BottomContainer>
-          <S.ActionButtons>
-            <S.MapPreviewButton
-              type="button"
-              onClick={handleMapPreview}
-              disabled={!hasLocation}
-            >
-              <S.MapIcon>
-                <MapPinIcon width={16} height={17} />
-              </S.MapIcon>
-              <S.MapPreviewText>지도뷰 미리보기</S.MapPreviewText>
-            </S.MapPreviewButton>
-
-            <S.UploadButton type="button" onClick={handleUpload} disabled={!hasLocation}>
-              <S.UploadIcon>
-                <ArrowRightIcon width={24} height={24} />
-              </S.UploadIcon>
-            </S.UploadButton>
-          </S.ActionButtons>
+          <S.UploadButton type="button" onClick={handleUpload} disabled={!hasLocation}>
+            <S.UploadIcon>
+              <ArrowRightIcon width={24} height={24} />
+            </S.UploadIcon>
+          </S.UploadButton>
         </S.BottomContainer>
       </S.Container>
 

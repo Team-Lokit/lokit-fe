@@ -78,15 +78,17 @@ export const TopOverlay = styled.div`
 export const MemoAlbumOverlay = styled.div`
   position: absolute;
   inset: auto 0 0 0;
-  padding: 16px;
+  padding: 24px 16px 16px 16px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   background: ${({ theme }) => theme.colors.gradient.black2};
 `;
 
 export const BottomContainer = styled.div`
+  display: flex;
+  justify-content: end;
   padding: 12px 16px 57px;
   background-color: ${({ theme }) => theme.colors.overlay[100]};
 `;
@@ -156,7 +158,8 @@ export const TooltipButton = styled.button`
 // 하단 영역 (메모, 앨범 버튼용 - gap 수정)
 
 export const MemoButton = styled.button`
-  ${({ theme }) => theme.typography.body15Regular};
+  ${({ theme }) => theme.typography.body14Medium};
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
   color: ${({ theme }) => theme.colors.gray[100]};
   background: none;
   border: none;
@@ -172,21 +175,6 @@ export const MemoButton = styled.button`
 
 export const AlbumButtonWrapper = styled.div`
   display: flex;
-`;
-
-export const AlbumChip = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  background: ${({ theme }) => theme.colors.gray[900]};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
-  border-radius: 8px;
-  cursor: pointer;
-
-  &:active {
-    background: ${({ theme }) => theme.colors.gray[800]};
-  }
 `;
 
 export const AlbumIconWrapper = styled.div`
