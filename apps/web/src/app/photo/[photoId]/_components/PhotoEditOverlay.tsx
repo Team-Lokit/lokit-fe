@@ -1,7 +1,5 @@
 'use client';
 
-import { PhotoAddHeader } from '@/components/header';
-import * as HeaderStyles from '@/components/header/photoAdd/PhotoAddHeader.styles';
 import { useGetPhotoDetail } from '@repo/api-client';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -18,11 +16,9 @@ import * as S from './PhotoEditOverlay.styles';
 import type { PhotoLocation } from '@/app/photo/add/_types/photo';
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
-import CloseIcon from '@/assets/images/close.svg';
 import CloseSmallIcon from '@/assets/images/closeSmall.svg';
-import SuccessIcon from '@/assets/images/success.svg';
 import MapPreviewSheet from '@/components/map/mapPreview/MapPreviewSheet';
-import CircleButton from '@/components/buttons/circleButton/CircleButton';
+import { PhotoHeader } from '@/components/header';
 
 interface PhotoEditOverlayProps {
   photoId: number;
@@ -35,7 +31,8 @@ interface PhotoEditOverlayProps {
   }) => void;
   isSaving?: boolean;
 }
-//TODO: 위치 정보 수정 시 토스트 + 툴팁
+
+//TODO: 사진 추가 UI와 동일하게 다자인 반영 (위치 정보, 칩 등)
 export default function PhotoEditOverlay({
   photoId,
   onClose,
@@ -215,30 +212,9 @@ export default function PhotoEditOverlay({
               <img src={photoDetail.url} alt={`photo-${photoDetail.id}`} />
             </S.PhotoMain>
           </S.PhotoFrame>
-          <S.TopOverlay>
-            <PhotoAddHeader
-              left={
-                <CircleButton onClick={onClose}>
-                  <CloseIcon width={22} height={22} />
-                </CircleButton>
-              }
-              // locationText={locationText}
-              // isLoading={false}
-              // hasLocation={hasLocation}
-              // onClickLocation={handleAddLocation}
-            />
 
-            <S.TooltipWrapper>
-              <S.Tooltip>
-                <S.TooltipIcon>
-                  <SuccessIcon width={14} height={14} />
-                </S.TooltipIcon>
-                <S.TooltipText>{getTooltipText()}</S.TooltipText>
-                <S.TooltipButton type="button" onClick={handleAddLocation}>
-                  위치 수정
-                </S.TooltipButton>
-              </S.Tooltip>
-            </S.TooltipWrapper>
+          <S.TopOverlay>
+            <PhotoHeader onClickBack={onClose} showMenu={false} />
           </S.TopOverlay>
 
           <S.MemoAlbumOverlay>

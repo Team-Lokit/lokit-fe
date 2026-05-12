@@ -68,12 +68,7 @@ export const PhotoMain = styled.div`
 
 export const TopOverlay = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  inset: 0 0 auto 0;
   box-sizing: border-box;
 `;
 

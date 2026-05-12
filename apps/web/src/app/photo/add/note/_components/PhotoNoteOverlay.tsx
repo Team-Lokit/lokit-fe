@@ -34,7 +34,6 @@ import MemoModal from './MemoModal';
 import * as S from './PhotoNoteOverlay.styles';
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
-import CloseIcon from '@/assets/images/close.svg';
 import { useToast } from '@/components/toast';
 import { getCurrentPosition } from '@/utils/getCurrentPosition';
 import { getLocationInfo } from '@repo/api-client';
@@ -42,8 +41,8 @@ import { useEffect, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 import Chip from '@/components/buttons/chip/Chip';
-import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import Tooltip from '@/components/tooltip/Tooltip';
+import { PhotoHeader } from '@/components/header';
 
 interface PhotoNoteOverlayProps {
   onClose: () => void;
@@ -320,9 +319,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
 
           {/* 상단 오버레이 */}
           <S.TopOverlay>
-            <CircleButton onClick={handleClickClose}>
-              <CloseIcon width={22} height={22} />
-            </CircleButton>
+            <PhotoHeader onClickBack={handleClickClose} showMenu={false} />
           </S.TopOverlay>
 
           {/* 메모, 앨범 오버레이 (사진에 오버레이) */}

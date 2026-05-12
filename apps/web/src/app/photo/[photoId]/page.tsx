@@ -3,7 +3,6 @@
 // TODO: 2차 MVP에서 반영 예정
 // import CommentIcon from '@/assets/images/comment.svg';
 import Chip from '@/components/buttons/chip/Chip';
-import MenuHeader from '@/components/header/menu/MenuHeader';
 import { usePendingPhotoDetail } from '@/hooks/usePendingPhotosViewModel';
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import LocationArrowIcon from '@/assets/images/locationArrow.svg';
@@ -30,8 +29,8 @@ import {
 } from './_hooks';
 import * as S from './page.styles';
 import { formatPhotoDate } from '@/app/photo/[photoId]/utils/formatPhotoDate';
+import PhotoHeader from '@/components/header/photo/PhotoHeader';
 
-//TODO: MenuHeader 수정
 export default function PhotoViewPage() {
   const router = useRouter();
   const params = useParams();
@@ -224,32 +223,21 @@ export default function PhotoViewPage() {
       {isOverlayVisible && (
         <>
           <S.HeaderWrapper>
-            <MenuHeader
-              title={
-                ''
-                // isPendingMode
-                //   ? isUploading
-                //     ? '업로드 중...'
-                //     : isError
-                //       ? '업로드 실패'
-                //       : ''
-                //   : resolvedDetail?.address || ''
-              }
+            <PhotoHeader
               onClickBack={handleBack}
-              showLocation={!isPendingMode && !!resolvedDetail?.address}
               showMenu={!isPendingMode && !!resolvedDetail?.isEditable}
             >
               {!isPendingMode && resolvedDetail?.isEditable && (
-                <MenuHeader.Menu>
-                  <MenuHeader.Item onClick={() => openEditOverlay(displayPhotoId)}>
+                <PhotoHeader.Menu>
+                  <PhotoHeader.Item onClick={() => openEditOverlay(displayPhotoId)}>
                     기록 수정
-                  </MenuHeader.Item>
-                  <MenuHeader.Item variant="danger" onClick={openDeleteModal}>
+                  </PhotoHeader.Item>
+                  <PhotoHeader.Item variant="danger" onClick={openDeleteModal}>
                     사진 삭제
-                  </MenuHeader.Item>
-                </MenuHeader.Menu>
+                  </PhotoHeader.Item>
+                </PhotoHeader.Menu>
               )}
-            </MenuHeader>
+            </PhotoHeader>
           </S.HeaderWrapper>
 
           <S.BottomOverlay>

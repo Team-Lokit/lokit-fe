@@ -76,8 +76,6 @@ export const TopOverlay = styled.div`
   position: absolute;
   inset: 0 0 auto 0;
   box-sizing: border-box;
-  padding: 12px 16px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
 `;
 
 export const MemoAlbumOverlay = styled.div`
