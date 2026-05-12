@@ -48,8 +48,6 @@ import Tooltip from '@/components/tooltip/Tooltip';
 interface PhotoNoteOverlayProps {
   onClose: () => void;
 }
-//TODO: 위치 정보 수정 시 토스트
-//TODO: 위치 없는 경우 툴팁 error status
 export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -102,6 +100,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const { addPendingPhoto } = usePendingPhotos();
   const isSubmittingRef = useRef(false);
   const hasAttemptedDefaultLocation = useRef(false);
+  const shouldShowLocationUpdatedToastRef = useRef(false); // 사용자가 위치 선택 모달에서 수정한 건지 확인
   const [isMapPreviewOpen, setIsMapPreviewOpen] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(true);
 
@@ -148,6 +147,18 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
       }
     })();
   }, [selectedPhoto, selectedLocation, updatePhotoNoteState]);
+
+  useEffect(() => {
+    if (!shouldShowLocationUpdatedToastRef.current) return;
+    if (!selectedLocation) return;
+
+    shouldShowLocationUpdatedToastRef.current = false;
+
+    // 위치 수정 후에는 툴팁 안보이도록
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsTooltipVisible(false);
+    showToast('위치가 수정되었어요.', 3000, 'success');
+  }, [selectedLocation, showToast]);
 
   const handleUpload = () => {
     if (!selectedPhoto || !hasLocation || isSubmittingRef.current) return;
@@ -197,6 +208,11 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
       has_auto_location: !!selectedLocation,
     });
     handleAddLocation();
+  };
+
+  const handleSubmitLocation = () => {
+    shouldShowLocationUpdatedToastRef.current = true;
+    handleLocationSubmit();
   };
 
   const handleClickAddMemo = () => {
@@ -336,8 +352,12 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
                       }}
                     >
                       <Tooltip
-                        status="info"
-                        tooltipText="사진의 위치 정보를 자동으로 불러왔어요."
+                        status={hasLocation ? 'info' : 'error'}
+                        tooltipText={
+                          hasLocation
+                            ? '사진의 위치 정보를 자동으로 불러왔어요.'
+                            : '반드시 위치를 추가해 주세요.'
+                        }
                         showClose
                         arrowPosition="bottom"
                         arrowAlign="left"
@@ -412,7 +432,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
         onChangeSearchQuery={setLocationSearchQuery}
         onSelectLocation={setTempSelectedLocationId}
         onClose={handleLocationModalClose}
-        onSubmit={handleLocationSubmit}
+        onSubmit={handleSubmitLocation}
       />
 
       <MapPreviewSheet
