@@ -1,13 +1,12 @@
 'use client';
 
-import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 // TODO: 2차 MVP에서 반영 예정
 // import CommentIcon from '@/assets/images/comment.svg';
-import DateIcon from '@/assets/images/date.svg';
 import Chip from '@/components/buttons/chip/Chip';
 import MenuHeader from '@/components/header/menu/MenuHeader';
 import { usePendingPhotoDetail } from '@/hooks/usePendingPhotosViewModel';
-import { formatDate } from '@/utils/formatDate';
+import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
+import LocationArrowIcon from '@/assets/images/locationArrow.svg';
 import { getGetPhotoDetailQueryOptions, useGetPhotoDetail } from '@repo/api-client';
 import { AnimatePresence } from 'framer-motion';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -30,7 +29,9 @@ import {
   usePhotoSlider,
 } from './_hooks';
 import * as S from './page.styles';
+import { formatPhotoDate } from '@/app/photo/[photoId]/utils/formatPhotoDate';
 
+//TODO: MenuHeader 수정
 export default function PhotoViewPage() {
   const router = useRouter();
   const params = useParams();
@@ -225,13 +226,14 @@ export default function PhotoViewPage() {
           <S.HeaderWrapper>
             <MenuHeader
               title={
-                isPendingMode
-                  ? isUploading
-                    ? '업로드 중...'
-                    : isError
-                      ? '업로드 실패'
-                      : ''
-                  : resolvedDetail?.address || ''
+                ''
+                // isPendingMode
+                //   ? isUploading
+                //     ? '업로드 중...'
+                //     : isError
+                //       ? '업로드 실패'
+                //       : ''
+                //   : resolvedDetail?.address || ''
               }
               onClickBack={handleBack}
               showLocation={!isPendingMode && !!resolvedDetail?.address}
@@ -278,16 +280,27 @@ export default function PhotoViewPage() {
             </S.ContainerA>
 
             <S.ContainerB>
-              <Chip
-                text={formatDate(resolvedTakenAt)}
-                size="small"
-                icon={<DateIcon width={14} height={14} />}
-              />
+              <Chip text={formatPhotoDate(resolvedTakenAt)} size="small" />
+              {!isPendingMode && !!resolvedDetail?.address && (
+                <Chip
+                  text={resolvedDetail?.address}
+                  size="small"
+                  icon={
+                    <S.ChipIcon>
+                      <LocationArrowIcon width={12} height={12} />
+                    </S.ChipIcon>
+                  }
+                />
+              )}
               {!isPendingMode && (
                 <Chip
                   text={resolvedDetail?.albumName || '앨범 없음'}
                   size="small"
-                  icon={<AlbumSmallIcon />}
+                  icon={
+                    <S.ChipIcon>
+                      <AlbumSmallIcon />
+                    </S.ChipIcon>
+                  }
                 />
               )}
               {/* TODO: 2차 MVP에서 반영 예정

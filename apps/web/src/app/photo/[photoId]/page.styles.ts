@@ -133,8 +133,9 @@ export const ProfileImage = styled.img`
 `;
 
 export const UploaderName = styled.span`
-  ${({ theme }) => theme.typography.body14Semibold}
+  ${({ theme }) => theme.typography.body14Medium}
   color: ${({ theme }) => theme.colors.grayScale[0]};
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
 `;
 
 export const MemoWrapper = styled.div`
@@ -145,7 +146,8 @@ export const MemoWrapper = styled.div`
 
 export const Memo = styled.p<{ $isExpanded?: boolean }>`
   ${({ theme }) => theme.typography.body14Regular}
-  color: ${({ theme }) => theme.colors.grayScale[100]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
@@ -197,7 +199,7 @@ export const ThumbnailSlider = styled.div`
   display: flex;
   align-items: center;
   justify-content: start;
-  gap: 8px;
+  gap: 4px;
   padding: 0 16px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -211,9 +213,9 @@ export const ThumbnailSlider = styled.div`
 
 export const ThumbnailItem = styled.button<{ $isActive: boolean }>`
   flex-shrink: 0;
-  width: ${({ $isActive }) => ($isActive ? '42px' : '32px')};
-  height: ${({ $isActive }) => ($isActive ? '60px' : '44px')};
-  border-radius: 8px;
+  width: ${({ $isActive }) => ($isActive ? '32px' : '24px')};
+  height: ${({ $isActive }) => ($isActive ? '46px' : '36px')};
+  border-radius: 4px;
   overflow: hidden;
   border: none;
   background: transparent;
@@ -288,4 +290,12 @@ export const EmptySlider = styled.div`
   height: 60px;
   box-sizing: content-box;
   background: ${({ theme }) => theme.colors.blackOpacity[100]};
+`;
+
+export const ChipIcon = styled.div`
+  display: flex;
+  align-items: center;
+  width: 12px;
+  height: 12px;
+  color: ${({ theme }) => theme.colors.grayScale[100]};
 `;
