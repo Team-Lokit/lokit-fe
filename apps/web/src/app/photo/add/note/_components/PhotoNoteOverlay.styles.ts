@@ -19,6 +19,7 @@ export const PhotoSection = styled.div`
   position: relative;
   flex: 1;
   overflow: hidden;
+  border-radius: 20px;
 `;
 
 export const PhotoFrame = styled.div`
