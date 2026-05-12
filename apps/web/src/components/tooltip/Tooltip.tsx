@@ -53,9 +53,15 @@ export default function Tooltip({
         )}
 
         {showClose && (
-          <S.TooltipIcon>
-            <CloseIcon width={14} height={14} onClick={onClose} aria-label="툴팁 닫기" />
-          </S.TooltipIcon>
+          <S.TooltipCloseIcon>
+            <CloseIcon
+              width={14}
+              height={14}
+              onClick={onClose}
+              aria-label="툴팁 닫기"
+              cursor="pointer"
+            />
+          </S.TooltipCloseIcon>
         )}
       </S.Tooltip>
     </S.TooltipWrapper>

@@ -102,3 +102,16 @@ export const TooltipButton = styled.button`
     opacity: 0.8;
   }
 `;
+
+export const TooltipCloseIcon = styled.div`
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  svg {
+    display: block;
+  }
+`;
