@@ -17,11 +17,10 @@
  */
 'use client';
 
-import { PhotoAddHeader } from '@/components/header';
 import { ROUTES } from '@/constants';
 import MapPreviewSheet from '@/components/map/mapPreview/MapPreviewSheet';
 import { usePendingPhotos } from '@/stores/pendingPhotos/PendingPhotosContext';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { usePhotoContext } from '../../../_contexts/PhotoContext';
 import { PHOTO_NOTE_OVERLAY_ANIMATION_DURATION } from '../../_constants';
@@ -33,12 +32,9 @@ import AlbumSelectOverlay from './AlbumSelectOverlay';
 import LocationSelectOverlay from './LocationSelectOverlay';
 import MemoModal from './MemoModal';
 import * as S from './PhotoNoteOverlay.styles';
-import * as E from '@/components/header/explore/ExploreHeader.styles';
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
 import CloseIcon from '@/assets/images/close.svg';
-import SuccessIcon from '@/assets/images/success.svg';
-import WarningIcon from '@/assets/images/warning.svg';
 import { useToast } from '@/components/toast';
 import { getCurrentPosition } from '@/utils/getCurrentPosition';
 import { getLocationInfo } from '@repo/api-client';
@@ -47,11 +43,13 @@ import { track } from '@/lib/analytics';
 import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 import Chip from '@/components/buttons/chip/Chip';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
+import Tooltip from '@/components/tooltip/Tooltip';
 
 interface PhotoNoteOverlayProps {
   onClose: () => void;
 }
-//TODO: 위치 정보 수정 시 토스트 + 툴팁
+//TODO: 위치 정보 수정 시 토스트
+//TODO: 위치 없는 경우 툴팁 error status
 export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -105,6 +103,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const isSubmittingRef = useRef(false);
   const hasAttemptedDefaultLocation = useRef(false);
   const [isMapPreviewOpen, setIsMapPreviewOpen] = useState(false);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(true);
 
   useTrackPage(
     'screen_view_photo_info',
@@ -210,11 +209,6 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
     handleAlbumSelect();
   };
 
-  const handleMapPreview = () => {
-    if (!selectedPhoto || !hasLocation) return;
-    setIsMapPreviewOpen(true);
-  };
-
   if (!selectedPhoto) {
     return null;
   }
@@ -310,44 +304,9 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
 
           {/* 상단 오버레이 */}
           <S.TopOverlay>
-            <PhotoAddHeader
-              left={
-                <CircleButton onClick={handleClickClose}>
-                  <CloseIcon width={22} height={22} />
-                </CircleButton>
-              }
-            />
-
-            {/* 말풍선 */}
-            <S.TooltipWrapper>
-              <S.Tooltip>
-                {hasLocation ? (
-                  <>
-                    <S.TooltipIcon>
-                      <SuccessIcon width={14} height={14} />
-                    </S.TooltipIcon>
-                    <S.TooltipText>
-                      {hasSelectedLocation
-                        ? '위치가 저장되었어요.'
-                        : '위치가 자동으로 저장되었어요.'}
-                    </S.TooltipText>
-                    <S.TooltipButton type="button" onClick={handleClickAddLocation}>
-                      위치 수정
-                    </S.TooltipButton>
-                  </>
-                ) : (
-                  <>
-                    <S.TooltipIcon>
-                      <WarningIcon width={14} height={14} />
-                    </S.TooltipIcon>
-                    <S.TooltipText>위치를 추가해주세요.</S.TooltipText>
-                    <S.TooltipButton type="button" onClick={handleClickAddLocation}>
-                      위치 추가
-                    </S.TooltipButton>
-                  </>
-                )}
-              </S.Tooltip>
-            </S.TooltipWrapper>
+            <CircleButton onClick={handleClickClose}>
+              <CloseIcon width={22} height={22} />
+            </CircleButton>
           </S.TopOverlay>
 
           {/* 메모, 앨범 오버레이 (사진에 오버레이) */}
@@ -357,15 +316,48 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
             </S.MemoButton>
 
             <S.ChipContainer>
-              <Chip
-                size="small"
-                icon={
-                  <S.ChipIconWrapper>
-                    <S.LocationArrowIcon />
-                  </S.ChipIconWrapper>
-                }
-                text={hasLocation ? (locationText ?? '') : '위치 추가'}
-              />
+              <S.LocationChipContainer>
+                <AnimatePresence>
+                  {isTooltipVisible && (
+                    <S.LocationTooltipPositioner
+                      initial={{
+                        opacity: 0,
+                        y: 20,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 100,
+                        damping: 15,
+                        delay: 0.5,
+                      }}
+                    >
+                      <Tooltip
+                        status="info"
+                        tooltipText="사진의 위치 정보를 자동으로 불러왔어요."
+                        showClose
+                        arrowPosition="bottom"
+                        arrowAlign="left"
+                        onClose={() => setIsTooltipVisible(false)}
+                      />
+                    </S.LocationTooltipPositioner>
+                  )}
+                </AnimatePresence>
+
+                <Chip
+                  size="small"
+                  icon={
+                    <S.ChipIconWrapper>
+                      <S.LocationArrowIcon />
+                    </S.ChipIconWrapper>
+                  }
+                  text={hasLocation ? (locationText ?? '') : '위치 추가'}
+                  onClick={handleClickAddLocation}
+                />
+              </S.LocationChipContainer>
               <Chip
                 size="small"
                 icon={

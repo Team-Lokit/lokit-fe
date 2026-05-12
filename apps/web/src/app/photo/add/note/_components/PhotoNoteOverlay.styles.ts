@@ -1,5 +1,10 @@
 import styled from '@emotion/styled';
 import LocationArrowSvg from '@/assets/images/locationArrow.svg';
+import { motion } from 'framer-motion';
+
+const TOOLTIP_GAP = 8;
+const TOOLTIP_ARROW_OFFSET = 5;
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -69,10 +74,9 @@ export const PhotoMain = styled.div`
 export const TopOverlay = styled.div`
   position: absolute;
   inset: 0 0 auto 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
   box-sizing: border-box;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
 `;
 
 export const MemoAlbumOverlay = styled.div`
@@ -92,6 +96,20 @@ export const ChipContainer = styled.div`
   align-items: center;
 `;
 
+export const LocationChipContainer = styled.div`
+  position: relative;
+  display: inline-flex;
+`;
+
+export const LocationTooltipPositioner = styled(motion.div)`
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + ${TOOLTIP_GAP + TOOLTIP_ARROW_OFFSET}px);
+  z-index: 10;
+
+  width: max-content;
+`;
+
 export const BottomContainer = styled.div`
   display: flex;
   justify-content: end;
@@ -99,7 +117,6 @@ export const BottomContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.blackOpacity[100]};
 `;
 
-// 말풍선
 export const TooltipWrapper = styled.div`
   display: flex;
   justify-content: center;
