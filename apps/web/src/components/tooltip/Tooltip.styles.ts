@@ -46,7 +46,6 @@ const getArrowPositionStyle = (position: TooltipArrowPosition = 'top') => {
 export const TooltipWrapper = styled.div`
   display: flex;
   justify-content: center;
-  padding: 0 16px;
 `;
 
 export const Tooltip = styled.div<TooltipStyleProps>`
