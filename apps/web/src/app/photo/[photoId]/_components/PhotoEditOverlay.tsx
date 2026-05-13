@@ -33,7 +33,6 @@ interface PhotoEditOverlayProps {
   isSaving?: boolean;
 }
 
-//TODO: 사진 추가 UI와 동일하게 다자인 반영 (위치 정보, 칩 등)
 export default function PhotoEditOverlay({
   photoId,
   onClose,

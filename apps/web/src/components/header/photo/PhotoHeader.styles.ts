@@ -25,28 +25,5 @@ export const MenuDropdown = styled.div`
   right: 16px;
   min-width: 120px;
   margin-top: 10px;
-  padding: 8px;
-  background: ${({ theme }) => theme.colors.blackOpacity[50]};
-  backdrop-filter: blur(25px);
-  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
-  border-radius: 20px;
   z-index: 1010;
-`;
-
-export const MenuItem = styled.button<{ variant?: 'default' | 'danger' }>`
-  ${({ theme }) => theme.typography.body16Semibold}
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 12px;
-  background: transparent;
-  border: none;
-  color: ${({ theme, variant }) =>
-    variant === 'danger' ? theme.colors.status.red[200] : theme.colors.grayScale[200]};
-  cursor: pointer;
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
-  }
 `;

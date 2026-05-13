@@ -30,6 +30,7 @@ import {
 import * as S from './page.styles';
 import { formatPhotoDate } from '@/app/photo/[photoId]/utils/formatPhotoDate';
 import PhotoHeader from '@/components/header/photo/PhotoHeader';
+import Menu from '@/components/menu/Menu';
 
 export default function PhotoViewPage() {
   const router = useRouter();
@@ -229,12 +230,14 @@ export default function PhotoViewPage() {
             >
               {!isPendingMode && resolvedDetail?.isEditable && (
                 <PhotoHeader.Menu>
-                  <PhotoHeader.Item onClick={() => openEditOverlay(displayPhotoId)}>
-                    기록 수정
-                  </PhotoHeader.Item>
-                  <PhotoHeader.Item variant="danger" onClick={openDeleteModal}>
-                    사진 삭제
-                  </PhotoHeader.Item>
+                  <Menu>
+                    <Menu.Item onClick={() => openEditOverlay(displayPhotoId)}>
+                      기록 수정하기
+                    </Menu.Item>
+                    <Menu.Item variant="danger" onClick={openDeleteModal}>
+                      사진 삭제
+                    </Menu.Item>
+                  </Menu>
                 </PhotoHeader.Menu>
               )}
             </PhotoHeader>
