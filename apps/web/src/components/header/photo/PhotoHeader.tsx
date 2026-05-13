@@ -96,24 +96,8 @@ export interface MenuItemProps {
   variant?: 'default' | 'danger';
 }
 
-const MenuItem = ({ children, onClick, variant = 'default' }: MenuItemProps) => {
-  const { close } = usePhotoHeaderContext();
-
-  const handleClick = () => {
-    onClick?.();
-    close();
-  };
-
-  return (
-    <S.MenuItem type="button" onClick={handleClick} variant={variant}>
-      {children}
-    </S.MenuItem>
-  );
-};
-
 const PhotoHeader = Object.assign(PhotoHeaderMain, {
   Menu,
-  Item: MenuItem,
 });
 
 export default PhotoHeader;
