@@ -1,4 +1,9 @@
 import styled from '@emotion/styled';
+import LocationArrowSvg from '@/assets/images/locationArrow.svg';
+import { motion } from 'framer-motion';
+
+const TOOLTIP_GAP = 8;
+const TOOLTIP_ARROW_OFFSET = 5;
 
 export const Container = styled.div`
   position: relative;
@@ -12,17 +17,18 @@ export const Container = styled.div`
 `;
 
 export const PhotoSection = styled.div`
-  position: absolute;
-  inset: 0;
+  position: relative;
+  flex: 1;
   overflow: hidden;
+  border-radius: 20px;
 `;
 
 export const PhotoFrame = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
   aspect-ratio: 9 / 16;
   overflow: hidden;
+  border-radius: 12px;
   background-color: ${({ theme }) => theme.colors.blackOpacity[100]};
 `;
 
@@ -50,19 +56,18 @@ export const PhotoBlurBackground = styled.div`
 `;
 export const PhotoMain = styled.div`
   position: absolute;
-  inset: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
 
   img {
     width: 100%;
-    height: 100%;
+    height: auto;
+    max-height: 100%;
     object-fit: contain;
-    object-position: center;
-    user-select: none;
-    -webkit-user-drag: none;
+    pointer-events: none;
   }
 `;
 
@@ -74,27 +79,40 @@ export const TopOverlay = styled.div`
 
 export const MemoAlbumOverlay = styled.div`
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 16px;
+  inset: auto 0 0 0;
+  padding: 24px 16px 16px 16px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   background: ${({ theme }) => theme.colors.gradient.black2};
 `;
 
-export const BottomContainer = styled.div`
+export const ChipContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+export const LocationChipContainer = styled.div`
+  position: relative;
+  display: inline-flex;
+`;
+
+export const LocationTooltipPositioner = styled(motion.div)`
   position: absolute;
   left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 12px 16px 57px;
-  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
-  z-index: 20;
+  bottom: calc(100% + ${TOOLTIP_GAP + TOOLTIP_ARROW_OFFSET}px);
+  z-index: 10;
+
+  width: max-content;
+`;
+
+export const BottomContainer = styled.div`
   display: flex;
   justify-content: end;
+  padding: 12px 16px 57px;
+  background-color: ${({ theme }) => theme.colors.blackOpacity[100]};
 `;
 
 export const TooltipWrapper = styled.div`
@@ -137,6 +155,11 @@ export const TooltipIcon = styled.div`
 export const TooltipText = styled.span`
   ${({ theme }) => theme.typography.body14Semibold};
   color: ${({ theme }) => theme.colors.grayScale[0]};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
 `;
 
 export const TooltipButton = styled.button`
@@ -153,7 +176,8 @@ export const TooltipButton = styled.button`
 `;
 
 export const MemoButton = styled.button`
-  ${({ theme }) => theme.typography.body15Regular};
+  ${({ theme }) => theme.typography.body14Medium};
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
   color: ${({ theme }) => theme.colors.grayScale[100]};
   background: none;
   border: none;
@@ -169,6 +193,32 @@ export const MemoButton = styled.button`
 
 export const AlbumButtonWrapper = styled.div`
   display: flex;
+`;
+
+export const ChipIconWrapper = styled.div`
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.grayScale[100]};
+`;
+
+export const LocationArrowIcon = styled(LocationArrowSvg)`
+  width: 12px;
+  height: 12px;
+  display: block;
+  color: ${({ theme }) => theme.colors.grayScale[100]};
+`;
+export const AlbumIconWrapper = styled.div`
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.grayScale[100]};
 `;
 
 export const AlbumButton = styled.div`

@@ -91,7 +91,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
     submitLocation: handleLocationSubmit,
   } = useLocationModal();
 
-  const { data: addressData, isLoading: isAddressLoading } = useReverseGeocode({
+  const { data: addressData } = useReverseGeocode({
     latitude: selectedPhoto?.location?.latitude,
     longitude: selectedPhoto?.location?.longitude,
   });
