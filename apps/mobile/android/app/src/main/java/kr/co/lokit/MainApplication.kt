@@ -1,4 +1,4 @@
-package com.mobileapp
+package kr.co.lokit
 
 import android.app.Application
 import com.facebook.react.PackageList
