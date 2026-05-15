@@ -1,4 +1,4 @@
-package com.mobileapp
+package kr.co.lokit
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
