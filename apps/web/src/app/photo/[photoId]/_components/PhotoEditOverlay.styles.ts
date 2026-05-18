@@ -92,6 +92,7 @@ export const ChipContainer = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
+  overflow-x: auto;
 `;
 
 export const LocationChipContainer = styled.div`

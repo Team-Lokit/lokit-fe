@@ -181,6 +181,7 @@ export const ContainerB = styled.div`
   align-items: center;
   gap: 8px;
   margin-top: 12px;
+  overflow-x: auto;
 `;
 
 export const SliderWrapper = styled.div`
