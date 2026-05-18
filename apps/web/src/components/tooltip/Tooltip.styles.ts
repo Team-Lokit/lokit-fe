@@ -86,7 +86,6 @@ export const TooltipIcon = styled.div`
 export const TooltipText = styled.span`
   ${({ theme }) => theme.typography.body14Semibold};
   color: ${({ theme }) => theme.colors.grayScale[100]};
-  line-height: 1;
 `;
 
 export const TooltipButton = styled.button`
