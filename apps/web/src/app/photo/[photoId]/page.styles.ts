@@ -114,7 +114,7 @@ export const BottomOverlay = styled.div`
 export const ContainerA = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 `;
 
 export const UploaderInfo = styled.div`
@@ -180,7 +180,7 @@ export const ContainerB = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 12px;
 `;
 
 export const SliderWrapper = styled.div`
