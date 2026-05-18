@@ -13,7 +13,7 @@ export const Item = styled.li`
   cursor: pointer;
 
   & + & {
-    border-top: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
+    border-top: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
   }
 `;
 

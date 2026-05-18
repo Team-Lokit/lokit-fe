@@ -50,21 +50,21 @@ Sidebar
 
 ### 3.1 Sidebar 컨테이너
 
-| 속성            | 피그마 값                | 테마 토큰                               | 비고                                                                     |
-| --------------- | ------------------------ | --------------------------------------- | ------------------------------------------------------------------------ |
-| 너비            | `270px`                  | `theme.layout.sidebarWidth` (신규 추가) | 고정값                                                                   |
-| 높이            | `100vh`                  | —                                       | 화면 전체                                                                |
-| 배경색          | `rgba(36,36,38,0.80)`    | `theme.colors.gray.a80`                 | 일치                                                                     |
-| 테두리          | `rgba(226,230,255,0.10)` | **신규 추가 필요**                      | 기존 `blueWhite.border10`은 `0.05` → `0.10`으로 수정 또는 별도 토큰 추가 |
-| backdrop-filter | `blur(40px)`             | `theme.effects.backdropBlur[40]`        | 일치                                                                     |
-| z-index         | overlay 레벨             | `theme.zIndex.overlay` (1100)           | 모달(1200)보다 낮게                                                      |
+| 속성            | 피그마 값                | 테마 토큰                               | 비고                                                                            |
+| --------------- | ------------------------ | --------------------------------------- | ------------------------------------------------------------------------------- |
+| 너비            | `270px`                  | `theme.layout.sidebarWidth` (신규 추가) | 고정값                                                                          |
+| 높이            | `100vh`                  | —                                       | 화면 전체                                                                       |
+| 배경색          | `rgba(36,36,38,0.80)`    | `theme.colors.gray.a80`                 | 일치                                                                            |
+| 테두리          | `rgba(226,230,255,0.10)` | **신규 추가 필요**                      | 기존 `blueWhiteOpacity.border10`은 `0.05` → `0.10`으로 수정 또는 별도 토큰 추가 |
+| backdrop-filter | `blur(40px)`             | `theme.effects.backdropBlur[40]`        | 일치                                                                            |
+| z-index         | overlay 레벨             | `theme.zIndex.overlay` (1100)           | 모달(1200)보다 낮게                                                             |
 
 ### 3.2 테마 변경 사항
 
-| 파일     | 변경                      | 현재 값                  | 변경 값                  | 비고                                                |
-| -------- | ------------------------- | ------------------------ | ------------------------ | --------------------------------------------------- |
-| `layout` | `sidebarWidth` 추가       | —                        | `'270px'`                | 신규 토큰                                           |
-| `colors` | `blueWhite.border10` 수정 | `rgba(226,230,255,0.05)` | `rgba(226,230,255,0.10)` | 피그마 기준, BottomSheet 제거 후 사이드 이펙트 없음 |
+| 파일     | 변경                             | 현재 값                  | 변경 값                  | 비고                                                |
+| -------- | -------------------------------- | ------------------------ | ------------------------ | --------------------------------------------------- |
+| `layout` | `sidebarWidth` 추가              | —                        | `'270px'`                | 신규 토큰                                           |
+| `colors` | `blueWhiteOpacity.border10` 수정 | `rgba(226,230,255,0.05)` | `rgba(226,230,255,0.10)` | 피그마 기준, BottomSheet 제거 후 사이드 이펙트 없음 |
 
 ---
 
@@ -72,16 +72,16 @@ Sidebar
 
 ### 4.1 Sidebar (루트)
 
-| 속성      | 설명                                                                           |
-| --------- | ------------------------------------------------------------------------------ |
-| `isOpen`  | 사이드바 열림/닫힘 상태                                                        |
-| `onClose` | 닫기 콜백                                                                      |
-| 위치      | 화면 좌측, 지도 위 오버레이                                                    |
-| 배경      | `gray.a80` + `backdropBlur[40]` + `border-right: 1px solid blueWhite.border10` |
+| 속성      | 설명                                                                                  |
+| --------- | ------------------------------------------------------------------------------------- |
+| `isOpen`  | 사이드바 열림/닫힘 상태                                                               |
+| `onClose` | 닫기 콜백                                                                             |
+| 위치      | 화면 좌측, 지도 위 오버레이                                                           |
+| 배경      | `gray.a80` + `backdropBlur[40]` + `border-right: 1px solid blueWhiteOpacity.border10` |
 
 ### 4.2 Header
 
-- 좌측: "LOKIT" 워드마크 SVG (`lokitWordmark.svg`, 60×14px, `color: gray[0]` 흰색)
+- 좌측: "LOKIT" 워드마크 SVG (`lokitWordmark.svg`, 60×14px, `color: grayScale[0]` 흰색)
 - 우측: ✕ 닫기 버튼 (`close.svg`, 20×20px)
 - 패딩: `pl: 12px, py: 8px`
 - `onClose` 클릭 시 사이드바 닫힘
@@ -93,14 +93,14 @@ Sidebar
 - 기존 `AlbumGrid`의 검색 로직 재사용 (`Input` 컴포넌트 활용)
 - 검색어 입력 시 AlbumList를 필터링
 
-| 속성             | 값                       | 테마 토큰                  |
-| ---------------- | ------------------------ | -------------------------- |
-| 배경             | `rgba(226,230,255,0.05)` | `colors.blueWhite.bg5`     |
-| 패딩             | `px: 12px, py: 10px`     | —                          |
-| border-radius    | `12px`                   | —                          |
-| 아이콘 크기      | `16px`                   | —                          |
-| placeholder 색상 | `#8D8C8F`                | `colors.gray[400]`         |
-| 텍스트 스타일    | `body-16-regular`        | `typography.body16Regular` |
+| 속성             | 값                       | 테마 토큰                     |
+| ---------------- | ------------------------ | ----------------------------- |
+| 배경             | `rgba(226,230,255,0.05)` | `colors.blueWhiteOpacity.bg5` |
+| 패딩             | `px: 12px, py: 10px`     | —                             |
+| border-radius    | `12px`                   | —                             |
+| 아이콘 크기      | `16px`                   | —                             |
+| placeholder 색상 | `#8D8C8F`                | `colors.grayScale[400]`       |
+| 텍스트 스타일    | `body-16-regular`        | `typography.body16Regular`    |
 
 ### 4.4 Menu
 
@@ -125,11 +125,11 @@ Sidebar
 - SearchInput의 검색어에 따라 필터링
 - 기존 `AlbumGrid`의 필터링 로직 재사용 (검색어로 `album.title` 포함 여부 필터링, 메모이제이션 적용)
 
-| 속성        | 값                | 테마 토큰                                                  |
-| ----------- | ----------------- | ---------------------------------------------------------- |
-| 섹션 패딩   | `px: 12px`        | —                                                          |
-| 라벨 텍스트 | `body-14-regular` | `typography.body14Regular`, `colors.gray[500]` (`#7B7B7D`) |
-| 라벨 패딩   | `px: 12px`        | —                                                          |
+| 속성        | 값                | 테마 토큰                                                       |
+| ----------- | ----------------- | --------------------------------------------------------------- |
+| 섹션 패딩   | `px: 12px`        | —                                                               |
+| 라벨 텍스트 | `body-14-regular` | `typography.body14Regular`, `colors.grayScale[500]` (`#7B7B7D`) |
+| 라벨 패딩   | `px: 12px`        | —                                                               |
 
 #### 4.5.1 AlbumListItem
 
@@ -144,20 +144,20 @@ Sidebar
 
 **스타일 상세 (피그마 기준):**
 
-| 속성                        | 값                       | 테마 토큰                                                    |
-| --------------------------- | ------------------------ | ------------------------------------------------------------ |
-| 패딩                        | `px: 12px, py: 10px`     | —                                                            |
-| gap (아이콘 ↔ 텍스트)       | `20px`                   | —                                                            |
-| border-radius               | `12px`                   | —                                                            |
-| 제목 텍스트                 | `body-16-medium`         | `typography.body16Medium`, `colors.text.primary` (`#D3D3D3`) |
-| 카운트 텍스트               | `body-16-medium`         | `typography.body16Medium`, `colors.gray[400]` (`#8D8C8F`)    |
-| hover/pressed/selected 배경 | `rgba(226,230,255,0.08)` | `colors.blueWhite.bg8`                                       |
+| 속성                        | 값                       | 테마 토큰                                                      |
+| --------------------------- | ------------------------ | -------------------------------------------------------------- |
+| 패딩                        | `px: 12px, py: 10px`     | —                                                              |
+| gap (아이콘 ↔ 텍스트)       | `20px`                   | —                                                              |
+| border-radius               | `12px`                   | —                                                              |
+| 제목 텍스트                 | `body-16-medium`         | `typography.body16Medium`, `colors.text.primary` (`#D3D3D3`)   |
+| 카운트 텍스트               | `body-16-medium`         | `typography.body16Medium`, `colors.grayScale[400]` (`#8D8C8F`) |
+| hover/pressed/selected 배경 | `rgba(226,230,255,0.08)` | `colors.blueWhiteOpacity.bg8`                                  |
 
 > 피그마 어노테이션: "좌우측의 아이콘/숫자는 상태에 따라 노출하거나 숨길 수 있습니다"
 
 **전체사진 앨범 (기본 앨범):**
 
-- `blueWhite.bg8` 배경 강조 스타일 상시 적용 (selected 상태)
+- `blueWhiteOpacity.bg8` 배경 강조 스타일 상시 적용 (selected 상태)
 - `showMenu` = false (더보기 메뉴 없음)
 - 항상 목록 최상단에 고정
 
@@ -165,24 +165,24 @@ Sidebar
 
 - `showMenu` = true → 더보기(···) 버튼 표시
 - 더보기 메뉴: 앨범 이름 변경, 앨범 삭제
-- hover/pressed 시 `blueWhite.bg8` 배경 디졸브 효과
+- hover/pressed 시 `blueWhiteOpacity.bg8` 배경 디졸브 효과
 
 ### 4.6 My
 
 - 하단 고정 (flex 레이아웃, `margin-top: auto`)
-- 상단 구분선: `border-top: 1px solid blueWhite.border10`
+- 상단 구분선: `border-top: 1px solid blueWhiteOpacity.border10`
 - 패딩: `8px`, 하단 여백 `20px`
 - 클릭 시 마이페이지(`ROUTES.MYPAGE`)로 이동
 
-| 요소              | 스타일                                                                        | 테마 토큰                                                 |
-| ----------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------- |
-| 프로필 원형       | `44px`, `backdropBlur[25]`, `blueWhite.bg8` 배경, `blueWhite.border10` 테두리 | btn-circle 스타일                                         |
-| 프로필 이미지     | `36px`, `border-radius: 999px`                                                | —                                                         |
-| 닉네임            | `body-16-medium`                                                              | `typography.body16Medium`, `colors.gray[100]` (`#E8E8E8`) |
-| D-day 뱃지 배경   | `rgba(226,230,255,0.08)`, `border-radius: 8px`, `px: 8px, py: 2px`            | `colors.blueWhite.bg8`                                    |
-| D-day 하트 아이콘 | `12px`                                                                        | `heart.svg`                                               |
-| D-day 텍스트      | `body-15-medium`                                                              | `typography.body15Medium`, `colors.gray[300]` (`#B2B2B4`) |
-| 아이템 gap        | `12px` (프로필 ↔ 텍스트 영역), `8px` (닉네임 ↔ 뱃지)                          | —                                                         |
+| 요소              | 스타일                                                                                      | 테마 토큰                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 프로필 원형       | `44px`, `backdropBlur[25]`, `blueWhiteOpacity.bg8` 배경, `blueWhiteOpacity.border10` 테두리 | btn-circle 스타일                                              |
+| 프로필 이미지     | `36px`, `border-radius: 999px`                                                              | —                                                              |
+| 닉네임            | `body-16-medium`                                                                            | `typography.body16Medium`, `colors.grayScale[100]` (`#E8E8E8`) |
+| D-day 뱃지 배경   | `rgba(226,230,255,0.08)`, `border-radius: 8px`, `px: 8px, py: 2px`                          | `colors.blueWhiteOpacity.bg8`                                  |
+| D-day 하트 아이콘 | `12px`                                                                                      | `heart.svg`                                                    |
+| D-day 텍스트      | `body-15-medium`                                                                            | `typography.body15Medium`, `colors.grayScale[300]` (`#B2B2B4`) |
+| 아이템 gap        | `12px` (프로필 ↔ 텍스트 영역), `8px` (닉네임 ↔ 뱃지)                                        | —                                                              |
 
 ---
 
@@ -264,18 +264,18 @@ Sidebar 루트가 열림/닫힘 상태, CSS transition 애니메이션, ESC/back
 
 **스타일 상세 (피그마 기준):**
 
-| 속성            | 값                                   | 테마 토큰                   |
-| --------------- | ------------------------------------ | --------------------------- |
-| 높이            | `44px`                               | —                           |
-| 내부 패딩       | `4px`                                | —                           |
-| border-radius   | `99px` (pill)                        | —                           |
-| 배경            | `rgba(226,230,255,0.08)`             | `colors.blueWhite.bg8`      |
-| 테두리          | `rgba(226,230,255,0.10)`             | `colors.blueWhite.border10` |
-| backdrop-filter | `blur(25px)`                         | `effects.backdropBlur[25]`  |
-| 활성 탭 배경    | `#E8E8E8`                            | `colors.gray[100]`          |
-| 활성 탭 텍스트  | `#302F32`                            | `colors.gray[900]`          |
-| 활성 탭         | 아이콘 + 텍스트 (`body-15-semibold`) | `typography.body15Semibold` |
-| 비활성 탭       | 아이콘만 표시, 너비 `36px`           | —                           |
+| 속성            | 값                                   | 테마 토큰                          |
+| --------------- | ------------------------------------ | ---------------------------------- |
+| 높이            | `44px`                               | —                                  |
+| 내부 패딩       | `4px`                                | —                                  |
+| border-radius   | `99px` (pill)                        | —                                  |
+| 배경            | `rgba(226,230,255,0.08)`             | `colors.blueWhiteOpacity.bg8`      |
+| 테두리          | `rgba(226,230,255,0.10)`             | `colors.blueWhiteOpacity.border10` |
+| backdrop-filter | `blur(25px)`                         | `effects.backdropBlur[25]`         |
+| 활성 탭 배경    | `#E8E8E8`                            | `colors.grayScale[100]`            |
+| 활성 탭 텍스트  | `#302F32`                            | `colors.grayScale[900]`            |
+| 활성 탭         | 아이콘 + 텍스트 (`body-15-semibold`) | `typography.body15Semibold`        |
+| 비활성 탭       | 아이콘만 표시, 너비 `36px`           | —                                  |
 
 **아이콘:**
 
@@ -314,14 +314,14 @@ Sidebar 루트가 열림/닫힘 상태, CSS transition 애니메이션, ESC/back
 
 ### 8.3 수정 대상
 
-| 파일                                        | 변경 내용                                                   |
-| ------------------------------------------- | ----------------------------------------------------------- |
-| `app/_components/MapRoute.tsx`              | BottomSheet → Sidebar 교체, `isSidebarOpen` 상태 추가       |
-| `app/_components/MapRouteBottomSection.tsx` | 사이드바 전환에 맞게 리팩토링 또는 제거                     |
-| `app/_components/MapRouteHeader.tsx`        | 격자뷰 헤더에 ≡ 버튼 추가                                   |
-| `app/page.styles.ts`                        | 레이아웃 스타일 조정                                        |
-| `theme/colors.ts`                           | `blueWhite.border10` 값을 `rgba(226,230,255,0.10)`으로 수정 |
-| `theme/layout.ts`                           | `sidebarWidth: '270px'` 추가                                |
+| 파일                                        | 변경 내용                                                          |
+| ------------------------------------------- | ------------------------------------------------------------------ |
+| `app/_components/MapRoute.tsx`              | BottomSheet → Sidebar 교체, `isSidebarOpen` 상태 추가              |
+| `app/_components/MapRouteBottomSection.tsx` | 사이드바 전환에 맞게 리팩토링 또는 제거                            |
+| `app/_components/MapRouteHeader.tsx`        | 격자뷰 헤더에 ≡ 버튼 추가                                          |
+| `app/page.styles.ts`                        | 레이아웃 스타일 조정                                               |
+| `theme/colors.ts`                           | `blueWhiteOpacity.border10` 값을 `rgba(226,230,255,0.10)`으로 수정 |
+| `theme/layout.ts`                           | `sidebarWidth: '270px'` 추가                                       |
 
 ---
 

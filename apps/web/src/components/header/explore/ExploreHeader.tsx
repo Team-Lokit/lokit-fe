@@ -1,5 +1,4 @@
 import AlarmIcon from '@/assets/images/alarm.svg';
-import LocationIcon from '@/assets/images/location.svg';
 import HamburgerIcon from '@/assets/images/hamburger.svg';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import CrossfadeText from '@/components/common/crossfadeText/CrossfadeText';
@@ -43,9 +42,7 @@ const ExploreHeader = ({
       }
       center={
         <S.LocationWrapper>
-          <S.LocationIconWrapper>
-            <LocationIcon width={16} height={16} />
-          </S.LocationIconWrapper>
+          <S.LocationArrowIcon />
           <S.LocationText>
             <CrossfadeText text={title} />
           </S.LocationText>

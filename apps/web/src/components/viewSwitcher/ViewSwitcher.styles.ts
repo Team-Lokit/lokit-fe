@@ -6,8 +6,7 @@ export const Container = styled.div`
   height: 44px;
   padding: 4px;
   border-radius: 99px;
-  background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
+  background-color: ${({ theme }) => theme.colors.blackOpacity[50]};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[25]};
 `;
 
@@ -26,7 +25,7 @@ export const Tab = styled.button<{ $isActive: boolean }>`
   ${({ $isActive, theme }) =>
     $isActive
       ? `
-        background-color: ${theme.colors.gray[100]};
+        background-color: ${theme.colors.grayScale[100]};
         backdrop-filter: ${theme.effects.backdropBlur[25]};
       `
       : `
@@ -41,12 +40,12 @@ export const TabIcon = styled.div<{ $isActive: boolean }>`
   height: 16px;
   flex-shrink: 0;
   color: ${({ $isActive, theme }) =>
-    $isActive ? theme.colors.gray[1000] : theme.colors.gray[100]};
+    $isActive ? theme.colors.grayScale[1000] : theme.colors.grayScale[100]};
 `;
 
 export const TabLabel = styled.span`
   ${({ theme }) => theme.typography.body15Semibold};
-  color: ${({ theme }) => theme.colors.gray[900]};
+  color: ${({ theme }) => theme.colors.grayScale[900]};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

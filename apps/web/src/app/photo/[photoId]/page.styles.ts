@@ -4,7 +4,7 @@ export const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100dvh;
-  background: ${({ theme }) => theme.colors.gray[1000]};
+  background: ${({ theme }) => theme.colors.grayScale[1000]};
   overflow: hidden;
   user-select: none;
 `;
@@ -27,7 +27,7 @@ export const PhotoFrame = styled.div`
   aspect-ratio: 9 / 16;
   overflow: hidden;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.colors.overlay[100]};
+  background-color: ${({ theme }) => theme.colors.blackOpacity[100]};
 `;
 
 export const PhotoBlurBackground = styled.div`
@@ -114,7 +114,7 @@ export const BottomOverlay = styled.div`
 export const ContainerA = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 `;
 
 export const UploaderInfo = styled.div`
@@ -127,14 +127,15 @@ export const ProfileImage = styled.img`
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: ${({ theme }) => theme.colors.gray[600]};
+  background: ${({ theme }) => theme.colors.grayScale[600]};
   object-fit: cover;
   flex-shrink: 0;
 `;
 
 export const UploaderName = styled.span`
-  ${({ theme }) => theme.typography.body14Semibold}
-  color: ${({ theme }) => theme.colors.gray[0]};
+  ${({ theme }) => theme.typography.body14Medium}
+  color: ${({ theme }) => theme.colors.grayScale[0]};
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
 `;
 
 export const MemoWrapper = styled.div`
@@ -145,7 +146,8 @@ export const MemoWrapper = styled.div`
 
 export const Memo = styled.p<{ $isExpanded?: boolean }>`
   ${({ theme }) => theme.typography.body14Regular}
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
@@ -162,7 +164,7 @@ export const Memo = styled.p<{ $isExpanded?: boolean }>`
 
 export const MoreButton = styled.button`
   ${({ theme }) => theme.typography.body14Regular}
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
   background: none;
   border: none;
   padding: 0;
@@ -178,13 +180,14 @@ export const ContainerB = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 12px;
+  overflow-x: auto;
 `;
 
 export const SliderWrapper = styled.div`
   padding: 8px 0 calc(37px + env(safe-area-inset-bottom, 0px)) 0;
   margin: 16px -16px 0 -16px;
-  background: ${({ theme }) => theme.colors.overlay[100]};
+  background: ${({ theme }) => theme.colors.blackOpacity[100]};
 `;
 
 export const MapPreviewButtonWrapper = styled.div`
@@ -197,7 +200,7 @@ export const ThumbnailSlider = styled.div`
   display: flex;
   align-items: center;
   justify-content: start;
-  gap: 8px;
+  gap: 4px;
   padding: 0 16px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -211,9 +214,9 @@ export const ThumbnailSlider = styled.div`
 
 export const ThumbnailItem = styled.button<{ $isActive: boolean }>`
   flex-shrink: 0;
-  width: ${({ $isActive }) => ($isActive ? '42px' : '32px')};
-  height: ${({ $isActive }) => ($isActive ? '60px' : '44px')};
-  border-radius: 8px;
+  width: ${({ $isActive }) => ($isActive ? '32px' : '24px')};
+  height: ${({ $isActive }) => ($isActive ? '46px' : '36px')};
+  border-radius: 4px;
   overflow: hidden;
   border: none;
   background: transparent;
@@ -245,14 +248,14 @@ export const ProgressBarTrack = styled.div`
 
 export const ProgressBarFill = styled.div`
   height: 100%;
-  background: ${({ theme }) => theme.colors.gray[0]};
+  background: ${({ theme }) => theme.colors.grayScale[0]};
   border-radius: 1.5px;
   transition: width 0.3s ease;
 `;
 
 export const ProgressLabel = styled.span`
   ${({ theme }) => theme.typography.caption12Regular}
-  color: ${({ theme }) => theme.colors.gray[300]};
+  color: ${({ theme }) => theme.colors.grayScale[300]};
   margin-top: 6px;
   display: block;
 `;
@@ -279,7 +282,7 @@ export const LoadingContainer = styled.div`
   width: 100%;
   height: 100%;
   ${({ theme }) => theme.typography.body16Regular}
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;
 
 export const EmptySlider = styled.div`
@@ -287,5 +290,13 @@ export const EmptySlider = styled.div`
   margin: 16px -16px 0 -16px;
   height: 60px;
   box-sizing: content-box;
-  background: ${({ theme }) => theme.colors.overlay[100]};
+  background: ${({ theme }) => theme.colors.blackOpacity[100]};
+`;
+
+export const ChipIcon = styled.div`
+  display: flex;
+  align-items: center;
+  width: 12px;
+  height: 12px;
+  color: ${({ theme }) => theme.colors.grayScale[100]};
 `;

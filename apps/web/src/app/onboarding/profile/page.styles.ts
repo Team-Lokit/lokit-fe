@@ -17,7 +17,7 @@ export const Wrapper = styled.div`
   align-items: center;
   min-height: 100dvh;
   padding: 94px 16px 18px 16px;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
   position: relative;
   overflow: hidden;
 
@@ -59,7 +59,7 @@ export const Title = styled.h1`
     line-height: ${theme.typography.heading24Bold.lineHeight};
     letter-spacing: ${theme.typography.heading24Bold.letterSpacing};
   `}
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
   margin: 0 0 8px 0;
 `;
 

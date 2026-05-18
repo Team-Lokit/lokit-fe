@@ -16,7 +16,7 @@ export const Placeholder = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
 `;
 
 export const Image = styled.img`
@@ -33,15 +33,15 @@ export const CameraButton = styled.button`
   right: 0;
   bottom: 0;
   border-radius: 50%;
-  border: 0.636px solid ${({ theme }) => theme.colors.blueWhite.border10};
-  background: ${({ theme }) => theme.colors.blueWhite.bg8};
+  border: 0.636px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
+  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[5]};
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
 `;
 
 export const LoadingOverlay = styled.div`

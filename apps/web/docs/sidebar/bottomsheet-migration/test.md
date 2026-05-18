@@ -16,21 +16,21 @@
 - [x] 높이가 화면 전체(100vh)를 채우는가
 - [x] 배경색 `gray.a80` (`rgba(36,36,38,0.8)`)이 적용되는가
 - [x] `backdrop-filter: blur(40px)`이 적용되는가
-- [x] `border-right: 1px solid blueWhite.border10` (`rgba(226,230,255,0.10)`)이 적용되는가
+- [x] `border-right: 1px solid blueWhiteOpacity.border10` (`rgba(226,230,255,0.10)`)이 적용되는가
 - [x] z-index가 `zIndex.overlay` (1100)로 설정되어 모달(1200)보다 낮은가
 
 ### 1.2 Header
 
-- [x] "LOKIT" 워드마크 SVG(`lokitWordmark.svg`)가 좌측에 흰색(`gray[0]`, `#FFFFFF`)으로 표시되는가
+- [x] "LOKIT" 워드마크 SVG(`lokitWordmark.svg`)가 좌측에 흰색(`grayScale[0]`, `#FFFFFF`)으로 표시되는가
 - [x] 워드마크 크기가 60×14px인가
 - [x] ✕ 닫기 버튼(`close.svg`, 20×20px)이 우측에 표시되는가
 - [x] 패딩이 `pl: 12px, py: 8px`인가
 
 ### 1.3 SearchInput
 
-- [x] "앨범을 검색해보세요..." placeholder가 `gray[400]` 색상으로 표시되는가
+- [x] "앨범을 검색해보세요..." placeholder가 `grayScale[400]` 색상으로 표시되는가
 - [x] 검색 아이콘(`search.svg`, 16×16px)이 표시되는가
-- [x] 배경색이 `blueWhite.bg5` (`rgba(226,230,255,0.05)`)인가
+- [x] 배경색이 `blueWhiteOpacity.bg5` (`rgba(226,230,255,0.05)`)인가
 - [x] `border-radius: 12px`, 패딩 `px: 12px, py: 10px`이 적용되는가
 - [x] 기존 `Input` 컴포넌트가 재사용되었는가
 - [x] 기본 상태에서 border 없음, 포커스 시에만 표시
@@ -46,27 +46,27 @@
 
 ### 1.5 AlbumList
 
-- [x] "앨범" 라벨이 `body-14-regular`, `gray[500]` (`#7B7B7D`)로 표시되는가
-- [x] 선택된 앨범이 `blueWhite.bg8` 배경 강조 스타일로 표시되는가
+- [x] "앨범" 라벨이 `body-14-regular`, `grayScale[500]` (`#7B7B7D`)로 표시되는가
+- [x] 선택된 앨범이 `blueWhiteOpacity.bg8` 배경 강조 스타일로 표시되는가
 - [x] 선택된 앨범이 없으면 전체사진(첫 번째)이 기본 active
 - [x] 전체사진 앨범에 사진 개수가 표시되는가
 - [x] 사용자 생성 앨범에 제목 + 사진 개수가 표시되는가
 - [x] 사용자 생성 앨범에 더보기(···) 메뉴가 표시되는가
 - [x] 전체사진(기본 앨범)에는 더보기 메뉴가 없는가
 - [x] AlbumListItem 패딩이 `px: 12px, py: 10px`, gap `20px`, `border-radius: 12px`인가
-- [x] hover/pressed 시 `blueWhite.bg8` 배경 효과 _(코드: `transition: background-color 0.15s ease` + `&:hover` 적용)_
+- [x] hover/pressed 시 `blueWhiteOpacity.bg8` 배경 효과 _(코드: `transition: background-color 0.15s ease` + `&:hover` 적용)_
 - [x] 검색 결과 없을 때 안내 메시지가 표시되는가
 - [x] 스크롤바가 숨겨져 있는가
 
 ### 1.6 My
 
 - [x] 하단에 고정 배치되는가 (`margin-top: auto` 또는 flex 레이아웃)
-- [x] 상단 구분선 `border-top: 1px solid blueWhite.border10`이 있는가
-- [x] 프로필 원형이 `44px` 크기이며 `blueWhite.bg8` 배경 + `backdropBlur[25]`가 적용되는가
+- [x] 상단 구분선 `border-top: 1px solid blueWhiteOpacity.border10`이 있는가
+- [x] 프로필 원형이 `44px` 크기이며 `blueWhiteOpacity.bg8` 배경 + `backdropBlur[25]`가 적용되는가
 - [x] 프로필 이미지(키 아이콘 아바타)가 `36px` 원형으로 표시되는가
-- [x] 닉네임이 `body-16-medium`, `gray[100]` (`#E8E8E8`)로 표시되는가
-- [x] D-day 뱃지가 `blueWhite.bg8` 배경, `border-radius: 8px`인가
-- [x] D-day 텍스트가 `body-15-medium`, `gray[300]` (`#B2B2B4`)이며 하트 아이콘(`12px`, `gray[400]`)과 함께 표시되는가
+- [x] 닉네임이 `body-16-medium`, `grayScale[100]` (`#E8E8E8`)로 표시되는가
+- [x] D-day 뱃지가 `blueWhiteOpacity.bg8` 배경, `border-radius: 8px`인가
+- [x] D-day 텍스트가 `body-15-medium`, `grayScale[300]` (`#B2B2B4`)이며 하트 아이콘(`12px`, `grayScale[400]`)과 함께 표시되는가
 
 ### 1.7 홈 화면 레이아웃
 
@@ -154,8 +154,8 @@
 
 - [x] pill 형태의 토글이 표시되는가
 - [x] 활성 탭에 아이콘 + 텍스트가 표시되고, 비활성 탭에 아이콘만 표시되는가
-- [x] 활성 탭 배경이 `gray[100]` (`#E8E8E8`)인가
-- [x] 배경에 `blueWhite.bg8` + `backdropBlur[25]` + `blueWhite.border10` 테두리가 적용되는가
+- [x] 활성 탭 배경이 `grayScale[100]` (`#E8E8E8`)인가
+- [x] 배경에 `blueWhiteOpacity.bg8` + `backdropBlur[25]` + `blueWhiteOpacity.border10` 테두리가 적용되는가
 - [x] 지도보기 클릭 시 지도뷰로 전환 _(코드: `setActiveView`)_
 - [x] 격자보기 클릭 시 격자뷰로 전환 _(코드: `setActiveView`)_
 - [x] 지도보기 아이콘이 `mapPin.svg`, 격자보기 아이콘이 `grid.svg`인가
@@ -226,8 +226,8 @@
 
 ## 8. 테마 토큰 / 코드 품질 검증
 
-- [x] `blueWhite.border10` 값이 피그마 기준 `rgba(226,230,255,0.10)`으로 수정되었는가
-- [x] 기존 `blueWhite.border10` 사용처에 사이드 이펙트가 없는가
+- [x] `blueWhiteOpacity.border10` 값이 피그마 기준 `rgba(226,230,255,0.10)`으로 수정되었는가
+- [x] 기존 `blueWhiteOpacity.border10` 사용처에 사이드 이펙트가 없는가
 - [x] Sidebar에 사용된 모든 색상이 `theme.colors`에서 참조되는가
 - [x] Sidebar의 nickname/dDay가 `useGetMyPage` API에서 가져오는가
 - [x] ViewSwitcher의 `activeView` 상태가 MapRoute에서 관리되는가

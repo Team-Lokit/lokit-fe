@@ -14,7 +14,7 @@ export const Button = styled.button`
   transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+    background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   }
 
   p {
@@ -26,7 +26,7 @@ export const ButtonText = styled.p`
   flex: 1;
   min-width: 0;
   ${({ theme }) => theme.typography.body16Medium}
-  color: ${({ theme }) => theme.colors.gray[200]};
+  color: ${({ theme }) => theme.colors.grayScale[200]};
   text-align: left;
 `;
 
@@ -34,7 +34,7 @@ export const ChevronIcon = styled.div`
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 
   svg {
     display: block;
@@ -44,13 +44,13 @@ export const ChevronIcon = styled.div`
 
 export const Title = styled.h2`
   ${({ theme }) => theme.typography.heading18Bold};
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
   text-align: center;
 `;
 
 export const Description = styled.p`
   ${({ theme }) => theme.typography.body16Regular};
-  color: ${({ theme }) => theme.colors.gray[500]};
+  color: ${({ theme }) => theme.colors.grayScale[500]};
   text-align: center;
   margin-bottom: 12px;
 `;

@@ -3,14 +3,14 @@ import { css } from '@emotion/react';
 
 export const Title = styled.h2`
   ${({ theme }) => theme.typography.heading18Bold}
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
   margin: 0 0 8px 0;
   text-align: center;
 `;
 
 export const Description = styled.p`
   ${({ theme }) => theme.typography.body16Regular}
-  color: ${({ theme }) => theme.colors.gray[500]};
+  color: ${({ theme }) => theme.colors.grayScale[500]};
   margin: 0 0 24px 0;
   text-align: center;
 `;

@@ -11,9 +11,9 @@ export const SheetWrapper = styled.div`
   width: 100%;
   position: absolute;
   bottom: 0;
-  background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
@@ -33,7 +33,7 @@ export const HandleBar = styled.div`
   .handle {
     width: 44px;
     height: 4px;
-    background-color: ${({ theme }) => theme.colors.gray[400]};
+    background-color: ${({ theme }) => theme.colors.grayScale[400]};
     border-radius: 10px;
   }
 `;
@@ -48,13 +48,13 @@ export const TitleSection = styled.div`
 
 export const Title = styled.h2`
   ${({ theme }) => theme.typography.heading18Bold};
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
   margin: 0;
 `;
 
 export const Subtitle = styled.p`
   ${({ theme }) => theme.typography.body15Regular};
-  color: ${({ theme }) => theme.colors.gray[300]};
+  color: ${({ theme }) => theme.colors.grayScale[300]};
   margin: 0;
 `;
 

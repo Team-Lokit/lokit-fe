@@ -8,4 +8,8 @@ export const effects = {
   glass: {
     default: 'rgba(226, 230, 255, 0.05)',
   },
+
+  shadow: {
+    center: '0 0 6px 0 rgba(0, 0, 0, 0.50)',
+  },
 } as const;

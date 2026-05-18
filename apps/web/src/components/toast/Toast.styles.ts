@@ -40,14 +40,14 @@ export const ToastItem = styled.div<{
 }>`
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 20px;
+  gap: 12px;
+  padding: 12px 16px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
   animation: ${({ isExiting }) => (isExiting ? slideDown : slideUp)} 0.3s ease;
   pointer-events: auto;
 
-  background: ${({ theme }) => theme.colors.gray[800]};
+  background: ${({ theme }) => theme.colors.grayScale[900]};
 `;
 
 export const ToastIcon = styled.div`
@@ -58,7 +58,7 @@ export const ToastIcon = styled.div`
 `;
 
 export const ToastText = styled.span`
-  ${({ theme }) => theme.typography.body15Medium};
-  color: ${({ theme }) => theme.colors.gray[100]};
+  ${({ theme }) => theme.typography.body14Semibold};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
   white-space: nowrap;
 `;
