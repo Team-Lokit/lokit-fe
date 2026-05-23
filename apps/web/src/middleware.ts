@@ -45,14 +45,15 @@ export function middleware(request: NextRequest) {
       break;
 
     case COUPLE_STATUS.NOT_COUPLED:
-      // 신규 → 온보딩만 허용
-      if (!isOnboarding) {
+      // 신규 → 온보딩, 회원탈퇴만 허용
+      const allowed = [ROUTES.ONBOARDING.START, ROUTES.SIGNOUT];
+      if (!allowed.some((p) => pathname.startsWith(p))) {
         return NextResponse.redirect(new URL(ROUTES.ONBOARDING.START, request.url));
       }
       break;
 
     case COUPLE_STATUS.DISCONNECTED_BY_ME: {
-      // 내가 끊음 → 온보딩 connect/verify, signout만 허용
+      // 내가 끊음 → 온보딩 connect/verify, 회원탈퇴만 허용
       const allowed = [
         ROUTES.ONBOARDING.START,
         ROUTES.ONBOARDING.PROFILE,
