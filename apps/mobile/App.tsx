@@ -43,6 +43,8 @@ function AppContent() {
         ref={webViewRef}
         source={{ uri: initialUrl ?? defaultUrl }}
         style={styles.webView}
+        // Android 전용 옵션이며 기본값이 false라, 켜주지 않으면 WebView 내 navigator.geolocation이 동작하지 않음
+        geolocationEnabled
         injectedJavaScriptBeforeContentLoaded={buildBridgeInjection(initialUrl)}
         onLoad={onWebViewLoad}
         // dvh 단위가 모바일 웹뷰에서 제대로 작동하지 않는 문제를 해결
