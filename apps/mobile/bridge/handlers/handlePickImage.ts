@@ -48,8 +48,8 @@ export async function handlePickImage(
     }
 
     const assets: PickedAsset[] = (result.assets ?? [])
-      .filter((asset) => asset.base64 && asset.type)
-      .map((asset) => ({
+      .filter(asset => asset.base64 && asset.type)
+      .map(asset => ({
         uri: `data:${asset.type};base64,${asset.base64}`,
         fileName: asset.fileName ?? `photo-${Date.now()}.jpg`,
         type: asset.type ?? 'image/jpeg',
