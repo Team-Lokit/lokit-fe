@@ -6,6 +6,7 @@ export const ALLOWED_IMAGE_MIME_TYPES = [
   'image/webp',
   'image/heic',
   'image/heif',
+  'image/jpg',
 ] as const;
 
 export const isAllowedImageType = (file: File): boolean => {
