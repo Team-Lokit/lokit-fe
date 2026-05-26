@@ -37,9 +37,9 @@ import { AlbumAddModalContainer } from './albumAddModal/AlbumAddModalContainer';
 import { AlbumRenameModalContainer } from './albumRenameModal/AlbumRenameModalContainer';
 import { AlbumDeleteModalContainer } from './albumDeleteModal/AlbumDeleteModalContainer';
 import LocationPermissionModal from './locationPermissionModal/LocationPermissionModal';
-import { getCurrentPosition } from '@/utils/getCurrentPosition';
 import { validateCenterCoordinate } from '../_utils/mapRoute.calc';
 import { saveClusterToSession } from '@/utils/sessionStorage';
+import { useLocationPermissionModal } from '@/hooks/useLocationPermissionModal';
 import { usePhotoContext } from '@/app/photo/_contexts/PhotoContext';
 import { usePhotoSelect } from '@/app/photo/add/_hooks/usePhotoSelect';
 import type { SelectedPhoto } from '@/app/photo/add/_types/photo';
@@ -122,11 +122,13 @@ export default function MapRoute() {
     onPhotosSelected: handlePhotosSelected,
   });
 
+  const { isOpen: isLocationDeniedModalOpen, close: handleCloseLocationDeniedModal } =
+    useLocationPermissionModal();
+
   // 모달 상태 관리
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isLocationDeniedModalOpen, setIsLocationDeniedModalOpen] = useState(false);
   const [menuAlbumId, setMenuAlbumId] = useState<number | undefined>(undefined);
   const [menuAlbumTitle, setMenuAlbumTitle] = useState<string | undefined>(undefined);
 
@@ -155,17 +157,6 @@ export default function MapRoute() {
       });
     }
   }, [selectedAlbumId, albumDetail, albumMapInfo, handleViewStateChange]);
-
-  useEffect(() => {
-    const initLocation = async () => {
-      const position = await getCurrentPosition();
-      if (!position) {
-        setIsLocationDeniedModalOpen(true);
-        return;
-      }
-    };
-    initLocation();
-  }, []);
 
   useTrackPage(
     'screen_view_home',
@@ -287,10 +278,6 @@ export default function MapRoute() {
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
     setMenuAlbumId(undefined);
-  };
-
-  const handleCloseLocationDeniedModal = () => {
-    setIsLocationDeniedModalOpen(false);
   };
 
   return (
