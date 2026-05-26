@@ -1,5 +1,5 @@
 import type { RefObject } from 'react';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import type { PhotoQuality } from 'react-native-image-picker';
 import type WebView from 'react-native-webview';
 import {
@@ -18,15 +18,26 @@ export async function handlePickImage(
 ) {
   const { requestId, options } = request;
   try {
-    const result = await launchImageLibrary({
-      mediaType: 'photo',
-      selectionLimit: options?.selectionLimit ?? 1,
+    const commonOptions = {
+      mediaType: 'photo' as const,
       maxWidth: options?.maxWidth ?? DEFAULT_MAX_DIMENSION,
       maxHeight: options?.maxHeight ?? DEFAULT_MAX_DIMENSION,
       quality: (options?.quality as PhotoQuality | undefined) ?? DEFAULT_QUALITY,
       includeBase64: true,
       // EXIF는 웹에서 추출하므로 네이티브에서는 굳이 안 다룸
-    });
+    };
+
+    const result =
+      options?.source === 'camera'
+        ? await launchCamera({
+            ...commonOptions,
+            saveToPhotos: true,
+            cameraType: 'back',
+          })
+        : await launchImageLibrary({
+            ...commonOptions,
+            selectionLimit: options?.selectionLimit ?? 1,
+          });
 
     if (result.didCancel) {
       sendResponse(webViewRef, {

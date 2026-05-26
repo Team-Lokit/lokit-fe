@@ -13,7 +13,11 @@ export type BridgeMessageType = (typeof BRIDGE_MESSAGE_TYPES)[keyof typeof BRIDG
 
 export type BridgeStatus = 'success' | 'cancelled' | 'error';
 
+export type PickImageSource = 'library' | 'camera';
+
 export interface PickImageOptions {
+  /** 'library' = 갤러리에서 선택, 'camera' = 카메라로 촬영. 기본값 'library' */
+  source?: PickImageSource;
   selectionLimit?: number;
   maxWidth?: number;
   maxHeight?: number;
