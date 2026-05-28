@@ -37,8 +37,10 @@ import { AlbumAddModalContainer } from './albumAddModal/AlbumAddModalContainer';
 import { AlbumRenameModalContainer } from './albumRenameModal/AlbumRenameModalContainer';
 import { AlbumDeleteModalContainer } from './albumDeleteModal/AlbumDeleteModalContainer';
 import LocationPermissionModal from './locationPermissionModal/LocationPermissionModal';
+import PhotoSourceSheet from './photoSourceSheet/PhotoSourceSheet';
 import { validateCenterCoordinate } from '../_utils/mapRoute.calc';
 import { saveClusterToSession } from '@/utils/sessionStorage';
+import { checkIsInWebView } from '@/utils/environment';
 import { useLocationPermissionModal } from '@/hooks/useLocationPermissionModal';
 import { usePhotoContext } from '@/app/photo/_contexts/PhotoContext';
 import { usePhotoSelect } from '@/app/photo/add/_hooks/usePhotoSelect';
@@ -118,7 +120,7 @@ export default function MapRoute() {
     ],
   );
 
-  const { selectPhotosFromFile } = usePhotoSelect({
+  const { selectPhotosFromLibrary, selectPhotosFromCamera } = usePhotoSelect({
     onPhotosSelected: handlePhotosSelected,
   });
 
@@ -129,6 +131,7 @@ export default function MapRoute() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isPhotoSourceSheetOpen, setIsPhotoSourceSheetOpen] = useState(false);
   const [menuAlbumId, setMenuAlbumId] = useState<number | undefined>(undefined);
   const [menuAlbumTitle, setMenuAlbumTitle] = useState<string | undefined>(undefined);
 
@@ -312,7 +315,7 @@ export default function MapRoute() {
           {displayPhotos.length === 0 ? (
             <S.EmptyState>
               <HomeEmptyState
-                onAddPhoto={() => selectPhotosFromFile()}
+                onAddPhoto={() => selectPhotosFromLibrary()}
                 onAddAlbum={() => setIsAddModalOpen(true)}
               />
             </S.EmptyState>
@@ -371,7 +374,11 @@ export default function MapRoute() {
             text="사진 추가"
             onClick={() => {
               track('screen_view_photo_picker', { source: 'home' });
-              selectPhotosFromFile();
+              if (checkIsInWebView()) {
+                setIsPhotoSourceSheetOpen(true);
+              } else {
+                selectPhotosFromLibrary();
+              }
             }}
             textAlign="left"
           />
@@ -441,6 +448,12 @@ export default function MapRoute() {
       <LocationPermissionModal
         isOpen={isLocationDeniedModalOpen}
         onClose={handleCloseLocationDeniedModal}
+      />
+      <PhotoSourceSheet
+        isOpen={isPhotoSourceSheetOpen}
+        onClose={() => setIsPhotoSourceSheetOpen(false)}
+        onSelectCamera={selectPhotosFromCamera}
+        onSelectLibrary={selectPhotosFromLibrary}
       />
     </S.Wrapper>
   );

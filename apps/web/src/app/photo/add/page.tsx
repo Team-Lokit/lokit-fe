@@ -1,12 +1,14 @@
 'use client';
 
-import { useCallback, type MouseEvent } from 'react';
+import { useCallback, useState, type MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import PlusIcon from '@/assets/images/plus.svg';
 import DefaultHeader from '@/components/header/default/DefaultHeader';
 import PhotoGridContainer from '@/components/photoGridContainer/PhotoGridContainer';
 import PhotoGridItem from '@/components/photoGridItem/PhotoGridItem';
 import { ROUTES } from '@/constants';
+import PhotoSourceSheet from '@/app/_components/photoSourceSheet/PhotoSourceSheet';
+import { checkIsInWebView } from '@/utils/environment';
 import { usePhotoContext } from '../_contexts/PhotoContext';
 import { usePhotoSelect } from './_hooks/usePhotoSelect';
 import type { SelectedPhoto } from './_types/photo';
@@ -44,9 +46,11 @@ export default function PhotoAddPage() {
     [addPhotos, setSelectedPhoto, resetPhotoNoteState, setInitialAlbumId, router],
   );
 
-  const { isLoading, selectPhotosFromFile } = usePhotoSelect({
+  const { isLoading, selectPhotosFromLibrary, selectPhotosFromCamera } = usePhotoSelect({
     onPhotosSelected: handlePhotosSelected,
   });
+
+  const [isPhotoSourceSheetOpen, setIsPhotoSourceSheetOpen] = useState(false);
 
   const handleBack = useCallback(() => {
     router.back();
@@ -78,8 +82,12 @@ export default function PhotoAddPage() {
   );
 
   const handleAddPhotos = useCallback(() => {
-    selectPhotosFromFile();
-  }, [selectPhotosFromFile]);
+    if (checkIsInWebView()) {
+      setIsPhotoSourceSheetOpen(true);
+    } else {
+      selectPhotosFromLibrary();
+    }
+  }, [selectPhotosFromLibrary]);
 
   if (isLoading && photos.length === 0) {
     return (
@@ -108,6 +116,12 @@ export default function PhotoAddPage() {
           ))}
         </PhotoGridContainer>
       </S.Content>
+      <PhotoSourceSheet
+        isOpen={isPhotoSourceSheetOpen}
+        onClose={() => setIsPhotoSourceSheetOpen(false)}
+        onSelectCamera={selectPhotosFromCamera}
+        onSelectLibrary={selectPhotosFromLibrary}
+      />
     </S.Container>
   );
 }
