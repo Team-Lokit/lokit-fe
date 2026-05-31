@@ -25,6 +25,11 @@ Lokit은 사진을 앨범 단위로 관리하고,
             <a href="https://github.com/H0ngJu"><I>H0ngJu</I></a>
         </td>
         <td>
+            <img src="https://avatars.githubusercontent.com/u/70315572?v=4?size=100" width="100">
+            <br>
+            <a href="https://github.com/Limgabi"><I>Limgabi</I></a>
+        </td>
+        <td>
             <img src="https://avatars.githubusercontent.com/u/89020004?v=4?size=100" width="100">
             <br>
             <a href="https://github.com/ohksj77"><I>ohksj77</I></a>
