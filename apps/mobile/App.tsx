@@ -82,6 +82,10 @@ function AppContent() {
 }
 
 function getWebAppUrl() {
+  if (!__DEV__) {
+    return 'https://lokit.co.kr';
+  }
+
   return (
     Platform.select({
       ios: 'https://local.lokit.co.kr:3000/',
