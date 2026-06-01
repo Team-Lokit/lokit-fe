@@ -37,7 +37,7 @@ const Container = styled.div`
 const MenuItem = styled.button`
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
   padding: 10px 12px;
   border-radius: 12px;
   background: none;
@@ -47,7 +47,7 @@ const MenuItem = styled.button`
   transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+    background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   }
 `;
 

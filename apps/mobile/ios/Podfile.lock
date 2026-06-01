@@ -1892,6 +1892,34 @@ PODS:
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
     - SocketRocket
+  - react-native-image-picker (8.2.1):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
   - react-native-safe-area-context (5.7.0):
     - boost
     - DoubleConversion
@@ -2592,6 +2620,34 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - RNCAsyncStorage (2.2.0):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
   - SocketRocket (0.7.1)
   - Yoga (0.0.0)
 
@@ -2640,6 +2696,7 @@ DEPENDENCIES:
   - React-logger (from `../../../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../../../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../../../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - react-native-image-picker (from `../../../node_modules/react-native-image-picker`)
   - react-native-safe-area-context (from `../../../node_modules/react-native-safe-area-context`)
   - react-native-webview (from `../../../node_modules/react-native-webview`)
   - React-NativeModulesApple (from `../../../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -2676,6 +2733,7 @@ DEPENDENCIES:
   - ReactCodegen (from `build/generated/ios/ReactCodegen`)
   - ReactCommon/turbomodule/core (from `../../../node_modules/react-native/ReactCommon`)
   - RNBootSplash (from `../../../node_modules/react-native-bootsplash`)
+  - "RNCAsyncStorage (from `../../../node_modules/@react-native-async-storage/async-storage`)"
   - SocketRocket (~> 0.7.1)
   - Yoga (from `../../../node_modules/react-native/ReactCommon/yoga`)
 
@@ -2771,6 +2829,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../../../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-image-picker:
+    :path: "../../../node_modules/react-native-image-picker"
   react-native-safe-area-context:
     :path: "../../../node_modules/react-native-safe-area-context"
   react-native-webview:
@@ -2843,6 +2903,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon"
   RNBootSplash:
     :path: "../../../node_modules/react-native-bootsplash"
+  RNCAsyncStorage:
+    :path: "../../../node_modules/@react-native-async-storage/async-storage"
   Yoga:
     :path: "../../../node_modules/react-native/ReactCommon/yoga"
 
@@ -2853,7 +2915,7 @@ SPEC CHECKSUMS:
   FBLazyVector: 309703e71d3f2f1ed7dc7889d58309c9d77a95a4
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
-  hermes-engine: 25dc044bd205a0b8e82d1466725b32292144130e
+  hermes-engine: 6df3a365c851eb66bed2168524ea1be8ef7703cf
   RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
   RCTDeprecation: a41bbdd9af30bf2e5715796b313e44ec43eefff1
   RCTRequired: 7be34aabb0b77c3cefe644528df0fa0afad4e4d0
@@ -2890,6 +2952,7 @@ SPEC CHECKSUMS:
   React-logger: b8483fa08e0d62e430c76d864309d90576ca2f68
   React-Mapbuffer: 7b72a669e94662359dad4f42b5af005eb24b4e83
   React-microtasksnativemodule: cdc02da075f2857803ed63f24f5f72fc40e094c0
+  react-native-image-picker: 0314366753615115fa55c3cc937ac44cb7e75702
   react-native-safe-area-context: befb5404eb8a16fdc07fa2bebab3568ecabcbb8a
   react-native-webview: 8407aaaf6b539b1e38b72fabb55d6885de03beaf
   React-NativeModulesApple: a2c3d2cbec893956a5b3e4060322db2984fff75b
@@ -2926,6 +2989,7 @@ SPEC CHECKSUMS:
   ReactCodegen: b8e56b780fffe6edd6405be0af4a1e3049a937f7
   ReactCommon: ac934cb340aee91282ecd6f273a26d24d4c55cae
   RNBootSplash: 0be0994fa7c528ed5f03b6f2803d7e86aa18170f
+  RNCAsyncStorage: 29f0230e1a25f36c20b05f65e2eb8958d6526e82
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: 5456bb010373068fc92221140921b09d126b116e
 

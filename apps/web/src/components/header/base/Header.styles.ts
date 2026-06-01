@@ -36,7 +36,7 @@ export const RightSection = styled.div`
 
 export const Title = styled.h1`
   ${({ theme }) => theme.typography.heading18Bold}
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

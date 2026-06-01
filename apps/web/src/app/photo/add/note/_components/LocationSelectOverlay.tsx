@@ -35,11 +35,7 @@ const LocationSelectOverlay = ({
     `${location.longitude}-${location.latitude}`;
 
   return (
-    <Overlay
-      isOpen={isOpen}
-      onClose={onClose}
-      backdropStyle={{ background: 'rgba(0, 0, 0, 0.8)' }}
-    >
+    <Overlay isOpen={isOpen} onClose={onClose}>
       <Overlay.Content height={517}>
         <S.SearchLocationWrapper>
           <Input

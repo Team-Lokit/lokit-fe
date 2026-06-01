@@ -8,7 +8,7 @@ export const TextWrapper = styled.div`
 
 export const Title = styled.h2`
   ${({ theme }) => theme.typography.heading18Bold};
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
 `;
 
 export const DateInputRow = styled.div`
@@ -33,7 +33,7 @@ export const DateBlock = styled.div`
 export const DateInput = styled.input<{ $charCount: number }>`
   ${({ theme }) => theme.typography.body16Regular};
   font-family: inherit;
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
   background: transparent;
   border: none;
   outline: none;
@@ -42,12 +42,12 @@ export const DateInput = styled.input<{ $charCount: number }>`
   width: ${({ $charCount }) => $charCount}ch;
 
   &::placeholder {
-    color: ${({ theme }) => theme.colors.gray[400]};
+    color: ${({ theme }) => theme.colors.grayScale[400]};
   }
 `;
 
 export const DateSuffix = styled.span<{ $isEmpty?: boolean }>`
   ${({ theme }) => theme.typography.body16Regular};
   color: ${({ theme, $isEmpty }) =>
-    $isEmpty ? theme.colors.gray[400] : theme.colors.gray[100]};
+    $isEmpty ? theme.colors.grayScale[400] : theme.colors.grayScale[100]};
 `;

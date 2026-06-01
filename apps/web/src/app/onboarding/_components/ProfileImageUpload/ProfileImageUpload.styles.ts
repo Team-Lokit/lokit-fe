@@ -49,15 +49,15 @@ export const CameraButton = styled.button`
   right: -4px;
   bottom: -4px;
   border-radius: 50%;
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
-  background: ${({ theme }) => theme.colors.blueWhite.bg8};
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
+  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[5]};
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
 `;
 
 export const CameraIcon = styled.div`

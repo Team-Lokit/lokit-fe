@@ -19,14 +19,14 @@ export const AlbumListWrapper = styled.div`
 
 export const LoadingText = styled.p`
   ${({ theme }) => theme.typography.body15Medium};
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
   text-align: center;
   padding: 24px 0;
 `;
 
 export const EmptyText = styled.p`
   ${({ theme }) => theme.typography.body15Medium};
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
   text-align: center;
   padding: 24px 0;
 `;

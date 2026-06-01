@@ -31,7 +31,7 @@ const Container = styled.div`
 const Logo = styled.div`
   width: 60px;
   height: 14px;
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
 `;
 
 const CloseButton = styled.button`
@@ -41,5 +41,5 @@ const CloseButton = styled.button`
   border: none;
   cursor: pointer;
   padding: 0;
-  color: ${({ theme }) => theme.colors.gray[200]};
+  color: ${({ theme }) => theme.colors.grayScale[200]};
 `;

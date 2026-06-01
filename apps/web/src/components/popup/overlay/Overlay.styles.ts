@@ -5,9 +5,9 @@ export const Content = styled.div<{ height?: number }>`
   max-height: calc(100% - 40px);
   ${({ height }) => height && `height: ${height}px;`}
   padding: 24px;
-  background: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background: ${({ theme }) => theme.colors.blackOpacity[50]};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[25]};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
   border-radius: 20px;
   display: flex;
   flex-direction: column;

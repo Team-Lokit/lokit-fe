@@ -5,7 +5,7 @@ export const Container = styled.div`
   inset: 0;
   display: flex;
   flex-direction: column;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
 `;
 
 export const Header = styled.header`
@@ -24,7 +24,7 @@ export const BackButton = styled.button`
   border: none;
   padding: 8px;
   cursor: pointer;
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -67,7 +67,7 @@ export const CaptureButton = styled.button`
   height: 72px;
   border-radius: 50%;
   background-color: transparent;
-  border: 4px solid ${({ theme }) => theme.colors.gray[0]};
+  border: 4px solid ${({ theme }) => theme.colors.grayScale[0]};
   cursor: pointer;
   transition: transform 0.1s;
 
@@ -80,7 +80,7 @@ export const CaptureButton = styled.button`
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background-color: ${({ theme }) => theme.colors.gray[0]};
+    background-color: ${({ theme }) => theme.colors.grayScale[0]};
     transition: transform 0.1s;
   }
 
@@ -106,7 +106,7 @@ export const SwitchCameraButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
 `;
 
 export const ErrorContainer = styled.div`
@@ -128,10 +128,10 @@ export const ErrorText = styled.p`
 export const RetryButton = styled.button`
   padding: 12px 24px;
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.colors.blueWhite.bg5};
+  background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg5};
   border: none;
   cursor: pointer;
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
   ${({ theme }) => theme.typography.body14Regular}
 `;
 

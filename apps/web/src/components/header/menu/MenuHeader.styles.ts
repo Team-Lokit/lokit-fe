@@ -21,10 +21,10 @@ export const MenuDropdown = styled.div`
   min-width: 120px;
   margin-top: 10px;
   padding: 8px;
-  background: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background: ${({ theme }) => theme.colors.blackOpacity[50]};
   backdrop-filter: blur(25px);
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
-  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
+  border-radius: 20px;
   z-index: 1010;
 `;
 
@@ -34,13 +34,14 @@ export const MenuItem = styled.button<{ variant?: 'default' | 'danger' }>`
   align-items: center;
   width: 100%;
   padding: 12px 16px;
+  border-radius: 12px;
   background: transparent;
   border: none;
   color: ${({ theme, variant }) =>
-    variant === 'danger' ? theme.colors.status.red[200] : theme.colors.gray[200]};
+    variant === 'danger' ? theme.colors.status.red[200] : theme.colors.grayScale[200]};
   cursor: pointer;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.blueWhite.bg8};
+    background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   }
 `;

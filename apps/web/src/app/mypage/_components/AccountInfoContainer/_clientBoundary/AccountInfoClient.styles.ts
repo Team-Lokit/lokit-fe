@@ -9,14 +9,14 @@ export const Wrapper = styled.div`
   padding: 14px 8px 8px 8px;
   border-radius: 16px;
   border: 1px solid rgba(226, 230, 255, 0.1);
-  background: ${({ theme }) => theme.colors.blueWhite.bg5};
+  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg5};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
 `;
 
 export const SectionTitle = styled.span`
   ${({ theme }) => theme.typography.body14Semibold}
   padding: 0 12px;
-  color: ${({ theme }) => theme.colors.gray[200]};
+  color: ${({ theme }) => theme.colors.grayScale[200]};
 `;
 
 export const ButtonContainer = styled.div`
@@ -39,7 +39,7 @@ export const Button = styled.button`
   transition: background-color 0.15s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+    background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   }
 
   p {
@@ -52,7 +52,7 @@ export const Icon = styled.div`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: ${({ theme }) => theme.colors.gray[200]};
+  color: ${({ theme }) => theme.colors.grayScale[200]};
 
   svg {
     width: 20px;
@@ -66,7 +66,7 @@ export const ButtonText = styled.p`
   flex: 1;
   min-width: 0;
   ${({ theme }) => theme.typography.body16Medium}
-  color: ${({ theme }) => theme.colors.gray[200]};
+  color: ${({ theme }) => theme.colors.grayScale[200]};
   text-align: left;
 `;
 
@@ -74,7 +74,7 @@ export const ChevronIcon = styled.div`
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 
   svg {
     display: block;

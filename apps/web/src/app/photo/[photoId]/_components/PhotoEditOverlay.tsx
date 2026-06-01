@@ -1,10 +1,8 @@
 'use client';
 
-import { PhotoAddHeader } from '@/components/header';
-import * as HeaderStyles from '@/components/header/photoAdd/PhotoAddHeader.styles';
 import { useGetPhotoDetail } from '@repo/api-client';
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import { STATE_SOURCE } from '../../_constants/stateSource';
 import { TOOLTIP_TEXT } from '../../_constants/tooltipText';
 import { usePhotoContext } from '../../_contexts/PhotoContext';
@@ -15,15 +13,13 @@ import useAlbumModal from '../../add/note/_hooks/useAlbumModal';
 import useLocationModal from '../../add/note/_hooks/useLocationModal';
 import useMemoModal from '../../add/note/_hooks/useMemoModal';
 import * as S from './PhotoEditOverlay.styles';
-
 import type { PhotoLocation } from '@/app/photo/add/_types/photo';
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
-import CloseIcon from '@/assets/images/close.svg';
-import CloseSmallIcon from '@/assets/images/closeSmall.svg';
-import MapPinIcon from '@/assets/images/mapPin.svg';
-import SuccessIcon from '@/assets/images/success.svg';
 import MapPreviewSheet from '@/components/map/mapPreview/MapPreviewSheet';
+import { PhotoHeader } from '@/components/header';
+import Tooltip from '@/components/tooltip/Tooltip';
+import Chip from '@/components/buttons/chip/Chip';
 
 interface PhotoEditOverlayProps {
   photoId: number;
@@ -90,8 +86,10 @@ export default function PhotoEditOverlay({
     resetAlbum: handleAlbumReset,
   } = useAlbumModal({ stateSource: STATE_SOURCE.EDIT });
 
+  const shouldShowLocationUpdatedToastRef = useRef(false); // 사용자가 위치 선택 모달에서 수정한 건지 확인
   const [isAlbumCleared, setIsAlbumCleared] = useState(false);
   const [isMapPreviewOpen, setIsMapPreviewOpen] = useState(false);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(true);
 
   // 앨범 선택 시 cleared 상태 해제 (렌더 중 상태 조정 패턴)
   const [prevSelectedAlbum, setPrevSelectedAlbum] = useState(selectedAlbum);
@@ -117,11 +115,6 @@ export default function PhotoEditOverlay({
     closeModal: handleLocationModalClose,
     submitLocation: handleLocationSubmit,
   } = useLocationModal({ stateSource: STATE_SOURCE.EDIT });
-
-  const handleMapPreview = () => {
-    if (!photoDetail) return;
-    setIsMapPreviewOpen(true);
-  };
 
   const handleSave = () => {
     const latitude = selectedLocation?.latitude;
@@ -216,30 +209,9 @@ export default function PhotoEditOverlay({
               <img src={photoDetail.url} alt={`photo-${photoDetail.id}`} />
             </S.PhotoMain>
           </S.PhotoFrame>
-          <S.TopOverlay>
-            <PhotoAddHeader
-              left={
-                <HeaderStyles.CloseButton onClick={onClose}>
-                  <CloseIcon width={22} height={22} />
-                </HeaderStyles.CloseButton>
-              }
-              locationText={locationText}
-              isLoading={false}
-              hasLocation={hasLocation}
-              onClickLocation={handleAddLocation}
-            />
 
-            <S.TooltipWrapper>
-              <S.Tooltip>
-                <S.TooltipIcon>
-                  <SuccessIcon width={22} height={22} />
-                </S.TooltipIcon>
-                <S.TooltipText>{getTooltipText()}</S.TooltipText>
-                <S.TooltipButton type="button" onClick={handleAddLocation}>
-                  위치 수정
-                </S.TooltipButton>
-              </S.Tooltip>
-            </S.TooltipWrapper>
+          <S.TopOverlay>
+            <PhotoHeader onClickBack={onClose} showMenu={false} />
           </S.TopOverlay>
 
           <S.MemoAlbumOverlay>
@@ -247,52 +219,79 @@ export default function PhotoEditOverlay({
               {memo || '메모 추가...'}
             </S.MemoButton>
 
-            <S.AlbumButtonWrapper>
-              <S.AlbumButton onClick={handleAlbumSelect}>
-                <S.AlbumIcon>
-                  <AlbumSmallIcon />
-                </S.AlbumIcon>
-                <S.AlbumText>{albumDisplayName || '앨범 선택...'}</S.AlbumText>
-                {albumDisplayName && (
-                  <S.AlbumResetButton
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsAlbumCleared(true);
-                      handleAlbumReset();
-                    }}
-                  >
-                    <CloseSmallIcon />
-                  </S.AlbumResetButton>
-                )}
-              </S.AlbumButton>
-            </S.AlbumButtonWrapper>
+            <S.ChipContainer>
+              <S.LocationChipContainer>
+                <AnimatePresence>
+                  {isTooltipVisible && (
+                    <S.LocationTooltipPositioner
+                      initial={{
+                        opacity: 0,
+                        y: 20,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 100,
+                        damping: 15,
+                        delay: 0.5,
+                      }}
+                    >
+                      <Tooltip
+                        status={hasLocation ? 'info' : 'error'}
+                        tooltipText={
+                          hasLocation
+                            ? '사진의 위치 정보를 자동으로 불러왔어요.'
+                            : '반드시 위치를 추가해 주세요.'
+                        }
+                        showClose
+                        arrowPosition="bottom"
+                        arrowAlign="left"
+                        onClose={() => setIsTooltipVisible(false)}
+                      />
+                    </S.LocationTooltipPositioner>
+                  )}
+                </AnimatePresence>
+
+                <Chip
+                  size="small"
+                  icon={
+                    <S.ChipIconWrapper>
+                      <S.LocationArrowIcon />
+                    </S.ChipIconWrapper>
+                  }
+                  text={hasLocation ? (locationText ?? '') : '위치 추가'}
+                  onClick={handleAddLocation}
+                />
+              </S.LocationChipContainer>
+
+              <Chip
+                size="small"
+                icon={
+                  <S.ChipIconWrapper>
+                    <AlbumSmallIcon />
+                  </S.ChipIconWrapper>
+                }
+                text={selectedAlbum?.title || '앨범 선택...'}
+                onClick={!selectedAlbum ? handleAlbumSelect : undefined}
+                onCancel={selectedAlbum ? handleAlbumReset : undefined}
+              />
+            </S.ChipContainer>
           </S.MemoAlbumOverlay>
         </S.PhotoSection>
 
         <S.BottomContainer>
-          <S.ActionButtons>
-            <S.MapPreviewButton
-              type="button"
-              onClick={handleMapPreview}
-              disabled={!photoDetail}
-            >
-              <S.MapIcon>
-                <MapPinIcon width={16} height={17} />
-              </S.MapIcon>
-              <S.MapPreviewText>지도뷰 미리보기</S.MapPreviewText>
-            </S.MapPreviewButton>
-
-            <S.SaveButton
-              type="button"
-              onClick={handleSave}
-              disabled={isSaving || !selectedLocation}
-            >
-              <S.SaveIcon>
-                <ArrowRightIcon width={24} height={24} />
-              </S.SaveIcon>
-            </S.SaveButton>
-          </S.ActionButtons>
+          <S.SaveButton
+            type="button"
+            onClick={handleSave}
+            disabled={isSaving || !selectedLocation}
+          >
+            <S.SaveIcon>
+              <ArrowRightIcon width={24} height={24} />
+            </S.SaveIcon>
+          </S.SaveButton>
         </S.BottomContainer>
       </S.Container>
 

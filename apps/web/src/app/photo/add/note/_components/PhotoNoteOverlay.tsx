@@ -17,12 +17,10 @@
  */
 'use client';
 
-import { PhotoAddHeader } from '@/components/header';
-import * as HeaderStyles from '@/components/header/photoAdd/PhotoAddHeader.styles';
 import { ROUTES } from '@/constants';
 import MapPreviewSheet from '@/components/map/mapPreview/MapPreviewSheet';
 import { usePendingPhotos } from '@/stores/pendingPhotos/PendingPhotosContext';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { usePhotoContext } from '../../../_contexts/PhotoContext';
 import { PHOTO_NOTE_OVERLAY_ANIMATION_DURATION } from '../../_constants';
@@ -34,25 +32,21 @@ import AlbumSelectOverlay from './AlbumSelectOverlay';
 import LocationSelectOverlay from './LocationSelectOverlay';
 import MemoModal from './MemoModal';
 import * as S from './PhotoNoteOverlay.styles';
-
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
-import CloseIcon from '@/assets/images/close.svg';
-import CloseSmallIcon from '@/assets/images/closeSmall.svg';
-import MapPinIcon from '@/assets/images/mapPin.svg';
-import SuccessIcon from '@/assets/images/success.svg';
-import WarningIcon from '@/assets/images/warning.svg';
 import { useToast } from '@/components/toast';
 import { getCurrentPosition } from '@/utils/getCurrentPosition';
 import { getLocationInfo } from '@repo/api-client';
 import { useEffect, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { useTrackPage } from '@/hooks/analytics/useTrackPage';
+import Chip from '@/components/buttons/chip/Chip';
+import Tooltip from '@/components/tooltip/Tooltip';
+import { PhotoHeader } from '@/components/header';
 
 interface PhotoNoteOverlayProps {
   onClose: () => void;
 }
-
 export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -97,7 +91,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
     submitLocation: handleLocationSubmit,
   } = useLocationModal();
 
-  const { data: addressData, isLoading: isAddressLoading } = useReverseGeocode({
+  const { data: addressData } = useReverseGeocode({
     latitude: selectedPhoto?.location?.latitude,
     longitude: selectedPhoto?.location?.longitude,
   });
@@ -105,7 +99,9 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const { addPendingPhoto } = usePendingPhotos();
   const isSubmittingRef = useRef(false);
   const hasAttemptedDefaultLocation = useRef(false);
+  const shouldShowLocationUpdatedToastRef = useRef(false); // 사용자가 위치 선택 모달에서 수정한 건지 확인
   const [isMapPreviewOpen, setIsMapPreviewOpen] = useState(false);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(true);
 
   useTrackPage(
     'screen_view_photo_info',
@@ -150,6 +146,18 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
       }
     })();
   }, [selectedPhoto, selectedLocation, updatePhotoNoteState]);
+
+  useEffect(() => {
+    if (!shouldShowLocationUpdatedToastRef.current) return;
+    if (!selectedLocation) return;
+
+    shouldShowLocationUpdatedToastRef.current = false;
+
+    // 위치 수정 후에는 툴팁 안보이도록
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsTooltipVisible(false);
+    showToast('위치가 수정되었어요.', 3000, 'success');
+  }, [selectedLocation, showToast]);
 
   const handleUpload = () => {
     if (!selectedPhoto || !hasLocation || isSubmittingRef.current) return;
@@ -201,6 +209,11 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
     handleAddLocation();
   };
 
+  const handleSubmitLocation = () => {
+    shouldShowLocationUpdatedToastRef.current = true;
+    handleLocationSubmit();
+  };
+
   const handleClickAddMemo = () => {
     track('click_memo_input', {});
     handleAddMemo();
@@ -209,11 +222,6 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const handleClickAlbumSelect = () => {
     track('click_album_select', {});
     handleAlbumSelect();
-  };
-
-  const handleMapPreview = () => {
-    if (!selectedPhoto || !hasLocation) return;
-    setIsMapPreviewOpen(true);
   };
 
   if (!selectedPhoto) {
@@ -311,48 +319,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
 
           {/* 상단 오버레이 */}
           <S.TopOverlay>
-            <PhotoAddHeader
-              left={
-                <HeaderStyles.CloseButton onClick={handleClickClose}>
-                  <CloseIcon width={22} height={22} />
-                </HeaderStyles.CloseButton>
-              }
-              locationText={locationText}
-              isLoading={isAddressLoading}
-              hasLocation={hasLocation}
-              onClickLocation={handleClickAddLocation}
-            />
-
-            {/* 말풍선 */}
-            <S.TooltipWrapper>
-              <S.Tooltip>
-                {hasLocation ? (
-                  <>
-                    <S.TooltipIcon>
-                      <SuccessIcon width={22} height={22} />
-                    </S.TooltipIcon>
-                    <S.TooltipText>
-                      {hasSelectedLocation
-                        ? '위치가 저장되었어요.'
-                        : '위치가 자동으로 저장되었어요.'}
-                    </S.TooltipText>
-                    <S.TooltipButton type="button" onClick={handleClickAddLocation}>
-                      위치 수정
-                    </S.TooltipButton>
-                  </>
-                ) : (
-                  <>
-                    <S.TooltipIcon>
-                      <WarningIcon width={22} height={22} />
-                    </S.TooltipIcon>
-                    <S.TooltipText>위치를 추가해주세요.</S.TooltipText>
-                    <S.TooltipButton type="button" onClick={handleClickAddLocation}>
-                      위치 추가
-                    </S.TooltipButton>
-                  </>
-                )}
-              </S.Tooltip>
-            </S.TooltipWrapper>
+            <PhotoHeader onClickBack={handleClickClose} showMenu={false} />
           </S.TopOverlay>
 
           {/* 메모, 앨범 오버레이 (사진에 오버레이) */}
@@ -361,48 +328,75 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
               {memo || '메모 추가...'}
             </S.MemoButton>
 
-            <S.AlbumButtonWrapper>
-              <S.AlbumChip onClick={handleClickAlbumSelect}>
-                <S.AlbumIconWrapper>
-                  <AlbumSmallIcon />
-                </S.AlbumIconWrapper>
-                <S.AlbumText>{selectedAlbum?.title || '앨범 선택...'}</S.AlbumText>
-                {selectedAlbum && (
-                  <S.AlbumResetButton
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAlbumReset();
-                    }}
-                  >
-                    <CloseSmallIcon />
-                  </S.AlbumResetButton>
-                )}
-              </S.AlbumChip>
-            </S.AlbumButtonWrapper>
+            <S.ChipContainer>
+              <S.LocationChipContainer>
+                <AnimatePresence>
+                  {isTooltipVisible && (
+                    <S.LocationTooltipPositioner
+                      initial={{
+                        opacity: 0,
+                        y: 20,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 100,
+                        damping: 15,
+                        delay: 0.5,
+                      }}
+                    >
+                      <Tooltip
+                        status={hasLocation ? 'info' : 'error'}
+                        tooltipText={
+                          hasLocation
+                            ? '사진의 위치 정보를 자동으로 불러왔어요.'
+                            : '반드시 위치를 추가해 주세요.'
+                        }
+                        showClose
+                        arrowPosition="bottom"
+                        arrowAlign="left"
+                        onClose={() => setIsTooltipVisible(false)}
+                      />
+                    </S.LocationTooltipPositioner>
+                  )}
+                </AnimatePresence>
+
+                <Chip
+                  size="small"
+                  icon={
+                    <S.ChipIconWrapper>
+                      <S.LocationArrowIcon />
+                    </S.ChipIconWrapper>
+                  }
+                  text={hasLocation ? (locationText ?? '') : '위치 추가'}
+                  onClick={handleClickAddLocation}
+                />
+              </S.LocationChipContainer>
+              <Chip
+                size="small"
+                icon={
+                  <S.ChipIconWrapper>
+                    <AlbumSmallIcon />
+                  </S.ChipIconWrapper>
+                }
+                text={selectedAlbum?.title || '앨범 선택...'}
+                onClick={!selectedAlbum ? handleClickAlbumSelect : undefined}
+                onCancel={selectedAlbum ? handleAlbumReset : undefined}
+              />
+            </S.ChipContainer>
           </S.MemoAlbumOverlay>
         </S.PhotoSection>
 
         {/* 최하단 컨테이너 (사진 밑에 위치) */}
         <S.BottomContainer>
-          <S.ActionButtons>
-            <S.MapPreviewButton
-              type="button"
-              onClick={handleMapPreview}
-              disabled={!hasLocation}
-            >
-              <S.MapIcon>
-                <MapPinIcon width={16} height={17} />
-              </S.MapIcon>
-              <S.MapPreviewText>지도뷰 미리보기</S.MapPreviewText>
-            </S.MapPreviewButton>
-
-            <S.UploadButton type="button" onClick={handleUpload} disabled={!hasLocation}>
-              <S.UploadIcon>
-                <ArrowRightIcon width={24} height={24} />
-              </S.UploadIcon>
-            </S.UploadButton>
-          </S.ActionButtons>
+          <S.UploadButton type="button" onClick={handleUpload} disabled={!hasLocation}>
+            <S.UploadIcon>
+              <ArrowRightIcon width={24} height={24} />
+            </S.UploadIcon>
+          </S.UploadButton>
         </S.BottomContainer>
       </S.Container>
 
@@ -435,7 +429,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
         onChangeSearchQuery={setLocationSearchQuery}
         onSelectLocation={setTempSelectedLocationId}
         onClose={handleLocationModalClose}
-        onSubmit={handleLocationSubmit}
+        onSubmit={handleSubmitLocation}
       />
 
       <MapPreviewSheet

@@ -15,7 +15,7 @@ export const LinkButton = styled.a`
   text-decoration: none;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+    background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   }
 
   p {
@@ -27,7 +27,7 @@ export const ButtonText = styled.p`
   flex: 1;
   min-width: 0;
   ${({ theme }) => theme.typography.body16Medium}
-  color: ${({ theme }) => theme.colors.gray[200]};
+  color: ${({ theme }) => theme.colors.grayScale[200]};
   text-align: left;
 `;
 
@@ -35,7 +35,7 @@ export const ChevronIcon = styled.div`
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 
   svg {
     display: block;

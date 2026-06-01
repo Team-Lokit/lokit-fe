@@ -1,4 +1,4 @@
-import { TextButtonVariant } from '@/types/button.type';
+import { TextButtonSize, TextButtonVariant } from '@/types/button.type';
 import * as S from './TextButton.styles';
 
 interface TextButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -6,6 +6,8 @@ interface TextButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
   text: string;
   /** 클릭 이벤트 */
   onClick: () => void;
+  /** 버튼 사이즈 */
+  size?: TextButtonSize;
   /** 버튼 variant */
   variant?: TextButtonVariant;
   /** 버튼 활성화 여부 */
@@ -17,6 +19,7 @@ interface TextButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 const TextButton = ({
   text,
   onClick,
+  size = 'medium',
   variant = 'default',
   disabled = false,
   textAlign = 'center',
@@ -25,6 +28,7 @@ const TextButton = ({
   return (
     <S.Wrapper
       type="button"
+      size={size}
       onClick={onClick}
       variant={variant}
       disabled={disabled}

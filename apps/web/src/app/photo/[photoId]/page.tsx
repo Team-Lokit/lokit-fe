@@ -1,13 +1,11 @@
 'use client';
 
-import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 // TODO: 2차 MVP에서 반영 예정
 // import CommentIcon from '@/assets/images/comment.svg';
-import DateIcon from '@/assets/images/date.svg';
 import Chip from '@/components/buttons/chip/Chip';
-import MenuHeader from '@/components/header/menu/MenuHeader';
 import { usePendingPhotoDetail } from '@/hooks/usePendingPhotosViewModel';
-import { formatDate } from '@/utils/formatDate';
+import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
+import LocationArrowIcon from '@/assets/images/locationArrow.svg';
 import { getGetPhotoDetailQueryOptions, useGetPhotoDetail } from '@repo/api-client';
 import { AnimatePresence } from 'framer-motion';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -30,6 +28,9 @@ import {
   usePhotoSlider,
 } from './_hooks';
 import * as S from './page.styles';
+import { formatPhotoDate } from '@/app/photo/[photoId]/utils/formatPhotoDate';
+import PhotoHeader from '@/components/header/photo/PhotoHeader';
+import Menu from '@/components/menu/Menu';
 
 export default function PhotoViewPage() {
   const router = useRouter();
@@ -223,31 +224,23 @@ export default function PhotoViewPage() {
       {isOverlayVisible && (
         <>
           <S.HeaderWrapper>
-            <MenuHeader
-              title={
-                isPendingMode
-                  ? isUploading
-                    ? '업로드 중...'
-                    : isError
-                      ? '업로드 실패'
-                      : ''
-                  : resolvedDetail?.address || ''
-              }
+            <PhotoHeader
               onClickBack={handleBack}
-              showLocation={!isPendingMode && !!resolvedDetail?.address}
               showMenu={!isPendingMode && !!resolvedDetail?.isEditable}
             >
               {!isPendingMode && resolvedDetail?.isEditable && (
-                <MenuHeader.Menu>
-                  <MenuHeader.Item onClick={() => openEditOverlay(displayPhotoId)}>
-                    기록 수정하기
-                  </MenuHeader.Item>
-                  <MenuHeader.Item variant="danger" onClick={openDeleteModal}>
-                    사진 삭제하기
-                  </MenuHeader.Item>
-                </MenuHeader.Menu>
+                <PhotoHeader.Menu>
+                  <Menu>
+                    <Menu.Item onClick={() => openEditOverlay(displayPhotoId)}>
+                      기록 수정하기
+                    </Menu.Item>
+                    <Menu.Item variant="danger" onClick={openDeleteModal}>
+                      사진 삭제
+                    </Menu.Item>
+                  </Menu>
+                </PhotoHeader.Menu>
               )}
-            </MenuHeader>
+            </PhotoHeader>
           </S.HeaderWrapper>
 
           <S.BottomOverlay>
@@ -278,18 +271,27 @@ export default function PhotoViewPage() {
             </S.ContainerA>
 
             <S.ContainerB>
-              <Chip
-                text={formatDate(resolvedTakenAt)}
-                variant="white"
-                size="small"
-                icon={<DateIcon width={14} height={14} />}
-              />
+              <Chip text={formatPhotoDate(resolvedTakenAt)} size="small" />
+              {!isPendingMode && !!resolvedDetail?.address && (
+                <Chip
+                  text={resolvedDetail?.address}
+                  size="small"
+                  icon={
+                    <S.ChipIcon>
+                      <LocationArrowIcon width={12} height={12} />
+                    </S.ChipIcon>
+                  }
+                />
+              )}
               {!isPendingMode && (
                 <Chip
                   text={resolvedDetail?.albumName || '앨범 없음'}
-                  variant="white"
                   size="small"
-                  icon={<AlbumSmallIcon />}
+                  icon={
+                    <S.ChipIcon>
+                      <AlbumSmallIcon />
+                    </S.ChipIcon>
+                  }
                 />
               )}
               {/* TODO: 2차 MVP에서 반영 예정

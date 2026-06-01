@@ -27,7 +27,7 @@ export const Wrapper = styled.div`
   align-items: center;
   min-height: 100vh;
   padding: 0;
-  background-color: ${({ theme }) => theme.colors.gray[1000]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
   overflow: hidden;
 
   &::before {
@@ -69,18 +69,18 @@ export const BackButton = styled.button`
   border: none;
   padding: 0;
   font-size: 14px;
-  color: ${({ theme }) => theme.colors.gray[700]};
+  color: ${({ theme }) => theme.colors.grayScale[700]};
   cursor: pointer;
   margin-bottom: 24px;
 
   &:hover {
-    color: ${({ theme }) => theme.colors.gray[0]};
+    color: ${({ theme }) => theme.colors.grayScale[0]};
   }
 `;
 
 export const Title = styled.h1`
   ${({ theme }) => theme.typography.heading24Bold};
-  color: ${({ theme }) => theme.colors.gray[0]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
   text-align: center;
   margin: 0;
 `;
@@ -142,7 +142,7 @@ export const CodeDisplay = styled.div`
   border-radius: 12px;
 
   ${({ theme }) => theme.typography.body16Regular};
-  color: ${({ theme }) => theme.colors.gray[100]};
+  color: ${({ theme }) => theme.colors.grayScale[100]};
 `;
 
 export const ExpiryText = styled.p`

@@ -36,10 +36,10 @@ export const Dropdown = styled.div`
   gap: 8px;
   width: 160px;
   padding: 8px;
-  background: ${({ theme }) => theme.colors.blueWhite.bg8};
-  backdrop-filter: blur(25px);
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
-  border-radius: 16px;
+  background: ${({ theme }) => theme.colors.blackOpacity[50]};
+  backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[25]};
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
+  border-radius: 20px;
   z-index: ${({ theme }) => theme.zIndex.modal};
 `;
 
@@ -52,12 +52,12 @@ export const Item = styled.button<{ variant?: 'default' | 'danger' }>`
   background: transparent;
   border: none;
   color: ${({ theme, variant }) =>
-    variant === 'danger' ? theme.colors.status.red[200] : theme.colors.gray[200]};
+    variant === 'danger' ? theme.colors.status.red[200] : theme.colors.grayScale[200]};
   cursor: pointer;
   white-space: nowrap;
   border-radius: 8px;
 
   &:hover {
-    background: ${({ theme }) => theme.colors.blueWhite.bg20};
+    background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg20};
   }
 `;

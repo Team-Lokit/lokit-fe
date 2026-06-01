@@ -42,17 +42,17 @@ export default AlbumListItem;
 const Container = styled.div<{ $isSelected: boolean }>`
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
   padding: 10px 12px;
   border-radius: 12px;
   cursor: pointer;
   overflow: hidden;
   transition: background-color 0.15s ease;
   background-color: ${({ $isSelected, theme }) =>
-    $isSelected ? theme.colors.blueWhite.bg8 : 'transparent'};
+    $isSelected ? theme.colors.blueWhiteOpacity.bg8 : 'transparent'};
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+    background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   }
 `;
 
@@ -80,6 +80,6 @@ const Title = styled.span`
 
 const Count = styled.span`
   ${({ theme }) => theme.typography.body16Medium};
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
   flex-shrink: 0;
 `;

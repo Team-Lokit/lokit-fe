@@ -6,19 +6,6 @@ export const Container = styled.div`
   display: inline-block;
 `;
 
-export const TriggerButton = styled.button`
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.blueWhite.bg8};
-  backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[5]};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
-  color: ${({ theme }) => theme.colors.gray[100]};
-  padding: 11px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 export const Backdrop = styled.div`
   position: fixed;
   inset: 0;
@@ -38,8 +25,8 @@ export const MenuPanel = styled.div<{ placement: MenuPlacement }>`
   flex-direction: column;
   align-items: stretch;
 
-  background: ${({ theme }) => theme.colors.blueWhite.bg8};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhite.border10};
+  background: ${({ theme }) => theme.colors.blackOpacity[50]};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[25]};
-  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
+  border-radius: 20px;
 `;

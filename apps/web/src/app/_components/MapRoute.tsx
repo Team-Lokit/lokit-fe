@@ -10,7 +10,6 @@ import ViewSwitcher, {
   VIEW_TYPE,
   type ViewType,
 } from '@/components/viewSwitcher/ViewSwitcher';
-import FloatingButton from '@/components/buttons/floatingButton/FloatingButton';
 import PhotoGridContainer from '@/components/photoGridContainer/PhotoGridContainer';
 import PhotoGridItem from '@/components/photoGridItem/PhotoGridItem';
 import HomeEmptyState from '@/components/common/homeEmptyState/HomeEmptyState';
@@ -38,12 +37,15 @@ import { AlbumAddModalContainer } from './albumAddModal/AlbumAddModalContainer';
 import { AlbumRenameModalContainer } from './albumRenameModal/AlbumRenameModalContainer';
 import { AlbumDeleteModalContainer } from './albumDeleteModal/AlbumDeleteModalContainer';
 import LocationPermissionModal from './locationPermissionModal/LocationPermissionModal';
-import { getCurrentPosition } from '@/utils/getCurrentPosition';
+import PhotoSourceSheet from './photoSourceSheet/PhotoSourceSheet';
 import { validateCenterCoordinate } from '../_utils/mapRoute.calc';
 import { saveClusterToSession } from '@/utils/sessionStorage';
+import { checkIsInWebView } from '@/utils/environment';
+import { useLocationPermissionModal } from '@/hooks/useLocationPermissionModal';
 import { usePhotoContext } from '@/app/photo/_contexts/PhotoContext';
 import { usePhotoSelect } from '@/app/photo/add/_hooks/usePhotoSelect';
 import type { SelectedPhoto } from '@/app/photo/add/_types/photo';
+import Chip from '@/components/buttons/chip/Chip';
 
 export default function MapRoute() {
   const router = useRouter();
@@ -118,15 +120,18 @@ export default function MapRoute() {
     ],
   );
 
-  const { selectPhotosFromFile } = usePhotoSelect({
+  const { selectPhotosFromLibrary, selectPhotosFromCamera } = usePhotoSelect({
     onPhotosSelected: handlePhotosSelected,
   });
+
+  const { isOpen: isLocationDeniedModalOpen, close: handleCloseLocationDeniedModal } =
+    useLocationPermissionModal();
 
   // 모달 상태 관리
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isLocationDeniedModalOpen, setIsLocationDeniedModalOpen] = useState(false);
+  const [isPhotoSourceSheetOpen, setIsPhotoSourceSheetOpen] = useState(false);
   const [menuAlbumId, setMenuAlbumId] = useState<number | undefined>(undefined);
   const [menuAlbumTitle, setMenuAlbumTitle] = useState<string | undefined>(undefined);
 
@@ -155,17 +160,6 @@ export default function MapRoute() {
       });
     }
   }, [selectedAlbumId, albumDetail, albumMapInfo, handleViewStateChange]);
-
-  useEffect(() => {
-    const initLocation = async () => {
-      const position = await getCurrentPosition();
-      if (!position) {
-        setIsLocationDeniedModalOpen(true);
-        return;
-      }
-    };
-    initLocation();
-  }, []);
 
   useTrackPage(
     'screen_view_home',
@@ -289,10 +283,6 @@ export default function MapRoute() {
     setMenuAlbumId(undefined);
   };
 
-  const handleCloseLocationDeniedModal = () => {
-    setIsLocationDeniedModalOpen(false);
-  };
-
   return (
     <S.Wrapper>
       <S.HeaderContainer>
@@ -325,7 +315,7 @@ export default function MapRoute() {
           {displayPhotos.length === 0 ? (
             <S.EmptyState>
               <HomeEmptyState
-                onAddPhoto={() => selectPhotosFromFile()}
+                onAddPhoto={() => selectPhotosFromLibrary()}
                 onAddAlbum={() => setIsAddModalOpen(true)}
               />
             </S.EmptyState>
@@ -384,7 +374,11 @@ export default function MapRoute() {
             text="사진 추가"
             onClick={() => {
               track('screen_view_photo_picker', { source: 'home' });
-              selectPhotosFromFile();
+              if (checkIsInWebView()) {
+                setIsPhotoSourceSheetOpen(true);
+              } else {
+                selectPhotosFromLibrary();
+              }
             }}
             textAlign="left"
           />
@@ -401,7 +395,7 @@ export default function MapRoute() {
       </S.ActionColumn>
 
       <S.FloatingButtonWrapper>
-        <FloatingButton text={`기록 ${photoCount}개`} />
+        <Chip text={`기록 ${photoCount}개`} size="medium" />
       </S.FloatingButtonWrapper>
 
       <S.ViewSwitcherWrapper>
@@ -454,6 +448,12 @@ export default function MapRoute() {
       <LocationPermissionModal
         isOpen={isLocationDeniedModalOpen}
         onClose={handleCloseLocationDeniedModal}
+      />
+      <PhotoSourceSheet
+        isOpen={isPhotoSourceSheetOpen}
+        onClose={() => setIsPhotoSourceSheetOpen(false)}
+        onSelectCamera={selectPhotosFromCamera}
+        onSelectLibrary={selectPhotosFromLibrary}
       />
     </S.Wrapper>
   );

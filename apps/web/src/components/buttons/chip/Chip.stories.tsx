@@ -26,14 +26,6 @@ export const Black: Story = {
   },
 };
 
-export const White: Story = {
-  args: {
-    text: 'White Chip',
-    variant: 'white',
-    size: 'medium',
-  },
-};
-
 export const WithIcon: Story = {
   args: {
     text: 'Location',

@@ -23,7 +23,7 @@ export const Title = styled.h2`
 
 export const Subtitle = styled.p`
   ${({ theme }) => theme.typography.body15Regular};
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
   margin: 0;
 `;
 
@@ -39,7 +39,7 @@ export const Card = styled.button`
   display: flex;
   flex-direction: column;
   padding: 18px;
-  background-color: ${({ theme }) => theme.colors.blueWhite.bg8};
+  background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   border: none;
   border-radius: 16px;
   cursor: pointer;
@@ -49,7 +49,7 @@ export const Card = styled.button`
 
 export const CardLabel = styled.span`
   ${({ theme }) => theme.typography.body14Regular};
-  color: ${({ theme }) => theme.colors.gray[400]};
+  color: ${({ theme }) => theme.colors.grayScale[400]};
 `;
 
 export const CardTitle = styled.span`
