@@ -42,7 +42,6 @@ const ExploreHeader = ({
       }
       center={
         <S.LocationWrapper>
-          <S.LocationArrowIcon />
           <S.LocationText>
             <CrossfadeText text={title} />
           </S.LocationText>

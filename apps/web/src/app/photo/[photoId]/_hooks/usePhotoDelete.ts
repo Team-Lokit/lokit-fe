@@ -5,6 +5,7 @@ import {
   useDelete,
   getGetPhotosQueryKey,
   getGetMapMeQueryKey,
+  getGetPhotoDetailQueryKey,
   type AlbumThumbnails,
   type PhotoListResponse,
 } from '@repo/api-client';
@@ -85,9 +86,22 @@ const usePhotoDelete = () => {
 
     try {
       await deletePhotoAsync({ id: photoId });
+      queryClient.removeQueries({ queryKey: getGetPhotoDetailQueryKey(photoId) });
       queryClient.invalidateQueries({ queryKey: getGetMapMeQueryKey() });
       queryClient.invalidateQueries({ queryKey: getMapMeAlbumsQueryKey() });
-      if (albumId) {
+
+      // 전체 사진 앨범(첫 번째 앨범)은 항상 invalidate
+      const cachedAlbums = queryClient.getQueryData<AlbumThumbnails[]>(
+        getMapMeAlbumsQueryKey(),
+      );
+      const allPhotosAlbumId = cachedAlbums?.[0]?.id;
+      if (allPhotosAlbumId) {
+        queryClient.invalidateQueries({
+          queryKey: getGetPhotosQueryKey(allPhotosAlbumId),
+        });
+      }
+      // 특정 앨범에서 삭제한 경우 해당 앨범도 invalidate
+      if (albumId && albumId !== allPhotosAlbumId) {
         queryClient.invalidateQueries({ queryKey: getGetPhotosQueryKey(albumId) });
       }
     } catch {

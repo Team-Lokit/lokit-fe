@@ -6,11 +6,11 @@ import AlbumMenu from '@/components/album-container/albumMenu/AlbumMenu';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import MenuIcon from '@/assets/images/menu.svg';
 import { BUTTON_SIZE, ICON_SIZE } from '@/components/header/base/Header.constants';
+import { DEFAULT_ALBUM_TITLE } from '@/constants';
 
 interface MapRouteHeaderProps {
   viewContext: ViewContext;
   selectedAlbumTitle: string | undefined;
-  address: string | null;
   onOpenSidebar: () => void;
   onRenameAlbum?: () => void;
   onDeleteAlbum?: () => void;
@@ -19,15 +19,12 @@ interface MapRouteHeaderProps {
 export const MapRouteHeader = ({
   viewContext,
   selectedAlbumTitle,
-  address,
   onOpenSidebar,
   onRenameAlbum,
   onDeleteAlbum,
 }: MapRouteHeaderProps) => {
   const isAlbumDetail = viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL;
-  const title = isAlbumDetail
-    ? (selectedAlbumTitle ?? '앨범')
-    : address || '위치 정보 로딩 중';
+  const title = selectedAlbumTitle ?? DEFAULT_ALBUM_TITLE;
 
   return (
     <ExploreHeader

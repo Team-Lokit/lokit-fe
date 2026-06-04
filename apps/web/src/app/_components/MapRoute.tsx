@@ -24,10 +24,12 @@ import { VIEW_CONTEXT_TYPE } from '@/constants/viewContext';
 import { track } from '@/lib/analytics';
 import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 import * as S from '../page.styles';
+import { DEFAULT_LOCATION } from '../constants';
 import { useMapRouteViewState } from '../_hooks/useMapRouteViewState';
 import { useMapRouteViewContext } from '../_hooks/useMapRouteViewContext';
 import { useMapRouteData } from '../_hooks/useMapRouteData';
 import { usePendingPhotosViewModel } from '@/hooks/usePendingPhotosViewModel';
+import { useAlbumPhotos } from '@/hooks/queries/useAlbumPhotos';
 import {
   calculatePhotoCount,
   calculateCenterFromAlbumPhotos,
@@ -80,10 +82,18 @@ export default function MapRoute() {
     selectedAlbumId,
   });
 
+  // HOME 격자보기용 전체사진 앨범 fetch (전체사진 앨범 = albumList[0])
+  const allPhotosAlbumId = albumList[0]?.id ?? null;
+  const { albumDetail: homeGridAlbumDetail } = useAlbumPhotos(
+    viewContext.type === VIEW_CONTEXT_TYPE.HOME ? allPhotosAlbumId : null,
+  );
+
   // Pending 사진 merge (앨범 리스트 + 앨범 상세)
+  const effectiveAlbumDetail =
+    viewContext.type === VIEW_CONTEXT_TYPE.HOME ? homeGridAlbumDetail : albumDetail;
   const { albumList: mergedAlbumList, displayPhotos } = usePendingPhotosViewModel(
     albumList,
-    albumDetail,
+    effectiveAlbumDetail,
   );
 
   // 사진 추가
@@ -135,9 +145,17 @@ export default function MapRoute() {
   const [menuAlbumId, setMenuAlbumId] = useState<number | undefined>(undefined);
   const [menuAlbumTitle, setMenuAlbumTitle] = useState<string | undefined>(undefined);
 
+  const isCustomAlbumSelected =
+    selectedAlbumId != null && selectedAlbumId !== mergedAlbumList[0]?.id;
+
   // 앨범이 선택되었을 때 앨범의 중심 위치로 지도 이동
   useEffect(() => {
     if (!selectedAlbumId) {
+      return;
+    }
+
+    if (!isCustomAlbumSelected) {
+      handleViewStateChange(DEFAULT_LOCATION);
       return;
     }
 
@@ -159,7 +177,13 @@ export default function MapRoute() {
         zoom: centerInfo.zoom,
       });
     }
-  }, [selectedAlbumId, albumDetail, albumMapInfo, handleViewStateChange]);
+  }, [
+    selectedAlbumId,
+    isCustomAlbumSelected,
+    albumDetail,
+    albumMapInfo,
+    handleViewStateChange,
+  ]);
 
   useTrackPage(
     'screen_view_home',
@@ -187,9 +211,6 @@ export default function MapRoute() {
   }, [viewContext, albumDetail, totalHistoryCount]);
 
   const selectedAlbumTitle = albumDetail?.title;
-
-  const isCustomAlbumSelected =
-    selectedAlbumId != null && selectedAlbumId !== mergedAlbumList[0]?.id;
 
   const handlePinClick = async (pin: MapPin) => {
     if (!pin.isCluster) {
@@ -289,7 +310,6 @@ export default function MapRoute() {
         <MapRouteHeader
           viewContext={viewContext}
           selectedAlbumTitle={selectedAlbumTitle}
-          address={address}
           onOpenSidebar={handleOpenSidebar}
           onRenameAlbum={
             isCustomAlbumSelected ? () => handleRenameAlbum(selectedAlbumId) : undefined
