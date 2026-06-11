@@ -6,6 +6,7 @@ import {
   getGetPhotosQueryKey,
   getGetMapMeQueryKey,
   getGetPhotoDetailQueryKey,
+  getGetClusterPhotosQueryKey,
   type AlbumThumbnails,
   type PhotoListResponse,
 } from '@repo/api-client';
@@ -15,6 +16,7 @@ import { useToast } from '@/components/toast/ToastProvider';
 interface ConfirmDeleteParams {
   photoId: number;
   albumId?: number;
+  clusterId?: string;
 }
 
 const usePhotoDelete = () => {
@@ -33,7 +35,7 @@ const usePhotoDelete = () => {
     setIsModalOpen(false);
   };
 
-  const confirmDelete = async ({ photoId, albumId }: ConfirmDeleteParams) => {
+  const confirmDelete = async ({ photoId, albumId, clusterId }: ConfirmDeleteParams) => {
     // 낙관적 업데이트를 위한 이전 데이터 스냅샷
     const previousAlbums = queryClient.getQueryData<AlbumThumbnails[]>(
       getMapMeAlbumsQueryKey(),
@@ -104,6 +106,13 @@ const usePhotoDelete = () => {
       if (albumId && albumId !== allPhotosAlbumId) {
         queryClient.invalidateQueries({ queryKey: getGetPhotosQueryKey(albumId) });
       }
+      // 클러스터 캐시 invalidate (클러스터 뷰에서 삭제 시 지도에 반영)
+      if (clusterId) {
+        queryClient.invalidateQueries({
+          queryKey: getGetClusterPhotosQueryKey(clusterId),
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: ['mapPhotos'] });
     } catch {
       if (previousAlbums !== undefined) {
         queryClient.setQueryData(getMapMeAlbumsQueryKey(), previousAlbums);
