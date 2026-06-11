@@ -1,17 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { ROUTES } from '@/constants/routes';
-import { ACCESS_TOKEN_COOKIE, COUPLE_STATUS_COOKIE } from '@/constants/cookie';
+import {
+  ACCESS_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
+  COUPLE_STATUS_COOKIE,
+} from '@/constants/cookie';
 import { COUPLE_STATUS } from '@/constants/coupleStatus';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value;
+  const refreshToken = request.cookies.get(REFRESH_TOKEN_COOKIE)?.value;
   const coupleStatus = request.cookies.get(COUPLE_STATUS_COOKIE)?.value;
   const isLoginPage = pathname.startsWith(ROUTES.LOGIN);
+  const isSyncPage = pathname === ROUTES.SYNC;
 
-  // 미인증 → 로그인만 허용
-  if (!accessToken) {
+  // refresh가 세션의 기준점이다. access 쿠키는 짧은 TTL로 먼저 만료돼 사라지지만,
+  // refresh가 살아있으면 다음 API 호출(SSR/클라)에서 백엔드가 토큰을 자동 재발급(Set-Cookie)한다.
+  // 따라서 access 부재만으로 로그인시키지 않고, access·refresh가 모두 없을 때만 미인증으로 본다.
+  if (!accessToken && !refreshToken) {
     if (isLoginPage) {
       return NextResponse.next();
     }
@@ -24,7 +32,6 @@ export function middleware(request: NextRequest) {
   }
 
   const isOnboarding = pathname.startsWith(ROUTES.ONBOARDING.START);
-  const isSyncPage = pathname === ROUTES.SYNC;
 
   // coupleStatus 쿠키 없음 → /sync에서 쿠키 동기화 후 원래 경로로 복귀
   if (!coupleStatus) {
