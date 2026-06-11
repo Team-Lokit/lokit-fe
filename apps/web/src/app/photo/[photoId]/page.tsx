@@ -372,6 +372,7 @@ export default function PhotoViewPage() {
               confirmDelete({
                 photoId: displayPhotoId,
                 albumId: albumIdFromQuery,
+                clusterId: clusterIdFromQuery,
               })
             }
           />
