@@ -6,6 +6,7 @@ import { useToast } from '@/components/toast';
 import Modal from '@/components/popup/modal/Modal';
 import TextButton from '@/components/buttons/textButton/TextButton';
 import { ROUTES } from '@/constants/routes';
+import { resetIdentity } from '@/lib/analytics';
 import * as S from './LogoutClient.styles';
 import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 
@@ -16,6 +17,7 @@ export default function LogoutClient() {
   const { mutate: logout, isPending } = useLogout({
     mutation: {
       onSuccess: () => {
+        resetIdentity();
         window.location.href = ROUTES.LOGIN;
       },
       onError: () => {

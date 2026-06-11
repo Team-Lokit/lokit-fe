@@ -8,6 +8,7 @@ import usePopup from '@/hooks/usePopup';
 import { useToast } from '@/components/toast/ToastProvider';
 import { useSignoutContext } from '@/app/signout/_contexts/SignoutContext';
 import { ROUTES } from '@/constants/routes';
+import { resetIdentity } from '@/lib/analytics';
 import * as S from './SignoutButtonClient.styles';
 
 export default function SignoutButtonClient() {
@@ -18,6 +19,7 @@ export default function SignoutButtonClient() {
   const { mutate: withdraw, isPending } = useWithdraw({
     mutation: {
       onSuccess: () => {
+        resetIdentity();
         window.location.href = ROUTES.LOGIN;
       },
       onError: (error) => {

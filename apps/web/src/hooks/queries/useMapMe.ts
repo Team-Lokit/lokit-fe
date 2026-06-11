@@ -5,6 +5,7 @@ import { useMemo, useRef, useState, useEffect } from 'react';
 import Supercluster from 'supercluster';
 import type { MapPin } from '@/types/map.type';
 import { MAP_CLUSTERING_CONFIG } from '@/constants/map';
+import { useIdentifyUser } from '@/hooks/analytics/useIdentifyUser';
 import {
   convertPhotosToGeoJsonFeatures,
   parseBbox,
@@ -71,6 +72,12 @@ export const useMapMe = ({ longitude, latitude, zoom, albumId }: UseMapMeParams)
       setLastDataVersion(response.data.dataVersion);
     }
   }, [response.data?.dataVersion, lastDataVersion]);
+
+  // 세션 시작 시 유저 재식별 (/map/me 응답의 userId 사용).
+  // 백엔드가 userId를 추가했지만 생성된 클라이언트 타입엔 아직 없어 캐스팅한다.
+  // orval 재생성으로 MapMeResponse.userId가 반영되면 캐스팅 제거.
+  const userId = (response.data as { userId?: number } | undefined)?.userId;
+  useIdentifyUser(userId);
 
   const address = useMemo(() => {
     if (!isValid) return '';
