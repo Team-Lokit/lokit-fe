@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Alert, Linking, Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import BootSplash from 'react-native-bootsplash';
@@ -33,6 +33,21 @@ function AppContent() {
   const { initialUrl } = useDeepLinkHandling(webViewRef);
   const onMessage = useBridgeHandler(webViewRef);
 
+  const onShouldStartLoadWithRequest = (request: { url: string }) => {
+    const { url } = request;
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return true;
+    }
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        Alert.alert('카카오톡 필요', '카카오톡이 설치되어 있지 않습니다.');
+      }
+    });
+    return false;
+  };
+
   // Linking이 resolve되기 전에는 WebView를 띄우지 않음(스플래시가 가려줌).
   // 콜드 스타트 딥링크는 buildBridgeInjection에서 페이지 로드 전 주입돼야 정확하다.
   if (initialUrl === null) {
@@ -50,6 +65,7 @@ function AppContent() {
         injectedJavaScriptBeforeContentLoaded={buildBridgeInjection(initialUrl)}
         onLoad={onWebViewLoad}
         onMessage={onMessage}
+        onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         // dvh 단위가 모바일 웹뷰에서 제대로 작동하지 않는 문제를 해결
         injectedJavaScript={`
           (function() {
