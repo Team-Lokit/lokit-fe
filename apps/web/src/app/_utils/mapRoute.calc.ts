@@ -3,6 +3,7 @@ import { VIEW_CONTEXT_TYPE } from '@/constants/viewContext';
 import type { ViewContext } from '@/constants/viewContext';
 import type { AlbumWithPhotosResponse, BoundingBoxResponse } from '@repo/api-client';
 import { BBOX_ZOOM_CALCULATION } from '@/constants/map';
+import { DEFAULT_LOCATION } from '../constants';
 
 /**
  * 중심 좌표가 바운딩박스 범위 내에 있는지 검증합니다.
@@ -102,7 +103,7 @@ export const calculateCenterFromBoundingBox = (
             (latDiff * BBOX_ZOOM_CALCULATION.ZOOM_LEVEL_ADJUSTMENT_FACTOR),
         ) - 1
       : BBOX_ZOOM_CALCULATION.DEFAULT_ZOOM;
-  const zoom = Math.max(0, Math.min(lngZoom, latZoom));
+  const zoom = Math.max(DEFAULT_LOCATION.zoom, Math.min(lngZoom, latZoom));
 
   return { longitude, latitude, zoom };
 };

@@ -5,6 +5,8 @@ import {
   useDelete,
   getGetPhotosQueryKey,
   getGetMapMeQueryKey,
+  getGetPhotoDetailQueryKey,
+  getGetClusterPhotosQueryKey,
   type AlbumThumbnails,
   type PhotoListResponse,
 } from '@repo/api-client';
@@ -14,6 +16,7 @@ import { useToast } from '@/components/toast/ToastProvider';
 interface ConfirmDeleteParams {
   photoId: number;
   albumId?: number;
+  clusterId?: string;
 }
 
 const usePhotoDelete = () => {
@@ -32,7 +35,7 @@ const usePhotoDelete = () => {
     setIsModalOpen(false);
   };
 
-  const confirmDelete = async ({ photoId, albumId }: ConfirmDeleteParams) => {
+  const confirmDelete = async ({ photoId, albumId, clusterId }: ConfirmDeleteParams) => {
     // 낙관적 업데이트를 위한 이전 데이터 스냅샷
     const previousAlbums = queryClient.getQueryData<AlbumThumbnails[]>(
       getMapMeAlbumsQueryKey(),
@@ -85,11 +88,31 @@ const usePhotoDelete = () => {
 
     try {
       await deletePhotoAsync({ id: photoId });
+      queryClient.removeQueries({ queryKey: getGetPhotoDetailQueryKey(photoId) });
       queryClient.invalidateQueries({ queryKey: getGetMapMeQueryKey() });
       queryClient.invalidateQueries({ queryKey: getMapMeAlbumsQueryKey() });
-      if (albumId) {
+
+      // 전체 사진 앨범(첫 번째 앨범)은 항상 invalidate
+      const cachedAlbums = queryClient.getQueryData<AlbumThumbnails[]>(
+        getMapMeAlbumsQueryKey(),
+      );
+      const allPhotosAlbumId = cachedAlbums?.[0]?.id;
+      if (allPhotosAlbumId) {
+        queryClient.invalidateQueries({
+          queryKey: getGetPhotosQueryKey(allPhotosAlbumId),
+        });
+      }
+      // 특정 앨범에서 삭제한 경우 해당 앨범도 invalidate
+      if (albumId && albumId !== allPhotosAlbumId) {
         queryClient.invalidateQueries({ queryKey: getGetPhotosQueryKey(albumId) });
       }
+      // 클러스터 캐시 invalidate (클러스터 뷰에서 삭제 시 지도에 반영)
+      if (clusterId) {
+        queryClient.invalidateQueries({
+          queryKey: getGetClusterPhotosQueryKey(clusterId),
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: ['mapPhotos'] });
     } catch {
       if (previousAlbums !== undefined) {
         queryClient.setQueryData(getMapMeAlbumsQueryKey(), previousAlbums);

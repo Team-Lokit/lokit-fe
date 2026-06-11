@@ -192,6 +192,8 @@ export async function customFetcher<TResponse>(
   });
 
   if (!response.ok) {
+    // 백엔드는 모든 요청에서 쿠키를 보고 refresh가 살아있으면 토큰을 자동 재발급한다.
+    // 따라서 클라이언트가 401을 받았다면 refresh까지 만료된 것이므로 로그인으로 보낸다.
     if (response.status === 401 && typeof window !== 'undefined') {
       window.location.href = '/login';
     }
