@@ -40,6 +40,12 @@ export function middleware(request: NextRequest) {
     }
     const syncUrl = new URL(ROUTES.SYNC, request.url);
     syncUrl.searchParams.set('redirect', pathname);
+    // 백엔드가 OAuth 콜백 redirect에 붙인 로그인 파라미터를 /sync까지 넘긴다.
+    // 여기서 버려지면 login_success의 user_id·is_new_user를 잃는다.
+    for (const key of ['user_id', 'is_new_user']) {
+      const value = request.nextUrl.searchParams.get(key);
+      if (value) syncUrl.searchParams.set(key, value);
+    }
     return NextResponse.redirect(syncUrl);
   }
 
