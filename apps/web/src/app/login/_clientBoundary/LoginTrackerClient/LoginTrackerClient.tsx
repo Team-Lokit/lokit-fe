@@ -10,7 +10,7 @@ export default function LoginTrackerClient() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const errorCode = params.get('error');
+    const errorCode = params.get('oauth_error');
 
     if (errorCode) {
       track('login_fail', {
