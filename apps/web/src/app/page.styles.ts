@@ -48,7 +48,7 @@ export const EmptyState = styled.div`
 
 export const ViewSwitcherWrapper = styled.div`
   position: absolute;
-  bottom: 24px;
+  bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 999;
