@@ -361,14 +361,26 @@ export default function MapRoute() {
                         photo_id: String(photo.id),
                         photo_date: photo.takenAt ?? '',
                       });
-                      const url = ROUTES.PHOTO.VIEW(photo.id!);
+
+                      const params = new URLSearchParams();
                       const gridSource =
                         viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL
                           ? 'album_detail'
                           : 'home_grid';
-                      router.push(
-                        `${url}${url.includes('?') ? '&' : '?'}source=${gridSource}`,
-                      );
+
+                      // selectedAlbumId가 null일 경우 전체사진 앨범이므로 albumId는 allPhotosAlbumId
+                      const albumId = selectedAlbumId ?? allPhotosAlbumId;
+
+                      params.set('source', gridSource);
+
+                      if (
+                        viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL &&
+                        albumId !== null
+                      ) {
+                        params.set('albumId', String(albumId));
+                      }
+
+                      router.push(`${ROUTES.PHOTO.VIEW(photo.id!)}?${params.toString()}`);
                     }}
                   />
                 ),
