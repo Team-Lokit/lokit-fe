@@ -6,6 +6,7 @@ node_modules
 .pnp.*
 .DS_Store
 .claude/
+.omc/
 .idea/
 .next
 .expo
@@ -14,3 +15,4 @@ dist
 apps/mobile/android/app/build
 apps/mobile/ios/build
 apps/mobile/ios/Pods
+.gstack/
