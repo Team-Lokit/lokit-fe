@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('exifreader', () => ({ default: { load: vi.fn() } }));
+vi.mock('exifreader/src/exif-reader.js', () => ({ load: vi.fn() }));
 
-import ExifReader from 'exifreader';
+import { load } from 'exifreader/src/exif-reader.js';
 import { parseGpsFromExif } from '@repo/webview-bridge';
 
-const mockLoad = vi.mocked(ExifReader.load);
+const mockLoad = vi.mocked(load);
 const buf = new ArrayBuffer(8);
 
 const GYEONGJU = { latitude: 35.8562, longitude: 129.2247 };
