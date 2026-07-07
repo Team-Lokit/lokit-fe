@@ -8,6 +8,7 @@ import {
   type PickImageRequest,
 } from '@repo/webview-bridge';
 import { sendResponse } from '../sendResponse';
+import { extractGpsFromAsset } from './extractGpsFromAsset';
 
 const DEFAULT_MAX_DIMENSION = 2400;
 const DEFAULT_QUALITY: PhotoQuality = 0.8;
@@ -58,16 +59,23 @@ export async function handlePickImage(
       return;
     }
 
-    const assets: PickedAsset[] = (result.assets ?? [])
-      .filter(asset => asset.base64 && asset.type)
-      .map(asset => ({
-        uri: `data:${asset.type};base64,${asset.base64}`,
-        fileName: asset.fileName ?? `photo-${Date.now()}.jpg`,
-        type: asset.type ?? 'image/jpeg',
-        fileSize: asset.fileSize,
-        width: asset.width,
-        height: asset.height,
-      }));
+    const assets: PickedAsset[] = await Promise.all(
+      (result.assets ?? [])
+        .filter(asset => asset.base64 && asset.type)
+        .map(async asset => {
+          // 전송 이미지는 리사이즈본이지만, 위치는 원본 EXIF에서 뽑아 실어 보낸다.
+          const location = await extractGpsFromAsset(asset);
+          return {
+            uri: `data:${asset.type};base64,${asset.base64}`,
+            fileName: asset.fileName ?? `photo-${Date.now()}.jpg`,
+            type: asset.type ?? 'image/jpeg',
+            fileSize: asset.fileSize,
+            width: asset.width,
+            height: asset.height,
+            location: location ?? undefined,
+          };
+        }),
+    );
 
     sendResponse(webViewRef, {
       type: BRIDGE_MESSAGE_TYPES.PICK_IMAGE_RESULT,

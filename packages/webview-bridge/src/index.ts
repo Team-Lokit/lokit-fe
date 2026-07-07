@@ -4,12 +4,15 @@
  * - 새 메시지 타입 추가 시 BRIDGE_MESSAGE_TYPES와 해당 Request/Response 인터페이스를 함께 추가.
  */
 
+import type { GpsCoordinates } from './utils/parseGpsFromExif';
+
 export const BRIDGE_MESSAGE_TYPES = {
   PICK_IMAGE: 'PICK_IMAGE',
   PICK_IMAGE_RESULT: 'PICK_IMAGE_RESULT',
 } as const;
 
-export type BridgeMessageType = (typeof BRIDGE_MESSAGE_TYPES)[keyof typeof BRIDGE_MESSAGE_TYPES];
+export type BridgeMessageType =
+  (typeof BRIDGE_MESSAGE_TYPES)[keyof typeof BRIDGE_MESSAGE_TYPES];
 
 export type BridgeStatus = 'success' | 'cancelled' | 'error';
 
@@ -38,6 +41,11 @@ export interface PickedAsset {
   fileSize?: number;
   width?: number;
   height?: number;
+  /**
+   * 원본 사진 EXIF에서 추출한 촬영 위치
+   * - 네이티브 리사이즈 시 EXIF GPS가 소실되므로, 원본에서 뽑아 실어 보낸다.
+   */
+  location?: GpsCoordinates;
 }
 
 export interface PickImageResponse {
@@ -50,3 +58,5 @@ export interface PickImageResponse {
 
 export type BridgeRequest = PickImageRequest;
 export type BridgeResponse = PickImageResponse;
+
+export { parseGpsFromExif, type GpsCoordinates } from './utils/parseGpsFromExif';

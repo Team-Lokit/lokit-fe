@@ -1,5 +1,6 @@
 import {
   BRIDGE_MESSAGE_TYPES,
+  type GpsCoordinates,
   type PickedAsset,
   type PickImageOptions,
   type PickImageResponse,
@@ -10,12 +11,14 @@ export interface BridgePickedFile {
   file: File;
   width?: number;
   height?: number;
+  /** 원본 EXIF에서 추출한 촬영 위치 (네이티브가 실어 보낸 값) */
+  location?: GpsCoordinates;
 }
 
 const assetToFile = async (asset: PickedAsset): Promise<BridgePickedFile> => {
   const blob = await fetch(asset.uri).then((r) => r.blob());
   const file = new File([blob], asset.fileName, { type: asset.type });
-  return { file, width: asset.width, height: asset.height };
+  return { file, width: asset.width, height: asset.height, location: asset.location };
 };
 
 /**
