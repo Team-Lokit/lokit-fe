@@ -34,6 +34,7 @@ describe('requestImageFromBridge', () => {
           width: 100,
           height: 80,
           location: GYEONGJU,
+          takenAt: '2026-07-04T23:22:50.586+09:00',
         },
       ],
     });
@@ -43,6 +44,7 @@ describe('requestImageFromBridge', () => {
     expect(result).toHaveLength(1);
     expect(result?.[0].file).toBeInstanceOf(File);
     expect(result?.[0].location).toEqual(GYEONGJU);
+    expect(result?.[0].takenAt).toBe('2026-07-04T23:22:50.586+09:00');
   });
 
   it('location이 없는 에셋은 location이 undefined다', async () => {

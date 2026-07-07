@@ -27,10 +27,10 @@ export const usePhotoSelect = (options?: UsePhotoSelectOptions): UsePhotoSelectR
   optionsRef.current = options;
 
   const processFiles = useCallback(
-    async (items: Array<{ file: File; location?: PhotoLocation }>) => {
+    async (items: Array<{ file: File; location?: PhotoLocation; takenAt?: string }>) => {
       const validItems = items.filter((item) => isAllowedImageType(item.file));
       const photoPromises = validItems.map((item) =>
-        fileToSelectedPhoto(item.file, item.location),
+        fileToSelectedPhoto(item.file, item.location, item.takenAt),
       );
       const results = await Promise.all(photoPromises);
       const newPhotos = results.filter((photo): photo is SelectedPhoto => photo !== null);
@@ -46,7 +46,9 @@ export const usePhotoSelect = (options?: UsePhotoSelectOptions): UsePhotoSelectR
       try {
         const picked = await requestImageFromBridge({ source, selectionLimit: 1 });
         if (!picked || picked.length === 0) return;
-        await processFiles(picked.map((p) => ({ file: p.file, location: p.location })));
+        await processFiles(
+          picked.map((p) => ({ file: p.file, location: p.location, takenAt: p.takenAt })),
+        );
       } finally {
         setIsLoading(false);
       }

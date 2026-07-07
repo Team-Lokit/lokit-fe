@@ -58,4 +58,25 @@ describe('fileToSelectedPhoto', () => {
 
     expect(result?.location).toBeUndefined();
   });
+
+  it('브리지 촬영일(콜론 없는 오프셋)을 표준 ISO(UTC)로 정규화해 createdAt에 넣는다', async () => {
+    mockExtract.mockResolvedValue(null);
+    // 네이티브 피커 timestamp 형식: 콜론 없는 오프셋 → 서버가 거부하던 값
+    const takenAt = '2026-07-04T23:22:50.586+0900';
+
+    const result = await fileToSelectedPhoto(makeFile(), GYEONGJU, takenAt);
+
+    expect(result?.createdAt).toBe(
+      new Date('2026-07-04T23:22:50.586+09:00').toISOString(),
+    );
+  });
+
+  it('takenAt이 없으면 파일 수정시각으로 폴백한다 (웹 경로)', async () => {
+    mockExtract.mockResolvedValue(null);
+
+    const result = await fileToSelectedPhoto(makeFile());
+
+    // makeFile()은 lastModified: 0 → epoch
+    expect(result?.createdAt).toBe(new Date(0).toISOString());
+  });
 });

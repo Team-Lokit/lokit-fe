@@ -46,6 +46,11 @@ export interface PickedAsset {
    * - 네이티브 리사이즈 시 EXIF GPS가 소실되므로, 원본에서 뽑아 실어 보낸다.
    */
   location?: GpsCoordinates;
+  /**
+   * 원본 사진의 촬영 일시 (ISO 8601)
+   * - 리사이즈본은 촬영일 메타데이터가 없으므로, 원본에서 뽑아 실어 보낸다.
+   */
+  takenAt?: string;
 }
 
 export interface PickImageResponse {
