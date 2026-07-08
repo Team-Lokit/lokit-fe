@@ -11,8 +11,27 @@ export const ROUTES = {
     NOTE: {
       ADD: '/photo/add/note',
     },
-    VIEW: (photoId: number, albumId?: number) =>
-      albumId ? `/photo/${photoId}?albumId=${albumId}` : `/photo/${photoId}`,
+    VIEW: (
+      photoId: number,
+      params?: {
+        albumId?: number;
+        source?: string;
+      },
+    ) => {
+      const searchParams = new URLSearchParams();
+
+      if (params?.albumId) {
+        searchParams.set('albumId', String(params.albumId));
+      }
+
+      if (params?.source) {
+        searchParams.set('source', params.source);
+      }
+
+      const query = searchParams.toString();
+
+      return query ? `/photo/${photoId}?${query}` : `/photo/${photoId}`;
+    },
     VIEW_WITH_CLUSTER: (photoId: number, clusterId: string) =>
       `/photo/${photoId}?clusterId=${clusterId}`,
   },
