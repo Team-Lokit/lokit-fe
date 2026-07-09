@@ -1,3 +1,5 @@
+import { buildUrlWithQueryParams } from '@repo/api-client/src/fetcher';
+
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
@@ -17,21 +19,7 @@ export const ROUTES = {
         albumId?: number;
         source?: string;
       },
-    ) => {
-      const searchParams = new URLSearchParams();
-
-      if (params?.albumId) {
-        searchParams.set('albumId', String(params.albumId));
-      }
-
-      if (params?.source) {
-        searchParams.set('source', params.source);
-      }
-
-      const query = searchParams.toString();
-
-      return query ? `/photo/${photoId}?${query}` : `/photo/${photoId}`;
-    },
+    ) => buildUrlWithQueryParams(`/photo/${photoId}`, params),
     VIEW_WITH_CLUSTER: (photoId: number, clusterId: string) =>
       `/photo/${photoId}?clusterId=${clusterId}`,
   },
