@@ -84,9 +84,8 @@ export default function MapRoute() {
 
   // HOME 격자보기용 전체사진 앨범 fetch (전체사진 앨범 = albumList[0])
   const allPhotosAlbumId = albumList[0]?.id ?? null;
-  const { albumDetail: homeGridAlbumDetail } = useAlbumPhotos(
-    viewContext.type === VIEW_CONTEXT_TYPE.HOME ? allPhotosAlbumId : null,
-  );
+  const { albumDetail: homeGridAlbumDetail, isLoading: isHomeGridAlbumDetailLoading } =
+    useAlbumPhotos(viewContext.type === VIEW_CONTEXT_TYPE.HOME ? allPhotosAlbumId : null);
 
   // Pending 사진 merge (앨범 리스트 + 앨범 상세)
   const effectiveAlbumDetail =
@@ -210,6 +209,8 @@ export default function MapRoute() {
     return calculatePhotoCount(viewContext, albumDetail, 0, totalHistoryCount);
   }, [viewContext, albumDetail, totalHistoryCount]);
 
+  const hasPhoto = (albumDetail?.photoCount ?? 0) > 0 || displayPhotos.length > 0;
+
   const selectedAlbumTitle = albumDetail?.title;
 
   const handlePinClick = async (pin: MapPin) => {
@@ -330,16 +331,9 @@ export default function MapRoute() {
         />
       )}
 
-      {activeView === VIEW_TYPE.GRID && (
+      {activeView === VIEW_TYPE.GRID && !isHomeGridAlbumDetailLoading && (
         <S.GridViewContainer>
-          {displayPhotos.length === 0 ? (
-            <S.EmptyState>
-              <HomeEmptyState
-                onAddPhoto={() => selectPhotosFromLibrary()}
-                onAddAlbum={() => setIsAddModalOpen(true)}
-              />
-            </S.EmptyState>
-          ) : (
+          {hasPhoto ? (
             <PhotoGridContainer>
               {displayPhotos.map((photo) =>
                 photo.kind === 'pending' ? (
@@ -361,26 +355,26 @@ export default function MapRoute() {
                         photo_id: String(photo.id),
                         photo_date: photo.takenAt ?? '',
                       });
-
+                      const url = ROUTES.PHOTO.VIEW(photo.id!);
                       const gridSource =
                         viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL
                           ? 'album_detail'
                           : 'home_grid';
-
-                      // selectedAlbumId가 null일 경우 전체사진 앨범이므로 albumId는 allPhotosAlbumId
-                      const albumId = selectedAlbumId ?? allPhotosAlbumId;
-
                       router.push(
-                        ROUTES.PHOTO.VIEW(photo.id!, {
-                          source: gridSource,
-                          ...(albumId !== null ? { albumId } : {}),
-                        }),
+                        `${url}${url.includes('?') ? '&' : '?'}source=${gridSource}`,
                       );
                     }}
                   />
                 ),
               )}
             </PhotoGridContainer>
+          ) : (
+            <S.EmptyState>
+              <HomeEmptyState
+                onAddPhoto={() => selectPhotosFromLibrary()}
+                onAddAlbum={() => setIsAddModalOpen(true)}
+              />
+            </S.EmptyState>
           )}
         </S.GridViewContainer>
       )}
