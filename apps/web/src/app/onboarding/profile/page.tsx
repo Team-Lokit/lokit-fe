@@ -94,6 +94,7 @@ export default function ProfilePage() {
     setProfileData,
     markStepCompleted,
     router,
+    queryClient,
   ]);
 
   const isValid = nickname.trim().length > 0;
