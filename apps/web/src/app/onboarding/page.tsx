@@ -11,12 +11,13 @@ export default function OnboardingPage() {
   const router = useRouter();
 
   const { data: myPageData, isLoading } = useGetMyPage();
+  const nickname = myPageData?.myName;
 
   useEffect(() => {
     if (isLoading) return;
 
     const timer = setTimeout(() => {
-      if (myPageData) {
+      if (nickname) {
         router.push(ROUTES.ONBOARDING.CONNECT);
       } else {
         router.push(ROUTES.ONBOARDING.PROFILE);
@@ -24,7 +25,7 @@ export default function OnboardingPage() {
     }, ONBOARDING_START_REDIRECT_DELAY);
 
     return () => clearTimeout(timer);
-  }, [isLoading, myPageData, router]);
+  }, [isLoading, nickname, router]);
 
   return (
     <S.Wrapper>
