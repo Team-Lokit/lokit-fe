@@ -36,7 +36,7 @@ import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
 import { useToast } from '@/components/toast';
 import { getCurrentPosition } from '@/utils/getCurrentPosition';
-import { getLocationInfo } from '@repo/api-client';
+import { getLocationInfo, useGetMyPage } from '@repo/api-client';
 import { useEffect, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { useTrackPage } from '@/hooks/analytics/useTrackPage';
@@ -50,6 +50,8 @@ interface PhotoNoteOverlayProps {
 export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const router = useRouter();
   const { showToast } = useToast();
+  const { data: myPageData } = useGetMyPage();
+
   const { selectedPhoto, selectedPhotoRect, updatePhotoNoteState, photos } =
     usePhotoContext();
   const {
@@ -174,7 +176,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
     addPendingPhoto({
       photo: selectedPhoto,
       description: memo || undefined,
-      albumId: selectedAlbum?.id,
+      albumId: selectedAlbum?.id ?? myPageData?.defaultAlbumId,
       location:
         selectedLocation?.latitude != null && selectedLocation?.longitude != null
           ? {
