@@ -355,13 +355,20 @@ export default function MapRoute() {
                         photo_id: String(photo.id),
                         photo_date: photo.takenAt ?? '',
                       });
-                      const url = ROUTES.PHOTO.VIEW(photo.id!);
+
                       const gridSource =
                         viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL
                           ? 'album_detail'
                           : 'home_grid';
+
+                      // selectedAlbumId가 null일 경우 전체사진 앨범이므로 albumId는 allPhotosAlbumId
+                      const albumId = selectedAlbumId ?? allPhotosAlbumId;
+
                       router.push(
-                        `${url}${url.includes('?') ? '&' : '?'}source=${gridSource}`,
+                        ROUTES.PHOTO.VIEW(photo.id!, {
+                          source: gridSource,
+                          ...(albumId !== null ? { albumId } : {}),
+                        }),
                       );
                     }}
                   />
