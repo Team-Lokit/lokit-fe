@@ -40,6 +40,7 @@ export * from './getClusterPhotosParams';
 export * from './getLocationInfoParams';
 export * from './getMapMeParams';
 export * from './getMapMeParams';
+export * from './getMapMeV11Params';
 export * from './getMeParams';
 export * from './getPhotos1Params';
 export * from './getPhotosParams';
