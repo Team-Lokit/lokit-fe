@@ -3,13 +3,12 @@
 import { useState } from 'react';
 import {
   ApiError,
+  getGetMapMeV11QueryKey,
   useCreate1,
-  getGetMapMeQueryKey,
   type IdResponse,
 } from '@repo/api-client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/toast';
-import { getMapMeAlbumsQueryKey } from '@/hooks/queries/useMapMeAlbums';
 
 interface UseAlbumAddOptions {
   onSuccess?: () => void;
@@ -32,9 +31,7 @@ const useAlbumAdd = ({ onSuccess, onCreated }: UseAlbumAddOptions = {}) => {
       {
         onSuccess: (response) => {
           // getMapMe 관련 모든 쿼리 invalidate (params 무관)
-          queryClient.invalidateQueries({ queryKey: getGetMapMeQueryKey() });
-          // 앨범 리스트 쿼리도 invalidate
-          queryClient.invalidateQueries({ queryKey: getMapMeAlbumsQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetMapMeV11QueryKey() });
           showToast('앨범이 생성되었어요');
           onCreated?.(response, nextTitle);
           onSuccess?.();

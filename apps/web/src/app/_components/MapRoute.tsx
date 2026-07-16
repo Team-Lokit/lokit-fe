@@ -69,7 +69,6 @@ export default function MapRoute() {
   // 데이터 페칭
   const {
     albumList,
-    address,
     albumDetail,
     albumMapInfo,
     mapPins,
@@ -216,7 +215,8 @@ export default function MapRoute() {
     if (!pin.isCluster) {
       track('click_map_photo_pin', {
         photo_id: String(pin.id),
-        location_name: address ?? '',
+        /** @deprecated /map/me v1.1 응답에서 위치 정보 사라짐 */
+        location_name: '',
       });
       const pinSource =
         viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL ? 'album_detail' : 'home_map';
@@ -230,7 +230,8 @@ export default function MapRoute() {
 
     track('click_photo_cluster', {
       cluster_count: pin.imageCount,
-      location_name: address ?? '',
+      /** @deprecated /map/me v1.1 응답에서 위치 정보 사라짐 */
+      location_name: '',
     });
 
     let photos = clusterExpansionData?.get(clusterId);

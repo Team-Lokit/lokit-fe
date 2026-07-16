@@ -26,7 +26,7 @@ import type {
   CreateCommentRequest,
   CreatePhotoRequest,
   GetLocationInfoParams,
-  GetMapMeParams,
+  GetMapMeV11Params,
   JoinCoupleRequest,
   KakaoAuthorizeParams,
   PresignedUrlRequest,
@@ -2495,57 +2495,60 @@ export function useSearchPlacesSuspense<
             - 위치 정보, 앨범 목록, 바운딩 박스 (map/home 응답)
             - 줌 레벨과 바운딩 박스 기반 사진/클러스터 (map/photos 응답)
             - 두 API를 하나로 통합하여 네트워크 요청을 줄입니다.
+            - v1.0.0은 Deprecated 상태인 기본 버전이며, X-API-VERSION 헤더 없이 호출 가능합니다.
+            - v1.1 응답 형식을 사용하려면 X-API-VERSION=1.1 헤더가 필요합니다.
+            - v1.1 응답 형식을 사용합니다.
         
- * @summary 지도 ME 조회 (홈 + 사진 조회 통합)
+ * @summary 지도 ME 조회 (v1.1, 홈 + 사진 조회 통합)
  */
-export const getMapMe = (params: GetMapMeParams, signal?: AbortSignal) => {
+export const getMapMeV11 = (params: GetMapMeV11Params, signal?: AbortSignal) => {
   return customFetcher<MapMeResponse>({ url: `/map/me`, method: 'GET', params, signal });
 };
 
-export const getGetMapMeQueryKey = (params?: GetMapMeParams) => {
+export const getGetMapMeV11QueryKey = (params?: GetMapMeV11Params) => {
   return [`/map/me`, ...(params ? [params] : [])] as const;
 };
 
-export const getGetMapMeQueryOptions = <
-  TData = Awaited<ReturnType<typeof getMapMe>>,
+export const getGetMapMeV11QueryOptions = <
+  TData = Awaited<ReturnType<typeof getMapMeV11>>,
   TError = ApiResponseErrorDetail,
 >(
-  params: GetMapMeParams,
+  params: GetMapMeV11Params,
   options?: {
-    query?: UseQueryOptions<Awaited<ReturnType<typeof getMapMe>>, TError, TData>;
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getMapMeV11>>, TError, TData>;
   },
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetMapMeQueryKey(params);
+  const queryKey = queryOptions?.queryKey ?? getGetMapMeV11QueryKey(params);
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMapMe>>> = ({ signal }) =>
-    getMapMe(params, signal);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMapMeV11>>> = ({ signal }) =>
+    getMapMeV11(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getMapMe>>,
+    Awaited<ReturnType<typeof getMapMeV11>>,
     TError,
     TData
   > & { queryKey: QueryKey };
 };
 
-export type GetMapMeQueryResult = NonNullable<Awaited<ReturnType<typeof getMapMe>>>;
-export type GetMapMeQueryError = ApiResponseErrorDetail;
+export type GetMapMeV11QueryResult = NonNullable<Awaited<ReturnType<typeof getMapMeV11>>>;
+export type GetMapMeV11QueryError = ApiResponseErrorDetail;
 
 /**
- * @summary 지도 ME 조회 (홈 + 사진 조회 통합)
+ * @summary 지도 ME 조회 (v1.1, 홈 + 사진 조회 통합)
  */
 
-export function useGetMapMe<
-  TData = Awaited<ReturnType<typeof getMapMe>>,
+export function useGetMapMeV11<
+  TData = Awaited<ReturnType<typeof getMapMeV11>>,
   TError = ApiResponseErrorDetail,
 >(
-  params: GetMapMeParams,
+  params: GetMapMeV11Params,
   options?: {
-    query?: UseQueryOptions<Awaited<ReturnType<typeof getMapMe>>, TError, TData>;
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getMapMeV11>>, TError, TData>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetMapMeQueryOptions(params, options);
+  const queryOptions = getGetMapMeV11QueryOptions(params, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
@@ -2556,48 +2559,56 @@ export function useGetMapMe<
   return query;
 }
 
-export const getGetMapMeSuspenseQueryOptions = <
-  TData = Awaited<ReturnType<typeof getMapMe>>,
+export const getGetMapMeV11SuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMapMeV11>>,
   TError = ApiResponseErrorDetail,
 >(
-  params: GetMapMeParams,
+  params: GetMapMeV11Params,
   options?: {
-    query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMapMe>>, TError, TData>;
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getMapMeV11>>,
+      TError,
+      TData
+    >;
   },
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetMapMeQueryKey(params);
+  const queryKey = queryOptions?.queryKey ?? getGetMapMeV11QueryKey(params);
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMapMe>>> = ({ signal }) =>
-    getMapMe(params, signal);
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMapMeV11>>> = ({ signal }) =>
+    getMapMeV11(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
-    Awaited<ReturnType<typeof getMapMe>>,
+    Awaited<ReturnType<typeof getMapMeV11>>,
     TError,
     TData
   > & { queryKey: QueryKey };
 };
 
-export type GetMapMeSuspenseQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getMapMe>>
+export type GetMapMeV11SuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMapMeV11>>
 >;
-export type GetMapMeSuspenseQueryError = ApiResponseErrorDetail;
+export type GetMapMeV11SuspenseQueryError = ApiResponseErrorDetail;
 
 /**
- * @summary 지도 ME 조회 (홈 + 사진 조회 통합)
+ * @summary 지도 ME 조회 (v1.1, 홈 + 사진 조회 통합)
  */
 
-export function useGetMapMeSuspense<
-  TData = Awaited<ReturnType<typeof getMapMe>>,
+export function useGetMapMeV11Suspense<
+  TData = Awaited<ReturnType<typeof getMapMeV11>>,
   TError = ApiResponseErrorDetail,
 >(
-  params: GetMapMeParams,
+  params: GetMapMeV11Params,
   options?: {
-    query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMapMe>>, TError, TData>;
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getMapMeV11>>,
+      TError,
+      TData
+    >;
   },
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetMapMeSuspenseQueryOptions(params, options);
+  const queryOptions = getGetMapMeV11SuspenseQueryOptions(params, options);
 
   const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
     TData,
@@ -4330,30 +4341,9 @@ export const getSearchPlacesResponseMock = (
   ...overrideResponse,
 });
 
-export const getGetMapMeResponseMock = (
+export const getGetMapMeV11ResponseMock = (
   overrideResponse: Partial<MapMeResponse> = {},
 ): MapMeResponse => ({
-  location: faker.helpers.arrayElement([
-    {
-      address: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      roadName: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      placeName: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      regionName: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-    },
-    undefined,
-  ]),
   boundingBox: faker.helpers.arrayElement([
     {
       west: faker.helpers.arrayElement([
@@ -4453,6 +4443,10 @@ export const getGetMapMeResponseMock = (
   ]),
   profileImageUrl: faker.helpers.arrayElement([
     faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
+  userId: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
     undefined,
   ]),
   ...overrideResponse,
@@ -5351,7 +5345,7 @@ export const getSearchPlacesMockHandler = (
   );
 };
 
-export const getGetMapMeMockHandler = (
+export const getGetMapMeV11MockHandler = (
   overrideResponse?:
     | MapMeResponse
     | ((
@@ -5370,7 +5364,7 @@ export const getGetMapMeMockHandler = (
             ? typeof overrideResponse === 'function'
               ? await overrideResponse(info)
               : overrideResponse
-            : getGetMapMeResponseMock(),
+            : getGetMapMeV11ResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       );
@@ -5685,7 +5679,7 @@ export const getLokitAPIMock = () => [
   getGetPhotosMockHandler(),
   getGetMyPageMockHandler(),
   getSearchPlacesMockHandler(),
-  getGetMapMeMockHandler(),
+  getGetMapMeV11MockHandler(),
   getGetLocationInfoMockHandler(),
   getGetClusterPhotosMockHandler(),
   getGetAlbumMapInfoMockHandler(),
