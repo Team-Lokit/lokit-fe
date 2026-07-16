@@ -35,8 +35,6 @@ import * as S from './PhotoNoteOverlay.styles';
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
 import { useToast } from '@/components/toast';
-import { getCurrentPosition } from '@/utils/getCurrentPosition';
-import { getLocationInfo } from '@repo/api-client';
 import { useEffect, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { useTrackPage } from '@/hooks/analytics/useTrackPage';
@@ -50,8 +48,7 @@ interface PhotoNoteOverlayProps {
 export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const router = useRouter();
   const { showToast } = useToast();
-  const { selectedPhoto, selectedPhotoRect, updatePhotoNoteState, photos } =
-    usePhotoContext();
+  const { selectedPhoto, selectedPhotoRect, photos } = usePhotoContext();
   const {
     memo,
     tempMemo,
@@ -98,7 +95,6 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
 
   const { addPendingPhoto } = usePendingPhotos();
   const isSubmittingRef = useRef(false);
-  const hasAttemptedDefaultLocation = useRef(false);
   const shouldShowLocationUpdatedToastRef = useRef(false); // 사용자가 위치 선택 모달에서 수정한 건지 확인
   const [isMapPreviewOpen, setIsMapPreviewOpen] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(true);
@@ -112,40 +108,6 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
         }
       : null,
   );
-
-  // 사진에 EXIF 위치 정보가 없고, 수동 선택 위치도 없으면 현재 위치를 기본값으로 설정
-  useEffect(() => {
-    if (hasAttemptedDefaultLocation.current) return;
-    if (!selectedPhoto) return;
-    if (selectedPhoto.location) return;
-    if (selectedLocation) return;
-
-    hasAttemptedDefaultLocation.current = true;
-
-    (async () => {
-      const position = await getCurrentPosition();
-      if (!position) return;
-
-      const { latitude, longitude } = position.coords;
-
-      try {
-        const locationInfo = await getLocationInfo({ latitude, longitude });
-        updatePhotoNoteState({
-          selectedLocation: {
-            latitude,
-            longitude,
-            address: locationInfo.address,
-            roadAddress: locationInfo.roadName,
-            placeName: locationInfo.placeName,
-          },
-        });
-      } catch {
-        updatePhotoNoteState({
-          selectedLocation: { latitude, longitude },
-        });
-      }
-    })();
-  }, [selectedPhoto, selectedLocation, updatePhotoNoteState]);
 
   useEffect(() => {
     if (!shouldShowLocationUpdatedToastRef.current) return;
@@ -329,63 +291,67 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
             </S.MemoButton>
 
             <S.ChipContainer>
-              <S.LocationChipContainer>
-                <AnimatePresence>
-                  {isTooltipVisible && (
-                    <S.LocationTooltipPositioner
-                      initial={{
-                        opacity: 0,
-                        y: 20,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 100,
-                        damping: 15,
-                        delay: 0.5,
-                      }}
-                    >
-                      <Tooltip
-                        status={hasLocation ? 'info' : 'error'}
-                        tooltipText={
-                          hasLocation
-                            ? '사진의 위치 정보를 자동으로 불러왔어요.'
-                            : '반드시 위치를 추가해 주세요.'
-                        }
-                        showClose
-                        arrowPosition="bottom"
-                        arrowAlign="left"
-                        onClose={() => setIsTooltipVisible(false)}
-                      />
-                    </S.LocationTooltipPositioner>
-                  )}
-                </AnimatePresence>
+              {/* 툴팁은 스크롤 컨테이너(ChipScrollRow) 바깥에 둔다.
+                  overflow-x: auto가 걸린 컨테이너 안에 있으면 세로로 클리핑돼 안 보임. */}
+              <AnimatePresence>
+                {isTooltipVisible && (
+                  <S.LocationTooltipPositioner
+                    initial={{
+                      opacity: 0,
+                      y: 20,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 100,
+                      damping: 15,
+                      delay: 0.5,
+                    }}
+                  >
+                    <Tooltip
+                      status={hasLocation ? 'info' : 'error'}
+                      tooltipText={
+                        hasLocation
+                          ? '사진의 위치 정보를 자동으로 불러왔어요.'
+                          : '반드시 위치를 추가해 주세요.'
+                      }
+                      showClose
+                      arrowPosition="bottom"
+                      arrowAlign="left"
+                      onClose={() => setIsTooltipVisible(false)}
+                    />
+                  </S.LocationTooltipPositioner>
+                )}
+              </AnimatePresence>
 
+              <S.ChipScrollRow>
+                <S.LocationChipContainer>
+                  <Chip
+                    size="small"
+                    icon={
+                      <S.ChipIconWrapper>
+                        <S.LocationArrowIcon />
+                      </S.ChipIconWrapper>
+                    }
+                    text={locationText ?? '위치 추가...'}
+                    onClick={handleClickAddLocation}
+                  />
+                </S.LocationChipContainer>
                 <Chip
                   size="small"
                   icon={
                     <S.ChipIconWrapper>
-                      <S.LocationArrowIcon />
+                      <AlbumSmallIcon />
                     </S.ChipIconWrapper>
                   }
-                  text={hasLocation ? (locationText ?? '') : '위치 추가'}
-                  onClick={handleClickAddLocation}
+                  text={selectedAlbum?.title || '앨범 선택...'}
+                  onClick={!selectedAlbum ? handleClickAlbumSelect : undefined}
+                  onCancel={selectedAlbum ? handleAlbumReset : undefined}
                 />
-              </S.LocationChipContainer>
-              <Chip
-                size="small"
-                icon={
-                  <S.ChipIconWrapper>
-                    <AlbumSmallIcon />
-                  </S.ChipIconWrapper>
-                }
-                text={selectedAlbum?.title || '앨범 선택...'}
-                onClick={!selectedAlbum ? handleClickAlbumSelect : undefined}
-                onCancel={selectedAlbum ? handleAlbumReset : undefined}
-              />
+              </S.ChipScrollRow>
             </S.ChipContainer>
           </S.MemoAlbumOverlay>
         </S.PhotoSection>

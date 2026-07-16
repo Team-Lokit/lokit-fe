@@ -90,6 +90,14 @@ export const MemoAlbumOverlay = styled.div`
 `;
 
 export const ChipContainer = styled.div`
+  position: relative;
+`;
+
+/**
+ * 칩 가로 스크롤 영역. overflow-x: auto가 걸려 있어 세로로 삐져나온 요소를
+ * 클리핑하므로, 위쪽 툴팁은 이 컨테이너 바깥(ChipContainer)에 둔다.
+ */
+export const ChipScrollRow = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;

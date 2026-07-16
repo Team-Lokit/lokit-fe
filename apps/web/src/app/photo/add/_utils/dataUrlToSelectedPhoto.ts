@@ -1,4 +1,4 @@
-import type { SelectedPhoto } from '../_types/photo';
+import type { PhotoLocation, SelectedPhoto } from '../_types/photo';
 
 /**
  * data URL에서 SelectedPhoto 생성 (카메라 촬영용)
@@ -8,7 +8,7 @@ import type { SelectedPhoto } from '../_types/photo';
  */
 export const dataUrlToSelectedPhoto = async (
   dataUrl: string,
-  location?: { latitude: number; longitude: number },
+  location?: PhotoLocation,
 ): Promise<SelectedPhoto | null> => {
   try {
     const dimensions = await getImageDimensions(dataUrl);

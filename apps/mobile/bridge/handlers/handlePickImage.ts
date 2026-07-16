@@ -1,6 +1,5 @@
 import type { RefObject } from 'react';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import type { PhotoQuality } from 'react-native-image-picker';
 import type WebView from 'react-native-webview';
 import {
   BRIDGE_MESSAGE_TYPES,
@@ -8,9 +7,11 @@ import {
   type PickImageRequest,
 } from '@repo/webview-bridge';
 import { sendResponse } from '../sendResponse';
+import { extractGpsFromAsset } from './extractGpsFromAsset';
+import { resizeToJpegDataUrl } from './resizeToJpegDataUrl';
 
 const DEFAULT_MAX_DIMENSION = 2400;
-const DEFAULT_QUALITY: PhotoQuality = 0.8;
+const DEFAULT_QUALITY = 80; // ImageResizer 품질은 0-100
 
 export async function handlePickImage(
   webViewRef: RefObject<WebView | null>,
@@ -18,13 +19,13 @@ export async function handlePickImage(
 ) {
   const { requestId, options } = request;
   try {
+    // 피커에서는 리사이즈하지 않는다.
+    // - react-native-image-picker의 리사이즈는 원본 EXIF(GPS/촬영일)를 제거한다.
+    // - 대신 원본에서 위치/날짜를 뽑고, 전송용 축소 JPEG은 ImageResizer로 따로 만든다.
     const commonOptions = {
       mediaType: 'photo' as const,
-      maxWidth: options?.maxWidth ?? DEFAULT_MAX_DIMENSION,
-      maxHeight: options?.maxHeight ?? DEFAULT_MAX_DIMENSION,
-      quality: (options?.quality as PhotoQuality | undefined) ?? DEFAULT_QUALITY,
-      includeBase64: true,
-      // EXIF는 웹에서 추출하므로 네이티브에서는 굳이 안 다룸
+      includeBase64: true, // 원본 base64 → GPS 추출용 (전송은 축소본만)
+      includeExtra: true, // timestamp(촬영일) 포함
     };
 
     const result =
@@ -58,16 +59,29 @@ export async function handlePickImage(
       return;
     }
 
-    const assets: PickedAsset[] = (result.assets ?? [])
-      .filter(asset => asset.base64 && asset.type)
-      .map(asset => ({
-        uri: `data:${asset.type};base64,${asset.base64}`,
-        fileName: asset.fileName ?? `photo-${Date.now()}.jpg`,
-        type: asset.type ?? 'image/jpeg',
-        fileSize: asset.fileSize,
-        width: asset.width,
-        height: asset.height,
-      }));
+    const maxDimension = options?.maxWidth ?? DEFAULT_MAX_DIMENSION;
+
+    const assets: PickedAsset[] = await Promise.all(
+      (result.assets ?? [])
+        .filter((asset): asset is typeof asset & { uri: string } => !!asset.uri)
+        .map(async asset => {
+          // 위치는 원본 EXIF에서, 전송 이미지는 원본을 축소한 JPEG로.
+          const [location, resized] = await Promise.all([
+            extractGpsFromAsset(asset),
+            resizeToJpegDataUrl(asset.uri, maxDimension, DEFAULT_QUALITY),
+          ]);
+
+          return {
+            uri: resized.dataUrl,
+            fileName: asset.fileName ?? `photo-${Date.now()}.jpg`,
+            type: 'image/jpeg',
+            width: resized.width,
+            height: resized.height,
+            location: location ?? undefined,
+            takenAt: asset.timestamp ?? undefined,
+          };
+        }),
+    );
 
     sendResponse(webViewRef, {
       type: BRIDGE_MESSAGE_TYPES.PICK_IMAGE_RESULT,
