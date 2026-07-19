@@ -35,14 +35,13 @@ import * as S from './PhotoNoteOverlay.styles';
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
 import { useToast } from '@/components/toast';
-import { getCurrentPosition } from '@/utils/getCurrentPosition';
-import { getLocationInfo, useGetMyPage } from '@repo/api-client';
 import { useEffect, useRef, useState } from 'react';
 import { track } from '@/lib/analytics';
 import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 import Chip from '@/components/buttons/chip/Chip';
 import Tooltip from '@/components/tooltip/Tooltip';
 import { PhotoHeader } from '@/components/header';
+import { useDefaultAlbumId } from '@/hooks/useDefaultAlbumId';
 
 interface PhotoNoteOverlayProps {
   onClose: () => void;
@@ -50,10 +49,9 @@ interface PhotoNoteOverlayProps {
 export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const router = useRouter();
   const { showToast } = useToast();
-  const { data: myPageData } = useGetMyPage();
+  const defaultAlbumId = useDefaultAlbumId();
 
-  const { selectedPhoto, selectedPhotoRect, updatePhotoNoteState, photos } =
-    usePhotoContext();
+  const { selectedPhoto, selectedPhotoRect, photos } = usePhotoContext();
   const {
     memo,
     tempMemo,
@@ -141,7 +139,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
     addPendingPhoto({
       photo: selectedPhoto,
       description: memo || undefined,
-      albumId: selectedAlbum?.id ?? myPageData?.defaultAlbumId,
+      albumId: selectedAlbum?.id ?? defaultAlbumId,
       location:
         selectedLocation?.latitude != null && selectedLocation?.longitude != null
           ? {
