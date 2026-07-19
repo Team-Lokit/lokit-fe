@@ -11,13 +11,19 @@ import { ROUTES } from '@/constants/routes';
 import { track } from '@/lib/analytics';
 import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 import * as S from './page.styles';
+import { getGetMyPageQueryKey, useGetMyPage } from '@repo/api-client/src/generated';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function ProfilePage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const [nickname, setNickname] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { data: myPageData } = useGetMyPage();
   const { uploadImage, saveProfile, isUploading } = useProfileUpload();
   const { setProfileData, markStepCompleted, completedSteps } = useOnboardingContext();
 
@@ -37,6 +43,13 @@ export default function ProfilePage() {
       }
     };
   }, [previewUrl]);
+
+  useEffect(() => {
+    if (!myPageData) return;
+
+    setNickname(myPageData.myName ?? '');
+    setPreviewUrl(myPageData.myProfileImageUrl ?? null);
+  }, [myPageData]);
 
   const handleSubmit = useCallback(async () => {
     if (!nickname.trim()) return;
@@ -58,9 +71,14 @@ export default function ProfilePage() {
       // 프로필 저장
       const success = await saveProfile(nickname, uploadedUrl);
       if (success) {
+        await queryClient.invalidateQueries({
+          queryKey: getGetMyPageQueryKey(),
+        });
+
         track('profile_setup_complete', {
           has_profile_image: !!uploadedUrl,
         });
+
         setProfileData({ nickname, profileImageUrl: uploadedUrl });
         markStepCompleted('profile');
         router.push(ROUTES.ONBOARDING.CONNECT);
@@ -76,6 +94,7 @@ export default function ProfilePage() {
     setProfileData,
     markStepCompleted,
     router,
+    queryClient,
   ]);
 
   const isValid = nickname.trim().length > 0;
