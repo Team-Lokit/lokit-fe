@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { VIEW_CONTEXT_TYPE, ViewContext } from '@/constants/viewContext';
 import { extractAlbumIdFromPath, getSelectedAlbumId } from '../_utils/mapRoute.calc';
-import { useGetMyPage } from '@repo/api-client/src/generated';
 import { useDefaultAlbumId } from '@/hooks/useDefaultAlbumId';
 
 interface UseMapRouteViewContextReturn {
