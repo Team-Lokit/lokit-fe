@@ -364,7 +364,9 @@ export default function MapRoute() {
                       router.push(
                         ROUTES.PHOTO.VIEW(photo.id!, {
                           source: gridSource,
-                          ...(selectedAlbumId !== null ? { selectedAlbumId } : {}),
+                          ...(selectedAlbumId !== null
+                            ? { albumId: selectedAlbumId }
+                            : {}),
                         }),
                       );
                     }}
