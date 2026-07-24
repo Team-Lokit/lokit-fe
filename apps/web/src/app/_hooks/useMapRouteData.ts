@@ -27,6 +27,7 @@ interface UseMapRouteDataProps {
 interface UseMapRouteDataReturn {
   albumList: AlbumThumbnails[];
   albumDetail: AlbumWithPhotosResponse | undefined | null;
+  isAlbumDetailLoading: boolean;
   albumMapInfo: AlbumMapInfoResponse | undefined;
   mapPins: ReturnType<typeof useMapMe>['mapPins'];
   totalHistoryCount: number | undefined;
@@ -49,7 +50,8 @@ export const useMapRouteData = ({
   selectedAlbumId,
 }: UseMapRouteDataProps): UseMapRouteDataReturn => {
   // 선택된 앨범의 상세 정보 조회
-  const { albumDetail } = useAlbumPhotos(selectedAlbumId);
+  const { albumDetail, isLoading: isAlbumDetailLoading } =
+    useAlbumPhotos(selectedAlbumId);
 
   // 선택된 앨범의 맵 정보 (중심 좌표) 조회
   const { data: albumMapInfo } = useGetAlbumMapInfo(selectedAlbumId ?? 0);
@@ -115,6 +117,7 @@ export const useMapRouteData = ({
   return {
     albumList: mapMeResponse.data?.albums ?? [],
     albumDetail,
+    isAlbumDetailLoading,
     albumMapInfo,
     mapPins,
     totalHistoryCount: mapMeResponse.data?.totalHistoryCount,

@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { VIEW_CONTEXT_TYPE, ViewContext } from '@/constants/viewContext';
 import { extractAlbumIdFromPath, getSelectedAlbumId } from '../_utils/mapRoute.calc';
+import { useGetMyPage } from '@repo/api-client/src/generated';
+import { useDefaultAlbumId } from '@/hooks/useDefaultAlbumId';
 
 interface UseMapRouteViewContextReturn {
   viewContext: ViewContext;
@@ -20,6 +22,9 @@ interface UseMapRouteViewContextReturn {
  */
 export const useMapRouteViewContext = (): UseMapRouteViewContextReturn => {
   const pathname = usePathname();
+
+  const defaultAlbumId = useDefaultAlbumId();
+
   // URL 경로에서 앨범 ID 추출
   const albumIdFromPath = useMemo(() => {
     return extractAlbumIdFromPath(pathname);
@@ -48,8 +53,8 @@ export const useMapRouteViewContext = (): UseMapRouteViewContextReturn => {
 
   // 선택된 앨범 ID 계산
   const selectedAlbumId = useMemo(() => {
-    return getSelectedAlbumId(albumIdFromPath, viewContext);
-  }, [albumIdFromPath, viewContext]);
+    return getSelectedAlbumId(albumIdFromPath, viewContext) ?? defaultAlbumId ?? null;
+  }, [albumIdFromPath, viewContext, defaultAlbumId]);
 
   return {
     viewContext,

@@ -41,6 +41,7 @@ import { useTrackPage } from '@/hooks/analytics/useTrackPage';
 import Chip from '@/components/buttons/chip/Chip';
 import Tooltip from '@/components/tooltip/Tooltip';
 import { PhotoHeader } from '@/components/header';
+import { useDefaultAlbumId } from '@/hooks/useDefaultAlbumId';
 
 interface PhotoNoteOverlayProps {
   onClose: () => void;
@@ -48,6 +49,8 @@ interface PhotoNoteOverlayProps {
 export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
   const router = useRouter();
   const { showToast } = useToast();
+  const defaultAlbumId = useDefaultAlbumId();
+
   const { selectedPhoto, selectedPhotoRect, photos } = usePhotoContext();
   const {
     memo,
@@ -136,7 +139,7 @@ export default function PhotoNoteOverlay({ onClose }: PhotoNoteOverlayProps) {
     addPendingPhoto({
       photo: selectedPhoto,
       description: memo || undefined,
-      albumId: selectedAlbum?.id,
+      albumId: selectedAlbum?.id ?? defaultAlbumId,
       location:
         selectedLocation?.latitude != null && selectedLocation?.longitude != null
           ? {
