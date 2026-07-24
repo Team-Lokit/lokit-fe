@@ -29,7 +29,6 @@ import { useMapRouteViewState } from '../_hooks/useMapRouteViewState';
 import { useMapRouteViewContext } from '../_hooks/useMapRouteViewContext';
 import { useMapRouteData } from '../_hooks/useMapRouteData';
 import { usePendingPhotosViewModel } from '@/hooks/usePendingPhotosViewModel';
-import { useAlbumPhotos } from '@/hooks/queries/useAlbumPhotos';
 import {
   calculatePhotoCount,
   calculateCenterFromAlbumPhotos,
@@ -70,6 +69,7 @@ export default function MapRoute() {
   const {
     albumList,
     albumDetail,
+    isAlbumDetailLoading,
     albumMapInfo,
     mapPins,
     totalHistoryCount,
@@ -81,16 +81,9 @@ export default function MapRoute() {
     selectedAlbumId,
   });
 
-  // HOME 격자보기용 전체사진 앨범 fetch (전체사진 앨범)
-  const { albumDetail: homeGridAlbumDetail, isLoading: isHomeGridAlbumDetailLoading } =
-    useAlbumPhotos(viewContext.type === VIEW_CONTEXT_TYPE.HOME ? selectedAlbumId : null);
-
-  // Pending 사진 merge (앨범 리스트 + 앨범 상세)
-  const effectiveAlbumDetail =
-    viewContext.type === VIEW_CONTEXT_TYPE.HOME ? homeGridAlbumDetail : albumDetail;
   const { albumList: mergedAlbumList, displayPhotos } = usePendingPhotosViewModel(
     albumList,
-    effectiveAlbumDetail,
+    albumDetail,
   );
 
   // 사진 추가
@@ -331,7 +324,7 @@ export default function MapRoute() {
         />
       )}
 
-      {activeView === VIEW_TYPE.GRID && !isHomeGridAlbumDetailLoading && (
+      {activeView === VIEW_TYPE.GRID && !isAlbumDetailLoading && (
         <S.GridViewContainer>
           {hasPhoto ? (
             <PhotoGridContainer>
