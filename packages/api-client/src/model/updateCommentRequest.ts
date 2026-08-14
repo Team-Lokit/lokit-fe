@@ -7,9 +7,9 @@
  */
 
 /**
- * 댓글 생성 요청
+ * 댓글 수정 요청
  */
-export interface CreateCommentRequest {
+export interface UpdateCommentRequest {
   /**
    * 댓글 내용
    * @minLength 0
