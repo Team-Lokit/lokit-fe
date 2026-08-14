@@ -1,12 +1,16 @@
 'use client';
 
-// TODO: 2차 MVP에서 반영 예정
-// import CommentIcon from '@/assets/images/comment.svg';
+import CommentIcon from '@/assets/images/comment.svg';
 import Chip from '@/components/buttons/chip/Chip';
 import { usePendingPhotoDetail } from '@/hooks/usePendingPhotosViewModel';
 import AlbumSmallIcon from '@/assets/images/albumSmall.svg';
 import LocationArrowIcon from '@/assets/images/locationArrow.svg';
-import { getGetPhotoDetailQueryOptions, useGetPhotoDetail } from '@repo/api-client';
+import {
+  getGetCommentsQueryOptions,
+  getGetPhotoDetailQueryOptions,
+  useGetComments,
+  useGetPhotoDetail,
+} from '@repo/api-client';
 import { AnimatePresence } from 'framer-motion';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -125,6 +129,18 @@ export default function PhotoViewPage() {
     detail: resolvedDetail,
     displayPhotoId,
   } = resolveDisplayData({ photoDetail, currentPhoto, displayPhotoDetail });
+
+  const { data: commentsData } = useGetComments(displayPhotoId, {
+    query: {
+      ...getGetCommentsQueryOptions(displayPhotoId),
+      enabled: !isPendingMode && displayPhotoId > 0,
+    },
+  });
+  const commentCount = commentsData?.comments?.length ?? 0;
+
+  const handleClickComments = () => {
+    router.push(`/photo/${displayPhotoId}/comments`);
+  };
 
   // 메모가 2줄을 초과하는지 확인
   useEffect(() => {
@@ -294,15 +310,18 @@ export default function PhotoViewPage() {
                   }
                 />
               )}
-              {/* TODO: 2차 MVP에서 반영 예정
-              <Chip
-                text="댓글 추가..."
-                variant="white"
-                size="small"
-                icon={<CommentIcon width={14} height={14} />}
-                onClick={() => {}}
-              />
-              */}
+              {!isPendingMode && (
+                <Chip
+                  text={`${commentCount}`}
+                  size="small"
+                  icon={
+                    <S.ChipIcon>
+                      <CommentIcon width={14} height={14} />
+                    </S.ChipIcon>
+                  }
+                  onClick={handleClickComments}
+                />
+              )}
             </S.ContainerB>
 
             {/* Pending: 진행률 바 */}
