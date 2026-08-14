@@ -1,0 +1,79 @@
+'use client';
+
+import { useState, useRef, type KeyboardEvent } from 'react';
+import { useGetMyPage } from '@repo/api-client';
+import DefaultProfileIcon from '@/assets/images/defaultProfile.svg';
+import ArrowRightIcon from '@/assets/images/arrowRight.svg';
+import * as S from './CommentInput.styles';
+
+interface CommentInputProps {
+  isSubmitting: boolean;
+  onSubmit: (content: string) => void;
+}
+
+const CommentInput = ({ isSubmitting, onSubmit }: CommentInputProps) => {
+  const [value, setValue] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { data: myPage } = useGetMyPage();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!value.trim() || isSubmitting) return;
+
+    onSubmit(value);
+    setValue('');
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setValue(e.target.value);
+
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  };
+
+  return (
+    <S.Wrapper>
+      <S.Bar onSubmit={handleSubmit}>
+        {myPage?.myProfileImageUrl ? (
+          <S.ProfileImage
+            src={myPage.myProfileImageUrl}
+            alt={myPage.myName || '프로필'}
+          />
+        ) : (
+          <DefaultProfileIcon width={36} height={36} />
+        )}
+
+        <S.Textarea
+          ref={textareaRef}
+          value={value}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          placeholder="댓글 입력"
+          rows={1}
+          maxLength={200}
+        />
+
+        <S.SendButton type="submit" disabled={!value.trim() || isSubmitting}>
+          <S.SendIcon>
+            <ArrowRightIcon width={20} height={20} />
+          </S.SendIcon>
+        </S.SendButton>
+      </S.Bar>
+    </S.Wrapper>
+  );
+};
+
+export default CommentInput;
