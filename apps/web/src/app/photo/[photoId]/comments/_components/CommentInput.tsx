@@ -66,11 +66,13 @@ const CommentInput = ({ isSubmitting, onSubmit }: CommentInputProps) => {
           maxLength={200}
         />
 
-        <S.SendButton type="submit" disabled={!value.trim() || isSubmitting}>
-          <S.SendIcon>
-            <ArrowRightIcon width={20} height={20} />
-          </S.SendIcon>
-        </S.SendButton>
+        {value.trim() && (
+          <S.SendButton type="submit" disabled={isSubmitting}>
+            <S.SendIcon>
+              <ArrowRightIcon width={20} height={20} />
+            </S.SendIcon>
+          </S.SendButton>
+        )}
       </S.Bar>
     </S.Wrapper>
   );
