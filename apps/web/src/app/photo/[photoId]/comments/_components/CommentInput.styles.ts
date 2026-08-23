@@ -81,8 +81,8 @@ export const SendButton = styled.button`
 `;
 
 export const SendIcon = styled.div`
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
