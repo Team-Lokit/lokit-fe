@@ -13,8 +13,8 @@ export const List = styled.div`
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 16px 0;
+  gap: 24px;
+  padding: 24px 0 16px;
 `;
 
 export const EmptyState = styled.div`
