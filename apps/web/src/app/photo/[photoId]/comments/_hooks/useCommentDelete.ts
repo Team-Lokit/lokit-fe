@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   useDeleteComment,
+  useRestoreComment,
   getGetCommentsQueryKey,
   type CommentListResponse,
 } from '@repo/api-client';
@@ -14,6 +15,16 @@ const useCommentDelete = (photoId: number) => {
   const [targetCommentId, setTargetCommentId] = useState<number | null>(null);
 
   const { mutateAsync: deleteCommentAsync, isPending: isDeleting } = useDeleteComment();
+  const { mutateAsync: restoreCommentAsync } = useRestoreComment();
+
+  const undoDelete = async (commentId: number) => {
+    try {
+      await restoreCommentAsync({ commentId });
+      queryClient.invalidateQueries({ queryKey });
+    } catch {
+      showToast('댓글 복구에 실패했어요. 다시 시도해주세요');
+    }
+  };
 
   const openDeleteModal = (commentId: number) => {
     setTargetCommentId(commentId);
@@ -41,7 +52,10 @@ const useCommentDelete = (photoId: number) => {
     try {
       await deleteCommentAsync({ commentId });
       queryClient.invalidateQueries({ queryKey });
-      showToast('댓글이 삭제되었어요.', undefined, 'success');
+      showToast('댓글이 삭제되었어요.', undefined, 'success', {
+        label: '실행취소',
+        onClick: () => undoDelete(commentId),
+      });
     } catch {
       if (previous) {
         queryClient.setQueryData(queryKey, previous);

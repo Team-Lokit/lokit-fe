@@ -61,6 +61,19 @@ export const ToastIcon = styled.div`
 
 export const ToastText = styled.span`
   ${({ theme }) => theme.typography.body14Semibold};
-  color: ${({ theme }) => theme.colors.grayScale[100]};
+  flex: 1;
+  color: ${({ theme }) => theme.colors.grayScale[0]};
+  opacity: 0.9;
   white-space: nowrap;
+`;
+
+export const ToastAction = styled.button`
+  ${({ theme }) => theme.typography.body14Semibold};
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: ${({ theme }) => theme.colors.grayScale[400]};
+  white-space: nowrap;
+  cursor: pointer;
 `;
