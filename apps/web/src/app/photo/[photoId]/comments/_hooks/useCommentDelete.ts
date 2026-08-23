@@ -41,6 +41,7 @@ const useCommentDelete = (photoId: number) => {
     try {
       await deleteCommentAsync({ commentId });
       queryClient.invalidateQueries({ queryKey });
+      showToast('댓글이 삭제되었어요.', undefined, 'success');
     } catch {
       if (previous) {
         queryClient.setQueryData(queryKey, previous);

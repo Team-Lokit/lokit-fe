@@ -28,6 +28,7 @@ export const ToastContainer = styled.div`
   top: 100px;
   left: 50%;
   transform: translateX(-50%);
+  width: min(calc(100% - 24px), calc(${({ theme }) => theme.layout.maxWidth} - 24px));
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -40,6 +41,7 @@ export const ToastItem = styled.div<{
 }>`
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 12px;
   padding: 12px 16px;
   border-radius: 12px;
