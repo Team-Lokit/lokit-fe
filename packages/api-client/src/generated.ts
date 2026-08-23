@@ -1056,7 +1056,86 @@ export const useGetPresignedUrl = <
 };
 
 /**
- * 댓글에 이모지를 추가합니다. 사용자당 댓글당 최대 10개의 서로 다른 이모지를 추가할 수 있습니다.
+ * 본인이 삭제한 댓글을 삭제 이전 상태로 복구합니다. 단건 댓글에 대해서만 동작합니다.
+ * @summary 댓글 삭제 취소
+ */
+export const restoreComment = (commentId: number, signal?: AbortSignal) => {
+  return customFetcher<IdResponse>({
+    url: `/photos/comments/${commentId}/restore`,
+    method: 'POST',
+    signal,
+  });
+};
+
+export const getRestoreCommentMutationOptions = <
+  TError = void | ApiResponseErrorDetail,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof restoreComment>>,
+    TError,
+    { commentId: number },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof restoreComment>>,
+  TError,
+  { commentId: number },
+  TContext
+> => {
+  const mutationKey = ['restoreComment'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof restoreComment>>,
+    { commentId: number }
+  > = (props) => {
+    const { commentId } = props ?? {};
+
+    return restoreComment(commentId);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RestoreCommentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof restoreComment>>
+>;
+
+export type RestoreCommentMutationError = void | ApiResponseErrorDetail;
+
+/**
+ * @summary 댓글 삭제 취소
+ */
+export const useRestoreComment = <
+  TError = void | ApiResponseErrorDetail,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof restoreComment>>,
+    TError,
+    { commentId: number },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof restoreComment>>,
+  TError,
+  { commentId: number },
+  TContext
+> => {
+  const mutationOptions = getRestoreCommentMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+/**
+ * 댓글에 이모지를 추가합니다.
  * @summary 이모지 추가
  */
 export const addEmoticon = (
@@ -4129,8 +4208,8 @@ export const getGetCommentsResponseMock = (
           })),
           undefined,
         ]),
-        isEdited: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
         isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        isEdited: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
       }),
     ),
     undefined,
@@ -4157,6 +4236,16 @@ export const getGetPresignedUrlResponseMock = (
   ]),
   objectUrl: faker.helpers.arrayElement([
     faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
+  ...overrideResponse,
+});
+
+export const getRestoreCommentResponseMock = (
+  overrideResponse: Partial<IdResponse> = {},
+): IdResponse => ({
+  id: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
     undefined,
   ]),
   ...overrideResponse,
@@ -5074,6 +5163,34 @@ export const getGetPresignedUrlMockHandler = (
   );
 };
 
+export const getRestoreCommentMockHandler = (
+  overrideResponse?:
+    | IdResponse
+    | ((
+        info: Parameters<Parameters<typeof http.post>[1]>[0],
+      ) => Promise<IdResponse> | IdResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/photos/comments/:commentId/restore',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getRestoreCommentResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
 export const getAddEmoticonMockHandler = (
   overrideResponse?:
     | IdResponse
@@ -5878,6 +5995,7 @@ export const getLokitAPIMock = () => [
   getGetCommentsMockHandler(),
   getCreateCommentMockHandler(),
   getGetPresignedUrlMockHandler(),
+  getRestoreCommentMockHandler(),
   getAddEmoticonMockHandler(),
   getRemoveEmoticonMockHandler(),
   getReconnectMockHandler(),

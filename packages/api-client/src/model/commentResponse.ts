@@ -25,6 +25,6 @@ export interface CommentResponse {
   commentedAt?: string;
   /** 이모지 목록 */
   emoticons?: EmoticonSummaryResponse[];
-  isEdited?: boolean;
   isEditable?: boolean;
+  isEdited?: boolean;
 }
