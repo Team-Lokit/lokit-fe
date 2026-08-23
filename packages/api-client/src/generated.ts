@@ -361,7 +361,7 @@ export const useDelete = <
 };
 
 /**
- * 본인이 작성한 댓글/답글을 수정합니다. 수정 이력은 남기지 않고 최신 내용만 유지됩니다.
+ * 본인이 작성한 댓글을 수정합니다. 수정 이력은 남기지 않고 최신 내용만 유지됩니다.
  * @summary 댓글 수정
  */
 export const updateComment = (
@@ -377,7 +377,7 @@ export const updateComment = (
 };
 
 export const getUpdateCommentMutationOptions = <
-  TError = void | ApiResponseErrorDetail,
+  TError = ApiResponseErrorDetail | void,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -417,13 +417,13 @@ export type UpdateCommentMutationResult = NonNullable<
   Awaited<ReturnType<typeof updateComment>>
 >;
 export type UpdateCommentMutationBody = UpdateCommentRequest;
-export type UpdateCommentMutationError = void | ApiResponseErrorDetail;
+export type UpdateCommentMutationError = ApiResponseErrorDetail | void;
 
 /**
  * @summary 댓글 수정
  */
 export const useUpdateComment = <
-  TError = void | ApiResponseErrorDetail,
+  TError = ApiResponseErrorDetail | void,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -444,7 +444,7 @@ export const useUpdateComment = <
 };
 
 /**
- * 본인이 작성한 댓글/답글을 삭제합니다. 답글이 없는 댓글/답글은 완전히 사라지고, 답글이 달린 댓글은 '삭제된 댓글입니다' 문구로 대체됩니다.
+ * 본인이 작성한 댓글을 삭제합니다.
  * @summary 댓글 삭제
  */
 export const deleteComment = (commentId: number) => {
@@ -1051,91 +1051,6 @@ export const useGetPresignedUrl = <
   TContext
 > => {
   const mutationOptions = getGetPresignedUrlMutationOptions(options);
-
-  return useMutation(mutationOptions);
-};
-
-/**
- * 댓글에 답글을 작성합니다. 답글에는 다시 답글을 작성할 수 없습니다(1-depth 제한).
- * @summary 답글 생성
- */
-export const createReply = (
-  commentId: number,
-  createCommentRequest: CreateCommentRequest,
-  signal?: AbortSignal,
-) => {
-  return customFetcher<IdResponse>({
-    url: `/photos/comments/${commentId}/replies`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: createCommentRequest,
-    signal,
-  });
-};
-
-export const getCreateReplyMutationOptions = <
-  TError = void | ApiResponseErrorDetail,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof createReply>>,
-    TError,
-    { commentId: number; data: CreateCommentRequest },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof createReply>>,
-  TError,
-  { commentId: number; data: CreateCommentRequest },
-  TContext
-> => {
-  const mutationKey = ['createReply'];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
-
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof createReply>>,
-    { commentId: number; data: CreateCommentRequest }
-  > = (props) => {
-    const { commentId, data } = props ?? {};
-
-    return createReply(commentId, data);
-  };
-
-  return { mutationFn, ...mutationOptions };
-};
-
-export type CreateReplyMutationResult = NonNullable<
-  Awaited<ReturnType<typeof createReply>>
->;
-export type CreateReplyMutationBody = CreateCommentRequest;
-export type CreateReplyMutationError = void | ApiResponseErrorDetail;
-
-/**
- * @summary 답글 생성
- */
-export const useCreateReply = <
-  TError = void | ApiResponseErrorDetail,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof createReply>>,
-    TError,
-    { commentId: number; data: CreateCommentRequest },
-    TContext
-  >;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof createReply>>,
-  TError,
-  { commentId: number; data: CreateCommentRequest },
-  TContext
-> => {
-  const mutationOptions = getCreateReplyMutationOptions(options);
 
   return useMutation(mutationOptions);
 };
@@ -4214,9 +4129,8 @@ export const getGetCommentsResponseMock = (
           })),
           undefined,
         ]),
-        replies: faker.helpers.arrayElement([{}, undefined]),
-        isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
         isEdited: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
       }),
     ),
     undefined,
@@ -4243,16 +4157,6 @@ export const getGetPresignedUrlResponseMock = (
   ]),
   objectUrl: faker.helpers.arrayElement([
     faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  ...overrideResponse,
-});
-
-export const getCreateReplyResponseMock = (
-  overrideResponse: Partial<IdResponse> = {},
-): IdResponse => ({
-  id: faker.helpers.arrayElement([
-    faker.number.int({ min: undefined, max: undefined }),
     undefined,
   ]),
   ...overrideResponse,
@@ -5170,34 +5074,6 @@ export const getGetPresignedUrlMockHandler = (
   );
 };
 
-export const getCreateReplyMockHandler = (
-  overrideResponse?:
-    | IdResponse
-    | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) => Promise<IdResponse> | IdResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.post(
-    '*/photos/comments/:commentId/replies',
-    async (info) => {
-      await delay(1000);
-
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getCreateReplyResponseMock(),
-        ),
-        { status: 201, headers: { 'Content-Type': 'application/json' } },
-      );
-    },
-    options,
-  );
-};
-
 export const getAddEmoticonMockHandler = (
   overrideResponse?:
     | IdResponse
@@ -6002,7 +5878,6 @@ export const getLokitAPIMock = () => [
   getGetCommentsMockHandler(),
   getCreateCommentMockHandler(),
   getGetPresignedUrlMockHandler(),
-  getCreateReplyMockHandler(),
   getAddEmoticonMockHandler(),
   getRemoveEmoticonMockHandler(),
   getReconnectMockHandler(),

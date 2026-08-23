@@ -19,14 +19,12 @@ export interface CommentResponse {
   userName?: string;
   /** 작성자 프로필 이미지 URL */
   userProfileImageUrl?: string;
-  /** 댓글 내용 (삭제된 댓글은 고정 문구로 대체됨) */
+  /** 댓글 내용 */
   content?: string;
   /** 작성일 */
   commentedAt?: string;
   /** 이모지 목록 */
   emoticons?: EmoticonSummaryResponse[];
-  /** 답글 목록 (1-depth, 답글에는 답글이 없음) */
-  replies?: unknown;
-  isEditable?: boolean;
   isEdited?: boolean;
+  isEditable?: boolean;
 }
