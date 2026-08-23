@@ -53,7 +53,9 @@ const CommentInput = ({ isSubmitting, onSubmit }: CommentInputProps) => {
             alt={myPage.myName || '프로필'}
           />
         ) : (
-          <DefaultProfileIcon width={36} height={36} />
+          <S.ProfileFallback>
+            <DefaultProfileIcon width={36} height={36} />
+          </S.ProfileFallback>
         )}
 
         <S.Textarea

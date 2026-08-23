@@ -24,7 +24,19 @@ export const ProfileImage = styled.img`
   height: 36px;
   border-radius: 50%;
   background: ${({ theme }) => theme.colors.grayScale[700]};
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
   object-fit: cover;
+  flex-shrink: 0;
+`;
+
+export const ProfileFallback = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
   flex-shrink: 0;
 `;
 
