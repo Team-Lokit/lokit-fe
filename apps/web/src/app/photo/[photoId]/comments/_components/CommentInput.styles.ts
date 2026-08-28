@@ -5,7 +5,7 @@ export const Wrapper = styled.div`
   bottom: 0;
   padding: 12px;
   padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  background: ${({ theme }) => theme.colors.grayScale[1000]};
+  background: transparent;
 `;
 
 export const Bar = styled.form`
@@ -15,7 +15,6 @@ export const Bar = styled.form`
   padding: 8px;
   border-radius: 26px;
   background: ${({ theme }) => theme.colors.grayScale[1000]};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
 `;
 

@@ -71,7 +71,7 @@ const CommentInput = ({ isSubmitting, onSubmit }: CommentInputProps) => {
         {value.trim() && (
           <S.SendButton type="submit" disabled={isSubmitting}>
             <S.SendIcon>
-              <ArrowRightIcon width={20} height={20} />
+              <ArrowRightIcon width={22} height={22} />
             </S.SendIcon>
           </S.SendButton>
         )}

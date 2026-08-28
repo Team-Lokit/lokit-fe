@@ -5,7 +5,7 @@ export const Container = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100dvh;
-  background: ${({ theme }) => theme.colors.grayScale[1000]};
+  background: ${({ theme }) => theme.colors.blackOpacity[100]};
 `;
 
 export const List = styled.div`
