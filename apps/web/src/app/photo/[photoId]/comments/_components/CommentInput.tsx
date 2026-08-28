@@ -6,6 +6,9 @@ import DefaultProfileIcon from '@/assets/images/defaultProfile.svg';
 import ArrowRightIcon from '@/assets/images/arrowRight.svg';
 import * as S from './CommentInput.styles';
 
+/** 16px * 160% 줄 높이 5줄 + 상하 패딩(6px * 2) */
+const MAX_TEXTAREA_HEIGHT = 25.6 * 5 + 12;
+
 interface CommentInputProps {
   isSubmitting: boolean;
   onSubmit: (content: string) => void;
@@ -40,7 +43,7 @@ const CommentInput = ({ isSubmitting, onSubmit }: CommentInputProps) => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = 'auto';
-      textarea.style.height = `${textarea.scrollHeight}px`;
+      textarea.style.height = `${Math.min(textarea.scrollHeight, MAX_TEXTAREA_HEIGHT)}px`;
     }
   };
 

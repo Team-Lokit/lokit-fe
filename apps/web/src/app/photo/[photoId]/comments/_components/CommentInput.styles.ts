@@ -42,12 +42,14 @@ export const ProfileFallback = styled.div`
 export const Textarea = styled.textarea`
   flex: 1;
   min-height: 24px;
-  max-height: 96px;
+  /* 16px * 160% 줄 높이 5줄 + 상하 패딩(6px * 2) */
+  max-height: calc(25.6px * 5 + 12px);
   resize: none;
   border: none;
   background: transparent;
   outline: none;
   padding: 6px 0;
+  overflow-y: auto;
   ${({ theme }) => theme.typography.body16Regular}
   color: ${({ theme }) => theme.colors.grayScale[100]};
 
