@@ -6,7 +6,7 @@ import * as S from './DefaultHeader.styles';
 
 export interface DefaultHeaderProps {
   /** 헤더 타이틀 */
-  title: string;
+  title?: string;
   /** 뒤로가기 버튼 클릭 이벤트 */
   onClickBack: () => void;
   /** 텍스트 버튼 클릭 이벤트 */
@@ -37,7 +37,7 @@ const DefaultHeader = ({
           <ChevronLeftIcon width={ICON_SIZE} height={ICON_SIZE} />
         </BackButton>
       }
-      center={<BaseS.Title>{title}</BaseS.Title>}
+      center={title ? <BaseS.Title>{title}</BaseS.Title> : undefined}
       right={
         buttonText && (
           <S.TextButton type="button" onClick={onClickButton} disabled={disabled}>

@@ -18,7 +18,7 @@ export default function CommentsPage() {
 
   return (
     <S.Container>
-      <DefaultHeader title="댓글" onClickBack={() => router.back()} />
+      <DefaultHeader onClickBack={() => router.back()} />
 
       <S.List>
         {comments.length === 0 ? (
