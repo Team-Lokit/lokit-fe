@@ -37,7 +37,7 @@ const DefaultHeader = ({
           <ChevronLeftIcon width={ICON_SIZE} height={ICON_SIZE} />
         </BackButton>
       }
-      center={title ? <BaseS.Title>{title}</BaseS.Title> : undefined}
+      center={title && <BaseS.Title>{title}</BaseS.Title>}
       right={
         buttonText && (
           <S.TextButton type="button" onClick={onClickButton} disabled={disabled}>
