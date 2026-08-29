@@ -86,6 +86,7 @@ export * from './searchPlacesParams';
 export * from './selectableAlbum';
 export * from './selectableAlbumResponse';
 export * from './updateAlbumTitleRequest';
+export * from './updateCommentRequest';
 export * from './updateFirstMetDateRequest';
 export * from './updateNicknameRequest';
 export * from './updateParams';

@@ -39,5 +39,9 @@ export const API_URL = {
     BY_ALBUM: (albumId: number | string) => `/photos/album/${albumId}`,
     DETAIL: (photoId: number | string) => `/photos/${photoId}`,
     PRESIGNED_URL: '/photos/presigned-url',
+    COMMENTS: (photoId: number | string) => `/photos/${photoId}/comments`,
+    COMMENT_DETAIL: (commentId: number | string) => `/photos/comments/${commentId}`,
+    COMMENT_EMOTICONS: (commentId: number | string) =>
+      `/photos/comments/${commentId}/emoticons`,
   },
 } as const;

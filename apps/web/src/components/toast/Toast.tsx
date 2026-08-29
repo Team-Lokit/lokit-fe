@@ -7,18 +7,25 @@ import SuccessIcon from '@/assets/images/success.svg';
 import WarningIcon from '@/assets/images/warning.svg';
 import * as S from './Toast.styles';
 
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 export interface ToastMessage {
   id: string;
   message: string;
   variant?: 'default' | 'info' | 'warn' | 'success';
   isExiting?: boolean;
+  action?: ToastAction;
 }
 
 interface ToastProps {
   toasts: ToastMessage[];
+  onDismiss?: (id: string) => void;
 }
 
-const Toast = ({ toasts }: ToastProps) => {
+const Toast = ({ toasts, onDismiss }: ToastProps) => {
   const [toastRoot, setToastRoot] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -55,6 +62,17 @@ const Toast = ({ toasts }: ToastProps) => {
             <S.ToastIcon>{getIcon(toast.variant)}</S.ToastIcon>
           )}
           <S.ToastText>{toast.message}</S.ToastText>
+          {toast.action && (
+            <S.ToastAction
+              type="button"
+              onClick={() => {
+                toast.action?.onClick();
+                onDismiss?.(toast.id);
+              }}
+            >
+              {toast.action.label}
+            </S.ToastAction>
+          )}
         </S.ToastItem>
       ))}
     </S.ToastContainer>,

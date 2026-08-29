@@ -73,3 +73,27 @@ const MultipleToastTrigger = () => {
 export const MultipleToasts: Story = {
   render: () => <MultipleToastTrigger />,
 };
+
+const UndoToastTrigger = () => {
+  const { showToast } = useToast();
+
+  return (
+    <Button
+      text="댓글 삭제 토스트 보기"
+      onClick={() =>
+        showToast('댓글이 삭제되었어요.', undefined, 'success', {
+          label: '실행취소',
+          onClick: () => showToast('댓글이 복구되었어요.', undefined, 'success'),
+        })
+      }
+    />
+  );
+};
+
+export const WithUndoAction: Story = {
+  render: () => (
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <UndoToastTrigger />
+    </div>
+  ),
+};
