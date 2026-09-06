@@ -17,6 +17,8 @@ export interface DefaultHeaderProps {
   disabled?: boolean;
   /** 뒤로가기 버튼 스타일 변형 */
   backButtonVariant?: 'default' | 'circle';
+  /** 우측 커스텀 슬롯 (지정 시 텍스트 버튼 대체) */
+  rightSlot?: React.ReactNode;
 }
 
 const DefaultHeader = ({
@@ -26,6 +28,7 @@ const DefaultHeader = ({
   buttonText,
   disabled = false,
   backButtonVariant = 'default',
+  rightSlot,
 }: DefaultHeaderProps) => {
   const BackButton = backButtonVariant === 'circle' ? S.CircleIconButton : S.IconButton;
 
@@ -39,11 +42,12 @@ const DefaultHeader = ({
       }
       center={title && <BaseS.Title>{title}</BaseS.Title>}
       right={
-        buttonText && (
+        rightSlot ??
+        (buttonText && (
           <S.TextButton type="button" onClick={onClickButton} disabled={disabled}>
             {buttonText}
           </S.TextButton>
-        )
+        ))
       }
     />
   );
