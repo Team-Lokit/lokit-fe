@@ -33,9 +33,23 @@ const config: StorybookConfig = {
     });
 
     // SVGR로 SVG를 React 컴포넌트로 처리
+    // SVGO의 removeViewBox 기본 최적화가 width/height=viewBox인 SVG의 viewBox를 제거해버려서,
+    // 컴포넌트에 다른 width/height를 넘겨도 내부 path가 원본 크기로 고정되는 문제가 있다.
+    // next.config.ts와 동일하게 viewBox를 항상 보존하도록 오버라이드한다.
     config.module.rules.push({
       test: /\.svg$/,
-      use: ['@svgr/webpack'],
+      use: [
+        {
+          loader: '@svgr/webpack',
+          options: {
+            svgoConfig: {
+              plugins: [
+                { name: 'preset-default', params: { overrides: { removeViewBox: false } } },
+              ],
+            },
+          },
+        },
+      ],
     });
 
     return config;
