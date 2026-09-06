@@ -28,9 +28,8 @@ export const CircleIconButton = styled.button`
   width: 44px;
   height: 44px;
   border-radius: 999px;
-  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
-  border: 1px solid ${({ theme }) => theme.colors.blueWhiteOpacity.border10};
-  backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[5]};
+  background: ${({ theme }) => theme.colors.blackOpacity[50]};
+  backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[25]};
   color: ${({ theme }) => theme.colors.grayScale[100]};
   cursor: pointer;
 `;
