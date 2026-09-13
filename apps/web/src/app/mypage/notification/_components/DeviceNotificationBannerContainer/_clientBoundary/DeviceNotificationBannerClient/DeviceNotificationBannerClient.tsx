@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import type { NotificationPermissionStatus } from '@repo/webview-bridge';
 import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 import { checkNotificationPermissionFromBridge } from '@/utils/bridge/checkNotificationPermissionFromBridge';
 import { openNotificationSettingsFromBridge } from '@/utils/bridge/openNotificationSettingsFromBridge';
 import * as S from './DeviceNotificationBannerClient.styles';
 
 /** 알림 수신이 가능한 상태로 간주할 권한 값. 이 외(denied/blocked/unavailable)는 꺼짐으로 취급 */
-const ENABLED_STATUSES = new Set(['granted', 'limited']);
+const ENABLED_STATUSES = new Set<NotificationPermissionStatus>(['granted', 'limited']);
 
 export default function DeviceNotificationBannerClient() {
   const [isPermissionOff, setIsPermissionOff] = useState(false);
