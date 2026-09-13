@@ -14,6 +14,7 @@ interface MapRouteHeaderProps {
   onOpenSidebar: () => void;
   onRenameAlbum?: () => void;
   onDeleteAlbum?: () => void;
+  onClickAlarm?: () => void;
 }
 
 export const MapRouteHeader = ({
@@ -22,6 +23,7 @@ export const MapRouteHeader = ({
   onOpenSidebar,
   onRenameAlbum,
   onDeleteAlbum,
+  onClickAlarm,
 }: MapRouteHeaderProps) => {
   const isAlbumDetail = viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL;
   const title = selectedAlbumTitle ?? DEFAULT_ALBUM_TITLE;
@@ -30,6 +32,7 @@ export const MapRouteHeader = ({
     <ExploreHeader
       title={title}
       onClickMenu={onOpenSidebar}
+      onClickAlarm={onClickAlarm}
       rightSlot={
         isAlbumDetail && onRenameAlbum && onDeleteAlbum ? (
           <AlbumMenu

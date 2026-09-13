@@ -313,6 +313,7 @@ export default function MapRoute() {
           onDeleteAlbum={
             isCustomAlbumSelected ? () => handleDeleteAlbum(selectedAlbumId) : undefined
           }
+          onClickAlarm={() => router.push(ROUTES.NOTIFICATIONS)}
         />
       </S.HeaderContainer>
 
