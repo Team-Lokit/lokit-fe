@@ -1,18 +1,25 @@
 export const dynamic = 'force-dynamic';
 
-import { getGetNotificationsQueryKey, getNotificationsServer } from '@repo/api-client';
+import { getNotificationsServer } from '@repo/api-client';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import styles from './page.module.css';
 import HeaderClient from './_clientBoundary/HeaderClient/HeaderClient';
 import NotificationListContainer from './_components/NotificationListContainer/NotificationListContainer';
-import { PAGE_TITLE, NOTIFICATION_LIST_PARAMS } from './constants';
+import { PAGE_TITLE, NOTIFICATION_LIST_PAGE_SIZE } from './constants';
+import {
+  getNotificationsInfiniteQueryKey,
+  getNotificationsNextPageParam,
+} from './_utils/notificationsQuery';
 
 export default async function NotificationsPage() {
   const queryClient = new QueryClient();
   await queryClient
-    .prefetchQuery({
-      queryKey: getGetNotificationsQueryKey(NOTIFICATION_LIST_PARAMS),
-      queryFn: () => getNotificationsServer(NOTIFICATION_LIST_PARAMS),
+    .prefetchInfiniteQuery({
+      queryKey: getNotificationsInfiniteQueryKey(),
+      queryFn: ({ pageParam }) =>
+        getNotificationsServer({ page: pageParam, size: NOTIFICATION_LIST_PAGE_SIZE }),
+      initialPageParam: 0,
+      getNextPageParam: getNotificationsNextPageParam,
       staleTime: 0,
     })
     .catch((error) => {
