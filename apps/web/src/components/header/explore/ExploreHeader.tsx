@@ -1,4 +1,5 @@
-import AlarmIcon from '@/assets/images/bell.svg';
+import BellIcon from '@/assets/images/bell.svg';
+import BellCircleIcon from '@/assets/images/bellCircle.svg';
 import HamburgerIcon from '@/assets/images/hamburger.svg';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import CrossfadeText from '@/components/common/crossfadeText/CrossfadeText';
@@ -13,6 +14,8 @@ export interface ExploreHeaderProps {
   onClickMenu: () => void;
   /** 알림 버튼 클릭 이벤트 */
   onClickAlarm?: (() => void) | undefined;
+  /** 안 읽은 알림 존재 여부 (true면 알림 버튼 아이콘이 bellCircle로 바뀜) */
+  hasUnreadNotification?: boolean;
   /** 우측 버튼 커스텀 슬롯 (지정 시 알림 버튼 대체) */
   rightSlot?: React.ReactNode;
   /** 프로필 버튼 클릭 이벤트 @deprecated 사이드바 My로 이동 */
@@ -27,6 +30,7 @@ const ExploreHeader = ({
   title,
   onClickMenu,
   onClickAlarm,
+  hasUnreadNotification,
   rightSlot,
 }: ExploreHeaderProps) => {
   return (
@@ -54,7 +58,11 @@ const ExploreHeader = ({
             aria-label="알림"
             style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
           >
-            <AlarmIcon width={ICON_SIZE} height={ICON_SIZE} />
+            {hasUnreadNotification ? (
+              <BellCircleIcon width={ICON_SIZE} height={ICON_SIZE} />
+            ) : (
+              <BellIcon width={ICON_SIZE} height={ICON_SIZE} />
+            )}
           </CircleButton>
         )
       }

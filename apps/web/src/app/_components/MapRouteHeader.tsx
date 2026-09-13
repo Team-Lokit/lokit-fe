@@ -1,5 +1,6 @@
 'use client';
 
+import { useHasUnreadNotifications } from '@repo/api-client';
 import { VIEW_CONTEXT_TYPE, type ViewContext } from '@/constants/viewContext';
 import { ExploreHeader } from '@/components/header';
 import AlbumMenu from '@/components/album-container/albumMenu/AlbumMenu';
@@ -27,12 +28,14 @@ export const MapRouteHeader = ({
 }: MapRouteHeaderProps) => {
   const isAlbumDetail = viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL;
   const title = selectedAlbumTitle ?? DEFAULT_ALBUM_TITLE;
+  const { data: unreadData } = useHasUnreadNotifications();
 
   return (
     <ExploreHeader
       title={title}
       onClickMenu={onOpenSidebar}
       onClickAlarm={onClickAlarm}
+      hasUnreadNotification={unreadData?.hasUnread}
       rightSlot={
         isAlbumDetail && onRenameAlbum && onDeleteAlbum ? (
           <AlbumMenu
