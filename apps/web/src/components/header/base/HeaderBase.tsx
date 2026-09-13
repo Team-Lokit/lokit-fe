@@ -10,11 +10,13 @@ export interface HeaderBaseProps {
   right?: ReactNode;
   /** 투명 배경 여부 */
   transparent?: boolean;
+  /** 화면 상단에 고정 여부 (고정 시 배경은 항상 불투명 검정) */
+  fixed?: boolean;
 }
 
-const HeaderBase = ({ left, center, right, transparent }: HeaderBaseProps) => {
+const HeaderBase = ({ left, center, right, transparent, fixed }: HeaderBaseProps) => {
   return (
-    <S.Container transparent={transparent}>
+    <S.Container transparent={transparent} fixed={fixed}>
       <S.LeftSection>{left}</S.LeftSection>
       <S.CenterSection>{center}</S.CenterSection>
       <S.RightSection>{right}</S.RightSection>
