@@ -4,12 +4,18 @@
  */
 
 import { serverFetcher } from './serverFetcher';
-import type { CoupleStatusResponse, InviteCodeResponse, MyPageResponse } from './model';
+import type {
+  CoupleStatusResponse,
+  InviteCodeResponse,
+  MyPageResponse,
+  NotificationSettingsResponse,
+} from './model';
 
 const SERVER_API_URL = {
   COUPLES_STATUS: '/couples/me/status',
   COUPLES_INVITES: '/couples/invites',
   MY_PAGE: '/my-page',
+  NOTIFICATION_SETTINGS: '/notification-settings',
 } as const;
 
 /**
@@ -41,6 +47,17 @@ export const createInviteServer = () => {
 export const getMyPageServer = () => {
   return serverFetcher<MyPageResponse>({
     url: SERVER_API_URL.MY_PAGE,
+    method: 'GET',
+  });
+};
+
+/**
+ * 알림 설정을 조회합니다. (서버용)
+ * @summary 알림 설정 조회
+ */
+export const getNotificationSettingsServer = () => {
+  return serverFetcher<NotificationSettingsResponse>({
+    url: SERVER_API_URL.NOTIFICATION_SETTINGS,
     method: 'GET',
   });
 };

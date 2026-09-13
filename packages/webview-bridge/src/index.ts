@@ -9,6 +9,12 @@ import type { GpsCoordinates } from './utils/parseGpsFromExif';
 export const BRIDGE_MESSAGE_TYPES = {
   PICK_IMAGE: 'PICK_IMAGE',
   PICK_IMAGE_RESULT: 'PICK_IMAGE_RESULT',
+  CHECK_NOTIFICATION_PERMISSION: 'CHECK_NOTIFICATION_PERMISSION',
+  CHECK_NOTIFICATION_PERMISSION_RESULT: 'CHECK_NOTIFICATION_PERMISSION_RESULT',
+  REQUEST_NOTIFICATION_PERMISSION: 'REQUEST_NOTIFICATION_PERMISSION',
+  REQUEST_NOTIFICATION_PERMISSION_RESULT: 'REQUEST_NOTIFICATION_PERMISSION_RESULT',
+  OPEN_NOTIFICATION_SETTINGS: 'OPEN_NOTIFICATION_SETTINGS',
+  OPEN_NOTIFICATION_SETTINGS_RESULT: 'OPEN_NOTIFICATION_SETTINGS_RESULT',
 } as const;
 
 export type BridgeMessageType =
@@ -61,7 +67,70 @@ export interface PickImageResponse {
   error?: string;
 }
 
-export type BridgeRequest = PickImageRequest;
-export type BridgeResponse = PickImageResponse;
+/**
+ * react-native-permissions의 PermissionStatus와 동일한 값셋.
+ * - unavailable: 기기가 해당 권한 자체를 지원하지 않음
+ * - denied: 아직 승인되지 않았지만 재요청 가능한 상태.
+ *   iOS는 정말 한 번도 응답한 적 없는 최초 상태만 여기 해당하고, 응답 후엔 granted/blocked로 넘어가 다시 돌아오지 않는다.
+ *   Android 13+(POST_NOTIFICATIONS)는 "한 번도 안 물어봄"과 "거부했지만 재요청 가능"을 둘 다 denied로 취급한다.
+ *   Android 13 미만은 런타임 권한 자체가 없어 denied가 사실상 발생하지 않는다(기본 granted, 끄면 blocked).
+ * - blocked: 사용자가 명시적으로 꺼둠 - 앱에서 재요청 불가, 기기 설정에서만 허용 가능
+ * - granted / limited: 알림 수신 가능
+ */
+export type NotificationPermissionStatus =
+  | 'unavailable'
+  | 'denied'
+  | 'blocked'
+  | 'granted'
+  | 'limited';
+
+export interface CheckNotificationPermissionRequest {
+  type: typeof BRIDGE_MESSAGE_TYPES.CHECK_NOTIFICATION_PERMISSION;
+  requestId: string;
+}
+
+export interface CheckNotificationPermissionResponse {
+  type: typeof BRIDGE_MESSAGE_TYPES.CHECK_NOTIFICATION_PERMISSION_RESULT;
+  requestId: string;
+  status: BridgeStatus;
+  permissionStatus?: NotificationPermissionStatus;
+  error?: string;
+}
+
+export interface RequestNotificationPermissionRequest {
+  type: typeof BRIDGE_MESSAGE_TYPES.REQUEST_NOTIFICATION_PERMISSION;
+  requestId: string;
+}
+
+export interface RequestNotificationPermissionResponse {
+  type: typeof BRIDGE_MESSAGE_TYPES.REQUEST_NOTIFICATION_PERMISSION_RESULT;
+  requestId: string;
+  status: BridgeStatus;
+  permissionStatus?: NotificationPermissionStatus;
+  error?: string;
+}
+
+export interface OpenNotificationSettingsRequest {
+  type: typeof BRIDGE_MESSAGE_TYPES.OPEN_NOTIFICATION_SETTINGS;
+  requestId: string;
+}
+
+export interface OpenNotificationSettingsResponse {
+  type: typeof BRIDGE_MESSAGE_TYPES.OPEN_NOTIFICATION_SETTINGS_RESULT;
+  requestId: string;
+  status: BridgeStatus;
+  error?: string;
+}
+
+export type BridgeRequest =
+  | PickImageRequest
+  | CheckNotificationPermissionRequest
+  | RequestNotificationPermissionRequest
+  | OpenNotificationSettingsRequest;
+export type BridgeResponse =
+  | PickImageResponse
+  | CheckNotificationPermissionResponse
+  | RequestNotificationPermissionResponse
+  | OpenNotificationSettingsResponse;
 
 export { parseGpsFromExif, type GpsCoordinates } from './utils/parseGpsFromExif';
