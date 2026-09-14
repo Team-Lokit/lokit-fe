@@ -30,7 +30,7 @@ export const colors = {
     0: '#FFFFFF',
 
     /** Gray – light */
-    100: '#EBEBEB',
+    100: '#E8E8E8',
 
     /** Gray – text primary */
     200: '#D3D3D3',

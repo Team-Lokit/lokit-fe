@@ -4,6 +4,7 @@ export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
   EXPLORE: '/explore',
+  NOTIFICATIONS: '/notifications',
   ALBUM: {
     DETAIL: (albumId: number) => `/album/${albumId}`,
   },
@@ -32,6 +33,7 @@ export const ROUTES = {
   MYPAGE: '/mypage',
   POLICIES: '/mypage/policies',
   ACCOUNT: '/mypage/account',
+  NOTIFICATION: '/mypage/notification',
   RECONNECT: '/reconnect',
   DISCONNECT: '/disconnect',
   SIGNOUT: '/signout',
