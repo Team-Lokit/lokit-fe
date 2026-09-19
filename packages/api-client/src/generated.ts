@@ -27,15 +27,18 @@ import type {
   CreatePhotoRequest,
   GetLocationInfoParams,
   GetMapMeV11Params,
+  GetNotificationsParams,
   JoinCoupleRequest,
   KakaoAuthorizeParams,
   PresignedUrlRequest,
+  RegisterDeviceTokenRequest,
   RemoveEmoticonRequest,
   SearchPlacesParams,
   UpdateAlbumTitleRequest,
   UpdateCommentRequest,
   UpdateFirstMetDateRequest,
   UpdateNicknameRequest,
+  UpdateNotificationSettingsRequest,
   UpdatePhotoRequest,
   UpdateProfileImageRequest,
   VerifyInviteCodeRequest,
@@ -61,6 +64,8 @@ import type {
   LocationInfoResponse,
   MapMeResponse,
   MyPageResponse,
+  NotificationSettingsResponse,
+  PageResultNotificationResponse,
   PhotoDetailResponse,
   PhotoListResponse,
   PlaceSearchResponse,
@@ -1303,6 +1308,90 @@ export const useRemoveEmoticon = <
 };
 
 /**
+ * FCM 토큰을 등록합니다. 로그인 직후와 앱 실행 시마다 호출하면 되며 멱등합니다. 삭제 API는 없으며 로그아웃 시 자동으로 전부 삭제됩니다.
+ * @summary 디바이스 토큰 등록
+ */
+export const registerDeviceToken = (
+  registerDeviceTokenRequest: RegisterDeviceTokenRequest,
+  signal?: AbortSignal,
+) => {
+  return customFetcher<void>({
+    url: `/device-tokens`,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    data: registerDeviceTokenRequest,
+    signal,
+  });
+};
+
+export const getRegisterDeviceTokenMutationOptions = <
+  TError = ApiResponseErrorDetail,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof registerDeviceToken>>,
+    TError,
+    { data: RegisterDeviceTokenRequest },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof registerDeviceToken>>,
+  TError,
+  { data: RegisterDeviceTokenRequest },
+  TContext
+> => {
+  const mutationKey = ['registerDeviceToken'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof registerDeviceToken>>,
+    { data: RegisterDeviceTokenRequest }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return registerDeviceToken(data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RegisterDeviceTokenMutationResult = NonNullable<
+  Awaited<ReturnType<typeof registerDeviceToken>>
+>;
+export type RegisterDeviceTokenMutationBody = RegisterDeviceTokenRequest;
+export type RegisterDeviceTokenMutationError = ApiResponseErrorDetail;
+
+/**
+ * @summary 디바이스 토큰 등록
+ */
+export const useRegisterDeviceToken = <
+  TError = ApiResponseErrorDetail,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof registerDeviceToken>>,
+    TError,
+    { data: RegisterDeviceTokenRequest },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof registerDeviceToken>>,
+  TError,
+  { data: RegisterDeviceTokenRequest },
+  TContext
+> => {
+  const mutationOptions = getRegisterDeviceTokenMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+/**
  * 연결 해제된 커플에 재연결합니다. 연결 해제 후 31일 이내이며 기존 커플에 최소 1명이 잔존한 경우에만 가능합니다.
  * @summary 커플 재연결
  */
@@ -2131,6 +2220,290 @@ export const useClearAllCaches = <
 };
 
 /**
+ * 멱등합니다. 이미 읽은 알림을 다시 호출해도 204 입니다. 본인의 알림만 읽음 처리할 수 있습니다.
+ * @summary 알림 읽음 처리
+ */
+export const markNotificationAsRead = (notifId: string) => {
+  return customFetcher<void>({ url: `/notifications/${notifId}/read`, method: 'PATCH' });
+};
+
+export const getMarkNotificationAsReadMutationOptions = <
+  TError = ApiResponseErrorDetail | void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof markNotificationAsRead>>,
+    TError,
+    { notifId: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof markNotificationAsRead>>,
+  TError,
+  { notifId: string },
+  TContext
+> => {
+  const mutationKey = ['markNotificationAsRead'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof markNotificationAsRead>>,
+    { notifId: string }
+  > = (props) => {
+    const { notifId } = props ?? {};
+
+    return markNotificationAsRead(notifId);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MarkNotificationAsReadMutationResult = NonNullable<
+  Awaited<ReturnType<typeof markNotificationAsRead>>
+>;
+
+export type MarkNotificationAsReadMutationError = ApiResponseErrorDetail | void;
+
+/**
+ * @summary 알림 읽음 처리
+ */
+export const useMarkNotificationAsRead = <
+  TError = ApiResponseErrorDetail | void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof markNotificationAsRead>>,
+    TError,
+    { notifId: string },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof markNotificationAsRead>>,
+  TError,
+  { notifId: string },
+  TContext
+> => {
+  const mutationOptions = getMarkNotificationAsReadMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+/**
+ * 마스터 스위치와 서버가 아는 모든 알림 종류의 스위치를 내려줍니다. 설정을 저장한 적 없는 사용자는 전부 켜진 기본값을 받습니다(행을 새로 만들지 않습니다).
+ * @summary 알림 설정 조회
+ */
+export const getNotificationSettings = (signal?: AbortSignal) => {
+  return customFetcher<NotificationSettingsResponse>({
+    url: `/notification-settings`,
+    method: 'GET',
+    signal,
+  });
+};
+
+export const getGetNotificationSettingsQueryKey = () => {
+  return [`/notification-settings`] as const;
+};
+
+export const getGetNotificationSettingsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getNotificationSettings>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getNotificationSettings>>,
+    TError,
+    TData
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetNotificationSettingsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getNotificationSettings>>> = ({
+    signal,
+  }) => getNotificationSettings(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getNotificationSettings>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetNotificationSettingsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getNotificationSettings>>
+>;
+export type GetNotificationSettingsQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 알림 설정 조회
+ */
+
+export function useGetNotificationSettings<
+  TData = Awaited<ReturnType<typeof getNotificationSettings>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getNotificationSettings>>,
+    TError,
+    TData
+  >;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetNotificationSettingsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetNotificationSettingsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getNotificationSettings>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getNotificationSettings>>,
+    TError,
+    TData
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetNotificationSettingsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getNotificationSettings>>> = ({
+    signal,
+  }) => getNotificationSettings(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getNotificationSettings>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetNotificationSettingsSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getNotificationSettings>>
+>;
+export type GetNotificationSettingsSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 알림 설정 조회
+ */
+
+export function useGetNotificationSettingsSuspense<
+  TData = Awaited<ReturnType<typeof getNotificationSettings>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getNotificationSettings>>,
+    TError,
+    TData
+  >;
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetNotificationSettingsSuspenseQueryOptions(options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * 생략한 필드는 변경하지 않습니다. 빈 바디({})는 유효한 no-op 요청입니다. 마스터를 껐다 켜도 종류별 설정은 그대로 복원됩니다. 응답은 변경 후 전체 상태입니다.
+ * @summary 알림 설정 부분 변경
+ */
+export const updateNotificationSettings = (
+  updateNotificationSettingsRequest: UpdateNotificationSettingsRequest,
+) => {
+  return customFetcher<NotificationSettingsResponse>({
+    url: `/notification-settings`,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    data: updateNotificationSettingsRequest,
+  });
+};
+
+export const getUpdateNotificationSettingsMutationOptions = <
+  TError = ApiResponseErrorDetail,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateNotificationSettings>>,
+    TError,
+    { data: UpdateNotificationSettingsRequest },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateNotificationSettings>>,
+  TError,
+  { data: UpdateNotificationSettingsRequest },
+  TContext
+> => {
+  const mutationKey = ['updateNotificationSettings'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateNotificationSettings>>,
+    { data: UpdateNotificationSettingsRequest }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updateNotificationSettings(data);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateNotificationSettingsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateNotificationSettings>>
+>;
+export type UpdateNotificationSettingsMutationBody = UpdateNotificationSettingsRequest;
+export type UpdateNotificationSettingsMutationError = ApiResponseErrorDetail;
+
+/**
+ * @summary 알림 설정 부분 변경
+ */
+export const useUpdateNotificationSettings = <
+  TError = ApiResponseErrorDetail,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateNotificationSettings>>,
+    TError,
+    { data: UpdateNotificationSettingsRequest },
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateNotificationSettings>>,
+  TError,
+  { data: UpdateNotificationSettingsRequest },
+  TContext
+> => {
+  const mutationOptions = getUpdateNotificationSettingsMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+/**
  * 커플의 처음 만난 날짜(기념일)를 수정합니다.
  * @summary 처음 만난 날짜 수정
  */
@@ -2476,6 +2849,141 @@ export function useGetPhotosSuspense<
   },
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetPhotosSuspenseQueryOptions(albumId, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * 본인에게 발송된 알림을 최신순으로 내려줍니다. page/size 를 생략하면 서버 기본값을 사용합니다. 그룹 윈도우가 아직 열려 있는 알림은 본문과 groupCount 가 어긋날 수 있습니다.
+ * @summary 알림함 목록 조회
+ */
+export const getNotifications = (
+  params?: GetNotificationsParams,
+  signal?: AbortSignal,
+) => {
+  return customFetcher<PageResultNotificationResponse>({
+    url: `/notifications`,
+    method: 'GET',
+    params,
+    signal,
+  });
+};
+
+export const getGetNotificationsQueryKey = (params?: GetNotificationsParams) => {
+  return [`/notifications`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetNotificationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getNotifications>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params?: GetNotificationsParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getNotifications>>, TError, TData>;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetNotificationsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getNotifications>>> = ({
+    signal,
+  }) => getNotifications(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getNotifications>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetNotificationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getNotifications>>
+>;
+export type GetNotificationsQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 알림함 목록 조회
+ */
+
+export function useGetNotifications<
+  TData = Awaited<ReturnType<typeof getNotifications>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params?: GetNotificationsParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getNotifications>>, TError, TData>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetNotificationsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetNotificationsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getNotifications>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params?: GetNotificationsParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getNotifications>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetNotificationsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getNotifications>>> = ({
+    signal,
+  }) => getNotifications(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getNotifications>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetNotificationsSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getNotifications>>
+>;
+export type GetNotificationsSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 알림함 목록 조회
+ */
+
+export function useGetNotificationsSuspense<
+  TData = Awaited<ReturnType<typeof getNotifications>>,
+  TError = ApiResponseErrorDetail,
+>(
+  params?: GetNotificationsParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getNotifications>>,
+      TError,
+      TData
+    >;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetNotificationsSuspenseQueryOptions(params, options);
 
   const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
     TData,
@@ -4208,8 +4716,8 @@ export const getGetCommentsResponseMock = (
           })),
           undefined,
         ]),
-        isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
         isEdited: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
       }),
     ),
     undefined,
@@ -4432,6 +4940,26 @@ export const getClearAllCachesResponseMock = (
   ...overrideResponse,
 });
 
+export const getGetNotificationSettingsResponseMock = (
+  overrideResponse: Partial<NotificationSettingsResponse> = {},
+): NotificationSettingsResponse => ({
+  masterEnabled: faker.datatype.boolean(),
+  types: {
+    [faker.string.alphanumeric(5)]: faker.datatype.boolean(),
+  },
+  ...overrideResponse,
+});
+
+export const getUpdateNotificationSettingsResponseMock = (
+  overrideResponse: Partial<NotificationSettingsResponse> = {},
+): NotificationSettingsResponse => ({
+  masterEnabled: faker.datatype.boolean(),
+  types: {
+    [faker.string.alphanumeric(5)]: faker.datatype.boolean(),
+  },
+  ...overrideResponse,
+});
+
 export const getUpdateTitleResponseMock = (
   overrideResponse: Partial<IdResponse> = {},
 ): IdResponse => ({
@@ -4515,6 +5043,48 @@ export const getGetPhotosResponseMock = (
     ),
     undefined,
   ]),
+  ...overrideResponse,
+});
+
+export const getGetNotificationsResponseMock = (
+  overrideResponse: Partial<PageResultNotificationResponse> = {},
+): PageResultNotificationResponse => ({
+  content: faker.helpers.arrayElement([
+    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+      () => ({
+        notifId: faker.string.alpha({ length: { min: 10, max: 20 } }),
+        type: faker.helpers.arrayElement(['COMMENT', 'REACTION', 'UPLOAD'] as const),
+        title: faker.string.alpha({ length: { min: 10, max: 20 } }),
+        body: faker.string.alpha({ length: { min: 10, max: 20 } }),
+        groupCount: faker.number.int({ min: undefined, max: undefined }),
+        sentAt: `${faker.date.past().toISOString().split('.')[0]}Z`,
+        targetPhotoId: faker.number.int({ min: undefined, max: undefined }),
+        targetAddress: faker.helpers.arrayElement([
+          faker.string.alpha({ length: { min: 10, max: 20 } }),
+          undefined,
+        ]),
+        isRead: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+      }),
+    ),
+    undefined,
+  ]),
+  page: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  size: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  totalElements: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  totalPages: faker.helpers.arrayElement([
+    faker.number.int({ min: undefined, max: undefined }),
+    undefined,
+  ]),
+  isLast: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   ...overrideResponse,
 });
 
@@ -5238,6 +5808,25 @@ export const getRemoveEmoticonMockHandler = (
   );
 };
 
+export const getRegisterDeviceTokenMockHandler = (
+  overrideResponse?:
+    | void
+    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/device-tokens',
+    async (info) => {
+      await delay(1000);
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info);
+      }
+      return new HttpResponse(null, { status: 204 });
+    },
+    options,
+  );
+};
+
 export const getReconnectMockHandler = (
   overrideResponse?:
     | CoupleStatusResponse
@@ -5528,6 +6117,81 @@ export const getClearAllCachesMockHandler = (
   );
 };
 
+export const getMarkNotificationAsReadMockHandler = (
+  overrideResponse?:
+    | void
+    | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions,
+) => {
+  return http.patch(
+    '*/notifications/:notifId/read',
+    async (info) => {
+      await delay(1000);
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info);
+      }
+      return new HttpResponse(null, { status: 204 });
+    },
+    options,
+  );
+};
+
+export const getGetNotificationSettingsMockHandler = (
+  overrideResponse?:
+    | NotificationSettingsResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<NotificationSettingsResponse> | NotificationSettingsResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/notification-settings',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetNotificationSettingsResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
+export const getUpdateNotificationSettingsMockHandler = (
+  overrideResponse?:
+    | NotificationSettingsResponse
+    | ((
+        info: Parameters<Parameters<typeof http.patch>[1]>[0],
+      ) => Promise<NotificationSettingsResponse> | NotificationSettingsResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.patch(
+    '*/notification-settings',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getUpdateNotificationSettingsResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
 export const getUpdateFirstMetDateMockHandler = (
   overrideResponse?:
     | void
@@ -5614,6 +6278,34 @@ export const getGetPhotosMockHandler = (
               ? await overrideResponse(info)
               : overrideResponse
             : getGetPhotosResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
+export const getGetNotificationsMockHandler = (
+  overrideResponse?:
+    | PageResultNotificationResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<PageResultNotificationResponse> | PageResultNotificationResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/notifications',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetNotificationsResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       );
@@ -5998,6 +6690,7 @@ export const getLokitAPIMock = () => [
   getRestoreCommentMockHandler(),
   getAddEmoticonMockHandler(),
   getRemoveEmoticonMockHandler(),
+  getRegisterDeviceTokenMockHandler(),
   getReconnectMockHandler(),
   getSaveCoupleStatusCookieMockHandler(),
   getJoinByInviteCodeMockHandler(),
@@ -6009,10 +6702,14 @@ export const getLokitAPIMock = () => [
   getCreateCouplePartnerMockHandler(),
   getMigratePreviousCoupleDataMockHandler(),
   getClearAllCachesMockHandler(),
+  getMarkNotificationAsReadMockHandler(),
+  getGetNotificationSettingsMockHandler(),
+  getUpdateNotificationSettingsMockHandler(),
   getUpdateFirstMetDateMockHandler(),
   getDelete1MockHandler(),
   getUpdateTitleMockHandler(),
   getGetPhotosMockHandler(),
+  getGetNotificationsMockHandler(),
   getGetMyPageMockHandler(),
   getSearchPlacesMockHandler(),
   getGetMapMeV11MockHandler(),
