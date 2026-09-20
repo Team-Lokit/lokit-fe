@@ -71,6 +71,7 @@ import type {
   PlaceSearchResponse,
   PresignedUrl,
   SelectableAlbumResponse,
+  UnreadExistsResponse,
 } from './model';
 
 import { customFetcher } from './customFetcher';
@@ -2996,6 +2997,133 @@ export function useGetNotificationsSuspense<
 }
 
 /**
+ * 홈 화면 배지용. 개수를 세지 않고 하나라도 있는지만 확인합니다.
+ * @summary 안읽은 알림 존재 여부
+ */
+export const hasUnreadNotifications = (signal?: AbortSignal) => {
+  return customFetcher<UnreadExistsResponse>({
+    url: `/notifications/unread-exists`,
+    method: 'GET',
+    signal,
+  });
+};
+
+export const getHasUnreadNotificationsQueryKey = () => {
+  return [`/notifications/unread-exists`] as const;
+};
+
+export const getHasUnreadNotificationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof hasUnreadNotifications>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof hasUnreadNotifications>>,
+    TError,
+    TData
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getHasUnreadNotificationsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof hasUnreadNotifications>>> = ({
+    signal,
+  }) => hasUnreadNotifications(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof hasUnreadNotifications>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type HasUnreadNotificationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof hasUnreadNotifications>>
+>;
+export type HasUnreadNotificationsQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 안읽은 알림 존재 여부
+ */
+
+export function useHasUnreadNotifications<
+  TData = Awaited<ReturnType<typeof hasUnreadNotifications>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof hasUnreadNotifications>>,
+    TError,
+    TData
+  >;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getHasUnreadNotificationsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getHasUnreadNotificationsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof hasUnreadNotifications>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof hasUnreadNotifications>>,
+    TError,
+    TData
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getHasUnreadNotificationsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof hasUnreadNotifications>>> = ({
+    signal,
+  }) => hasUnreadNotifications(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof hasUnreadNotifications>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type HasUnreadNotificationsSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof hasUnreadNotifications>>
+>;
+export type HasUnreadNotificationsSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 안읽은 알림 존재 여부
+ */
+
+export function useHasUnreadNotificationsSuspense<
+  TData = Awaited<ReturnType<typeof hasUnreadNotifications>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof hasUnreadNotifications>>,
+    TError,
+    TData
+  >;
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getHasUnreadNotificationsSuspenseQueryOptions(options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
  * 내 정보와 상대방 정보, 커플 D+일수, 커플 전체 사진 수를 조회합니다.
  * @summary 마이페이지 조회
  */
@@ -5088,6 +5216,10 @@ export const getGetNotificationsResponseMock = (
   ...overrideResponse,
 });
 
+export const getHasUnreadNotificationsResponseMock = (
+  overrideResponse: Partial<UnreadExistsResponse> = {},
+): UnreadExistsResponse => ({ hasUnread: faker.datatype.boolean(), ...overrideResponse });
+
 export const getGetMyPageResponseMock = (
   overrideResponse: Partial<MyPageResponse> = {},
 ): MyPageResponse => ({
@@ -6314,6 +6446,34 @@ export const getGetNotificationsMockHandler = (
   );
 };
 
+export const getHasUnreadNotificationsMockHandler = (
+  overrideResponse?:
+    | UnreadExistsResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<UnreadExistsResponse> | UnreadExistsResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/notifications/unread-exists',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getHasUnreadNotificationsResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
 export const getGetMyPageMockHandler = (
   overrideResponse?:
     | MyPageResponse
@@ -6710,6 +6870,7 @@ export const getLokitAPIMock = () => [
   getUpdateTitleMockHandler(),
   getGetPhotosMockHandler(),
   getGetNotificationsMockHandler(),
+  getHasUnreadNotificationsMockHandler(),
   getGetMyPageMockHandler(),
   getSearchPlacesMockHandler(),
   getGetMapMeV11MockHandler(),
