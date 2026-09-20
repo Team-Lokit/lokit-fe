@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Alert, Linking, Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
@@ -8,15 +8,12 @@ import useBridgeHandler from './bridge/useBridgeHandler';
 import useAppLifecycleTracking from './useAppLifecycleTracking';
 import useDeepLinkHandling from './useDeepLinkHandling';
 
+// 스플래시가 WebView 첫 페인트를 가려주도록, 마운트 즉시가 아니라
+// WebView 로드 완료(or 실패) 시점까지 유지한다. 응답이 아예 없을 경우를
+// 대비해 최대 대기 시간 이후엔 강제로 내린다.
+const SPLASH_FALLBACK_TIMEOUT_MS = 6000;
+
 function App() {
-  useEffect(() => {
-    const hideSplash = async () => {
-      await BootSplash.hide({ fade: true });
-    };
-
-    hideSplash();
-  }, []);
-
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
@@ -32,6 +29,23 @@ function AppContent() {
   const { onWebViewLoad } = useAppLifecycleTracking(webViewRef);
   const { initialUrl } = useDeepLinkHandling(webViewRef);
   const onMessage = useBridgeHandler(webViewRef);
+  const splashHiddenRef = useRef(false);
+
+  const hideSplash = useCallback(() => {
+    if (splashHiddenRef.current) return;
+    splashHiddenRef.current = true;
+    BootSplash.hide({ fade: true });
+  }, []);
+
+  useEffect(() => {
+    const fallback = setTimeout(hideSplash, SPLASH_FALLBACK_TIMEOUT_MS);
+    return () => clearTimeout(fallback);
+  }, [hideSplash]);
+
+  const handleWebViewLoad = () => {
+    onWebViewLoad();
+    hideSplash();
+  };
 
   const onShouldStartLoadWithRequest = (request: { url: string }) => {
     const { url } = request;
@@ -63,7 +77,7 @@ function AppContent() {
         // Android 전용 옵션이며 기본값이 false라, 켜주지 않으면 WebView 내 navigator.geolocation이 동작하지 않음
         geolocationEnabled
         injectedJavaScriptBeforeContentLoaded={buildBridgeInjection(initialUrl)}
-        onLoad={onWebViewLoad}
+        onLoad={handleWebViewLoad}
         onMessage={onMessage}
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         // dvh 단위가 모바일 웹뷰에서 제대로 작동하지 않는 문제를 해결
@@ -88,9 +102,11 @@ function AppContent() {
         `}
         onError={e => {
           console.log('WebView error', e.nativeEvent);
+          hideSplash();
         }}
         onHttpError={e => {
           console.log('WebView http error', e.nativeEvent);
+          hideSplash();
         }}
       />
     </View>
