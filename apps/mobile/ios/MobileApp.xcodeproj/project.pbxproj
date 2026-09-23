@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		010F1AD0E2A828360F6D44D8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D08D83600116073F6205AB82 /* GoogleService-Info.plist */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2DA8B81DD2C34364AA5153C6 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C27070560D6841BDB959CC3C /* BootSplash.storyboard */; };
 		4826876C040A46C294A24C12 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 458DADA54BEA43929AE4B8AA /* Colors.xcassets */; };
@@ -29,6 +30,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MobileApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A8ACEE1714483C0CC2F054CA /* libPods-MobileApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MobileApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C27070560D6841BDB959CC3C /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = MobileApp/BootSplash.storyboard; sourceTree = "<group>"; };
+		D08D83600116073F6205AB82 /* GoogleService-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -55,6 +57,7 @@
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				C27070560D6841BDB959CC3C /* BootSplash.storyboard */,
 				458DADA54BEA43929AE4B8AA /* Colors.xcassets */,
+				D08D83600116073F6205AB82 /* GoogleService-Info.plist */,
 			);
 			name = MobileApp;
 			sourceTree = "<group>";
@@ -171,6 +174,7 @@
 				E5E85954373C5A86D5548CC0 /* PrivacyInfo.xcprivacy in Resources */,
 				2DA8B81DD2C34364AA5153C6 /* BootSplash.storyboard in Resources */,
 				4826876C040A46C294A24C12 /* Colors.xcassets in Resources */,
+				010F1AD0E2A828360F6D44D8 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

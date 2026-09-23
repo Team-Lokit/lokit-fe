@@ -18,6 +18,13 @@ setup_permissions([
   'Notifications',
 ])
 
+# react-native-firebase: SPM 기반 Firebase 해석은 static framework 링키지와 충돌해서
+# (중복 심볼 에러) 전통적인 CocoaPods Firebase pod을 쓰도록 비활성화한다.
+$RNFirebaseDisableSPM = true
+# Firebase의 Swift pod들이 GoogleUtilities(모듈 미정의)에 의존해서, static 라이브러리로
+# Swift에서 import하려면 모듈맵이 필요하다.
+use_modular_headers!
+
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
