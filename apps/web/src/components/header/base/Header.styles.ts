@@ -13,13 +13,14 @@ export const Container = styled.header<{ transparent?: boolean; fixed?: boolean 
         ? 'transparent'
         : theme.colors.gradient.black1};
 
-  ${({ fixed }) =>
+  ${({ fixed, theme }) =>
     fixed &&
     `
       position: fixed;
       top: 0;
-      left: 0;
-      right: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: ${theme.layout.maxWidth};
       z-index: 10;
     `}
 `;
