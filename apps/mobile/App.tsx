@@ -62,6 +62,8 @@ function AppContent() {
         style={styles.webView}
         // Android 전용 옵션이며 기본값이 false라, 켜주지 않으면 WebView 내 navigator.geolocation이 동작하지 않음
         geolocationEnabled
+        // iOS 16.4+에서 기본값이 false라, 켜주지 않으면 Safari 개발자 도구(Develop 메뉴)에 WebView가 안 뜬다
+        webviewDebuggingEnabled={__DEV__}
         injectedJavaScriptBeforeContentLoaded={buildBridgeInjection(initialUrl)}
         onLoad={onWebViewLoad}
         onMessage={onMessage}
