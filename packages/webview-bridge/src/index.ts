@@ -15,6 +15,8 @@ export const BRIDGE_MESSAGE_TYPES = {
   REQUEST_NOTIFICATION_PERMISSION_RESULT: 'REQUEST_NOTIFICATION_PERMISSION_RESULT',
   OPEN_NOTIFICATION_SETTINGS: 'OPEN_NOTIFICATION_SETTINGS',
   OPEN_NOTIFICATION_SETTINGS_RESULT: 'OPEN_NOTIFICATION_SETTINGS_RESULT',
+  GET_DEVICE_TOKEN: 'GET_DEVICE_TOKEN',
+  GET_DEVICE_TOKEN_RESULT: 'GET_DEVICE_TOKEN_RESULT',
 } as const;
 
 export type BridgeMessageType =
@@ -122,15 +124,34 @@ export interface OpenNotificationSettingsResponse {
   error?: string;
 }
 
+/** RegisterDeviceTokenRequestPlatform과 동일한 값 (WEB 제외 - 네이티브 브릿지 전용) */
+export type DeviceTokenPlatform = 'ANDROID' | 'IOS';
+
+export interface GetDeviceTokenRequest {
+  type: typeof BRIDGE_MESSAGE_TYPES.GET_DEVICE_TOKEN;
+  requestId: string;
+}
+
+export interface GetDeviceTokenResponse {
+  type: typeof BRIDGE_MESSAGE_TYPES.GET_DEVICE_TOKEN_RESULT;
+  requestId: string;
+  status: BridgeStatus;
+  token?: string;
+  platform?: DeviceTokenPlatform;
+  error?: string;
+}
+
 export type BridgeRequest =
   | PickImageRequest
   | CheckNotificationPermissionRequest
   | RequestNotificationPermissionRequest
-  | OpenNotificationSettingsRequest;
+  | OpenNotificationSettingsRequest
+  | GetDeviceTokenRequest;
 export type BridgeResponse =
   | PickImageResponse
   | CheckNotificationPermissionResponse
   | RequestNotificationPermissionResponse
-  | OpenNotificationSettingsResponse;
+  | OpenNotificationSettingsResponse
+  | GetDeviceTokenResponse;
 
 export { parseGpsFromExif, type GpsCoordinates } from './utils/parseGpsFromExif';
