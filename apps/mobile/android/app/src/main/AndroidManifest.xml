@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.CAMERA" />
   <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -36,5 +36,11 @@
         <data android:scheme="https" android:host="develop.lokit.co.kr" />
       </intent-filter>
     </activity>
+
+    <!-- FCM notification 메시지가 channel_id 없이 오면 이 채널로 떨어짐(MainApplication에서 IMPORTANCE_HIGH로 생성) -->
+    <meta-data
+      android:name="com.google.firebase.messaging.default_notification_channel_id"
+      android:value="@string/default_notification_channel_id"
+      tools:replace="android:value" />
   </application>
 </manifest>
