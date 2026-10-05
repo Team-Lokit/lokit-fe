@@ -50,6 +50,7 @@ import { usePhotoContext } from '@/app/photo/_contexts/PhotoContext';
 import { usePhotoSelect } from '@/app/photo/add/_hooks/usePhotoSelect';
 import type { SelectedPhoto } from '@/app/photo/add/_types/photo';
 import Chip from '@/components/buttons/chip/Chip';
+import { useToast } from '@/components/toast';
 
 export default function MapRoute() {
   const router = useRouter();
@@ -132,6 +133,33 @@ export default function MapRoute() {
   useNotificationPermissionSync();
   useDeviceTokenSync();
   useForegroundPushToast();
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    const handleNativeMessage = (event: MessageEvent) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'FCM_FOREGROUND_NOTIFICATION') {
+          console.log('포그라운드 알림 수신:', data);
+          showToast(`${data.title}\n${data.body}`);
+          if (data.url) {
+            // 사용자가 알림을 확인하면 해당 url로 리다이렉트
+            window.location.href = data.url;
+          }
+        }
+      } catch (e) {
+        // JSON 파싱 실패 에러 등은 무시
+      }
+    };
+
+    window.addEventListener('message', handleNativeMessage as EventListener);
+    document.addEventListener('message', handleNativeMessage as EventListener);
+
+    return () => {
+      window.removeEventListener('message', handleNativeMessage as EventListener);
+      document.removeEventListener('message', handleNativeMessage as EventListener);
+    };
+  }, [showToast]);
 
   // 모달 상태 관리
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);

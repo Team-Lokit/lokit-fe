@@ -34,6 +34,8 @@ export async function handleGetDeviceToken(
       platform,
     });
   } catch (e) {
+    // TODO: 프로덕션에서는 로그 삭제
+    console.log('[GET_DEVICE_TOKEN] failed', e);
     sendResponse(webViewRef, {
       type: BRIDGE_MESSAGE_TYPES.GET_DEVICE_TOKEN_RESULT,
       requestId,
