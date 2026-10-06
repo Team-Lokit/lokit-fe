@@ -24,6 +24,20 @@ export type BridgeMessageType =
 
 export type BridgeStatus = 'success' | 'cancelled' | 'error';
 
+/** 모든 브릿지 Request가 공통으로 갖는 필드 */
+export interface CommonRequest {
+  type: BridgeMessageType;
+  requestId: string;
+}
+
+/** 모든 브릿지 Response가 공통으로 갖는 필드 */
+export interface CommonResponse {
+  type: BridgeMessageType;
+  requestId: string;
+  status: BridgeStatus;
+  error?: string;
+}
+
 export type PickImageSource = 'library' | 'camera';
 
 export interface PickImageOptions {
@@ -35,9 +49,8 @@ export interface PickImageOptions {
   quality?: number;
 }
 
-export interface PickImageRequest {
+export interface PickImageRequest extends CommonRequest {
   type: typeof BRIDGE_MESSAGE_TYPES.PICK_IMAGE;
-  requestId: string;
   options?: PickImageOptions;
 }
 
@@ -61,12 +74,9 @@ export interface PickedAsset {
   takenAt?: string;
 }
 
-export interface PickImageResponse {
+export interface PickImageResponse extends CommonResponse {
   type: typeof BRIDGE_MESSAGE_TYPES.PICK_IMAGE_RESULT;
-  requestId: string;
-  status: BridgeStatus;
   assets?: PickedAsset[];
-  error?: string;
 }
 
 /**
@@ -86,59 +96,43 @@ export type NotificationPermissionStatus =
   | 'granted'
   | 'limited';
 
-export interface CheckNotificationPermissionRequest {
+export interface CheckNotificationPermissionRequest extends CommonRequest {
   type: typeof BRIDGE_MESSAGE_TYPES.CHECK_NOTIFICATION_PERMISSION;
-  requestId: string;
 }
 
-export interface CheckNotificationPermissionResponse {
+export interface CheckNotificationPermissionResponse extends CommonResponse {
   type: typeof BRIDGE_MESSAGE_TYPES.CHECK_NOTIFICATION_PERMISSION_RESULT;
-  requestId: string;
-  status: BridgeStatus;
   permissionStatus?: NotificationPermissionStatus;
-  error?: string;
 }
 
-export interface RequestNotificationPermissionRequest {
+export interface RequestNotificationPermissionRequest extends CommonRequest {
   type: typeof BRIDGE_MESSAGE_TYPES.REQUEST_NOTIFICATION_PERMISSION;
-  requestId: string;
 }
 
-export interface RequestNotificationPermissionResponse {
+export interface RequestNotificationPermissionResponse extends CommonResponse {
   type: typeof BRIDGE_MESSAGE_TYPES.REQUEST_NOTIFICATION_PERMISSION_RESULT;
-  requestId: string;
-  status: BridgeStatus;
   permissionStatus?: NotificationPermissionStatus;
-  error?: string;
 }
 
-export interface OpenNotificationSettingsRequest {
+export interface OpenNotificationSettingsRequest extends CommonRequest {
   type: typeof BRIDGE_MESSAGE_TYPES.OPEN_NOTIFICATION_SETTINGS;
-  requestId: string;
 }
 
-export interface OpenNotificationSettingsResponse {
+export interface OpenNotificationSettingsResponse extends CommonResponse {
   type: typeof BRIDGE_MESSAGE_TYPES.OPEN_NOTIFICATION_SETTINGS_RESULT;
-  requestId: string;
-  status: BridgeStatus;
-  error?: string;
 }
 
 /** RegisterDeviceTokenRequestPlatform과 동일한 값 (WEB 제외 - 네이티브 브릿지 전용) */
 export type DeviceTokenPlatform = 'ANDROID' | 'IOS';
 
-export interface GetDeviceTokenRequest {
+export interface GetDeviceTokenRequest extends CommonRequest {
   type: typeof BRIDGE_MESSAGE_TYPES.GET_DEVICE_TOKEN;
-  requestId: string;
 }
 
-export interface GetDeviceTokenResponse {
+export interface GetDeviceTokenResponse extends CommonResponse {
   type: typeof BRIDGE_MESSAGE_TYPES.GET_DEVICE_TOKEN_RESULT;
-  requestId: string;
-  status: BridgeStatus;
   token?: string;
   platform?: DeviceTokenPlatform;
-  error?: string;
 }
 
 export type BridgeRequest =
