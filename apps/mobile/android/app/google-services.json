@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "377573772797",
+    "project_id": "lokit-3bb57",
+    "storage_bucket": "lokit-3bb57.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377573772797:android:2826a36eea4ccca3405d94",
+        "android_client_info": {
+          "package_name": "kr.co.lokit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoiMYf8rzUX-SW3xQsSMirR5-uEDQBru8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

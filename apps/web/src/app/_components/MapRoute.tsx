@@ -44,6 +44,8 @@ import { saveClusterToSession } from '@/utils/sessionStorage';
 import { checkIsInWebView } from '@/utils/environment';
 import { useLocationPermissionModal } from '@/hooks/useLocationPermissionModal';
 import { useNotificationPermissionSync } from '@/hooks/useNotificationPermissionSync';
+import { useDeviceTokenSync } from '@/hooks/useDeviceTokenSync';
+import { useForegroundPushToast } from '@/hooks/useForegroundPushToast';
 import { usePhotoContext } from '@/app/photo/_contexts/PhotoContext';
 import { usePhotoSelect } from '@/app/photo/add/_hooks/usePhotoSelect';
 import type { SelectedPhoto } from '@/app/photo/add/_types/photo';
@@ -128,6 +130,8 @@ export default function MapRoute() {
   const { isOpen: isLocationDeniedModalOpen, close: handleCloseLocationDeniedModal } =
     useLocationPermissionModal();
   useNotificationPermissionSync();
+  useDeviceTokenSync();
+  useForegroundPushToast();
 
   // 모달 상태 관리
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
