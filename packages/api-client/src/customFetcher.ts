@@ -60,6 +60,29 @@ const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
 };
 
+const AUTH_LOGOUT_PATH = '/auth/logout';
+const LOGIN_PATH = '/login';
+
+let isRedirectingToLogin = false;
+
+// 401은 refresh까지 만료됐다는 뜻이지만 accessToken/refreshToken 쿠키 자체는
+// 브라우저에 그대로 남아있다. 그래서 리다이렉트 전에 로그아웃 API로 쿠키를 서버에서 확실히 만료시킨다.
+function redirectToLogin(baseUrl: string) {
+  if (isRedirectingToLogin) return;
+  isRedirectingToLogin = true;
+
+  fetch(joinUrl(AUTH_LOGOUT_PATH, baseUrl), {
+    method: 'POST',
+    credentials: 'include',
+  })
+    .catch(() => {
+      // 로그아웃 요청이 실패해도 로그인 화면으로는 보내야 한다
+    })
+    .finally(() => {
+      window.location.href = LOGIN_PATH;
+    });
+}
+
 function resolveBaseUrl() {
   if (typeof process === 'undefined') {
     return '';
@@ -195,7 +218,7 @@ export async function customFetcher<TResponse>(
     // 백엔드는 모든 요청에서 쿠키를 보고 refresh가 살아있으면 토큰을 자동 재발급한다.
     // 따라서 클라이언트가 401을 받았다면 refresh까지 만료된 것이므로 로그인으로 보낸다.
     if (response.status === 401 && typeof window !== 'undefined') {
-      window.location.href = '/login';
+      redirectToLogin(baseUrl);
     }
 
     let errorResponse: ApiErrorResponse;
