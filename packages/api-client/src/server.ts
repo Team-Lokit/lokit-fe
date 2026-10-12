@@ -9,6 +9,8 @@ import type {
   InviteCodeResponse,
   MyPageResponse,
   NotificationSettingsResponse,
+  PageResultNotificationResponse,
+  GetNotificationsParams,
 } from './model';
 
 const SERVER_API_URL = {
@@ -16,6 +18,7 @@ const SERVER_API_URL = {
   COUPLES_INVITES: '/couples/invites',
   MY_PAGE: '/my-page',
   NOTIFICATION_SETTINGS: '/notification-settings',
+  NOTIFICATIONS: '/notifications',
 } as const;
 
 /**
@@ -59,5 +62,17 @@ export const getNotificationSettingsServer = () => {
   return serverFetcher<NotificationSettingsResponse>({
     url: SERVER_API_URL.NOTIFICATION_SETTINGS,
     method: 'GET',
+  });
+};
+
+/**
+ * 알림함 목록을 조회합니다. (서버용)
+ * @summary 알림함 목록 조회
+ */
+export const getNotificationsServer = (params?: GetNotificationsParams) => {
+  return serverFetcher<PageResultNotificationResponse>({
+    url: SERVER_API_URL.NOTIFICATIONS,
+    method: 'GET',
+    params,
   });
 };

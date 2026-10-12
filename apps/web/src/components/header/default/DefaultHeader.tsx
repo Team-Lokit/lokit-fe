@@ -17,6 +17,10 @@ export interface DefaultHeaderProps {
   disabled?: boolean;
   /** 뒤로가기 버튼 스타일 변형 */
   backButtonVariant?: 'default' | 'circle';
+  /** 우측 커스텀 슬롯 (지정 시 텍스트 버튼 대체) */
+  rightSlot?: React.ReactNode;
+  /** 화면 상단에 고정 여부 (고정 시 배경은 항상 불투명 검정) */
+  fixed?: boolean;
 }
 
 const DefaultHeader = ({
@@ -26,12 +30,15 @@ const DefaultHeader = ({
   buttonText,
   disabled = false,
   backButtonVariant = 'default',
+  rightSlot,
+  fixed,
 }: DefaultHeaderProps) => {
   const BackButton = backButtonVariant === 'circle' ? S.CircleIconButton : S.IconButton;
 
   return (
     <HeaderBase
       transparent
+      fixed={fixed}
       left={
         <BackButton type="button" onClick={onClickBack}>
           <ChevronLeftIcon width={ICON_SIZE} height={ICON_SIZE} />
@@ -39,11 +46,12 @@ const DefaultHeader = ({
       }
       center={title && <BaseS.Title>{title}</BaseS.Title>}
       right={
-        buttonText && (
+        rightSlot ??
+        (buttonText && (
           <S.TextButton type="button" onClick={onClickButton} disabled={disabled}>
             {buttonText}
           </S.TextButton>
-        )
+        ))
       }
     />
   );

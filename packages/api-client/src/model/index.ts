@@ -93,6 +93,7 @@ export * from './saveNotificationEmailRequest';
 export * from './searchPlacesParams';
 export * from './selectableAlbum';
 export * from './selectableAlbumResponse';
+export * from './unreadExistsResponse';
 export * from './updateAlbumTitleRequest';
 export * from './updateCommentRequest';
 export * from './updateFirstMetDateRequest';

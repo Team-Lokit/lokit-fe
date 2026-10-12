@@ -5,6 +5,7 @@ import { handlePickImage } from './handlePickImage';
 import { handleCheckNotificationPermission } from './handleCheckNotificationPermission';
 import { handleRequestNotificationPermission } from './handleRequestNotificationPermission';
 import { handleOpenNotificationSettings } from './handleOpenNotificationSettings';
+import { handleGetDeviceToken } from './handleGetDeviceToken';
 
 /**
  * 메시지 타입 -> 핸들러 매핑.
@@ -24,4 +25,5 @@ export const bridgeHandlers: BridgeHandlerMap = {
   [BRIDGE_MESSAGE_TYPES.REQUEST_NOTIFICATION_PERMISSION]:
     handleRequestNotificationPermission,
   [BRIDGE_MESSAGE_TYPES.OPEN_NOTIFICATION_SETTINGS]: handleOpenNotificationSettings,
+  [BRIDGE_MESSAGE_TYPES.GET_DEVICE_TOKEN]: handleGetDeviceToken,
 };

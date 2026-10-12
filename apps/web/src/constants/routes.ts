@@ -4,6 +4,7 @@ export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
   EXPLORE: '/explore',
+  NOTIFICATIONS: '/notifications',
   ALBUM: {
     DETAIL: (albumId: number) => `/album/${albumId}`,
   },

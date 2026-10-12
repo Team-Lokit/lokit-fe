@@ -1,13 +1,28 @@
 import styled from '@emotion/styled';
 
-export const Container = styled.header<{ transparent?: boolean }>`
+export const Container = styled.header<{ transparent?: boolean; fixed?: boolean }>`
   display: flex;
   align-items: center;
   width: 100%;
   height: 60px;
   padding: 0 16px;
-  background: ${({ theme, transparent }) =>
-    transparent ? 'transparent' : theme.colors.gradient.black1};
+  background: ${({ theme, transparent, fixed }) =>
+    fixed
+      ? theme.colors.blackOpacity[100]
+      : transparent
+        ? 'transparent'
+        : theme.colors.gradient.black1};
+
+  ${({ fixed, theme }) =>
+    fixed &&
+    `
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: ${theme.layout.maxWidth};
+      z-index: 10;
+    `}
 `;
 
 export const LeftSection = styled.div`

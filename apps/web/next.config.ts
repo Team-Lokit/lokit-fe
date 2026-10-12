@@ -3,11 +3,22 @@ import type { NextConfig } from 'next';
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'https://develop-api.lokit.co.kr';
 
+// SVGO의 removeViewBox 기본 최적화가 width/height=viewBox인 SVG의 viewBox를 제거해버려서,
+// 컴포넌트에 다른 width/height를 넘겨도 내부 path가 원본 크기로 고정되는 문제가 있었다.
+// 그래서 viewBox는 항상 보존하도록 명시적으로 오버라이드한다.
+const svgrLoaderOptions = {
+  svgoConfig: {
+    plugins: [
+      { name: 'preset-default', params: { overrides: { removeViewBox: false } } },
+    ],
+  },
+};
+
 const nextConfig: NextConfig = {
   turbopack: {
     rules: {
       '*.svg': {
-        loaders: ['@svgr/webpack'],
+        loaders: [{ loader: '@svgr/webpack', options: svgrLoaderOptions }],
         as: '*.js',
       },
     },
@@ -34,7 +45,7 @@ const nextConfig: NextConfig = {
       test: /\.svg$/i,
       issuer: { not: /\.css$/i },
       type: 'javascript/auto',
-      use: ['@svgr/webpack'],
+      use: [{ loader: '@svgr/webpack', options: svgrLoaderOptions }],
     });
 
     return config;
