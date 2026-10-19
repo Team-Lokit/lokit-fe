@@ -18,7 +18,9 @@ import { parseGpsFromExif, type GpsCoordinates } from '@repo/webview-bridge';
  *   MediaStore 직접 접근(ACCESS_MEDIA_LOCATION + MediaStore.setRequireOriginal),
  *   또는 @react-native-camera-roll/camera-roll 기반 자체 갤러리로 교체해야 한다.
  */
-export const extractGpsFromAsset = async (asset: Asset): Promise<GpsCoordinates | null> => {
+export const extractGpsFromAsset = async (
+  asset: Asset,
+): Promise<GpsCoordinates | null> => {
   if (!asset.base64) {
     return null;
   }

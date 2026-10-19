@@ -40,9 +40,7 @@ function injectTrack(
   `);
 }
 
-export default function useAppLifecycleTracking(
-  webViewRef: RefObject<WebView | null>,
-) {
+export default function useAppLifecycleTracking(webViewRef: RefObject<WebView | null>) {
   const appState = useRef<AppStateStatus>(AppState.currentState);
   const sessionStartedAt = useRef<number | null>(null);
   const isWebViewReady = useRef(false);
@@ -62,7 +60,7 @@ export default function useAppLifecycleTracking(
     isWebViewReady.current = true;
     const queued = pending.current;
     pending.current = [];
-    queued.forEach((task) => task());
+    queued.forEach(task => task());
   }, []);
 
   useEffect(() => {
