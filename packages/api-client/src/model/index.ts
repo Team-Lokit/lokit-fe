@@ -66,6 +66,7 @@ export * from './locationResponse';
 export * from './loginPhotoResponse';
 export * from './loginRequest';
 export * from './loginResponse';
+export * from './logoutRequest';
 export * from './mapMeResponse';
 export * from './mapPhotoResponse';
 export * from './mapPhotosResponse';
