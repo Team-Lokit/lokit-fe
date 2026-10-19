@@ -43,15 +43,20 @@ export const listenToForegroundMessages = async (
  * - 서비스워커(`/firebase-messaging-sw.js`)에는 이 config와 동일한 값을 하드코딩해뒀다
  *   (서비스워커는 정적 파일이라 번들러의 env 치환이 적용되지 않는다. Firebase config 값은
  *   비공개 값이 아니라 클라이언트 번들에 그대로 노출되는 값이라 하드코딩해도 안전하다).
+ * - requestPermission=false면 권한 팝업을 띄우지 않고, 이미 허용된 경우에만 토큰을 조회한다(로그아웃 등).
  */
-export const getWebDeviceToken = async (): Promise<string | null> => {
+export const getWebDeviceToken = async ({
+  requestPermission = true,
+}: { requestPermission?: boolean } = {}): Promise<string | null> => {
   if (typeof window === 'undefined') return null;
 
   const supported = await isSupported().catch(() => false);
   if (!supported) return null;
 
   try {
-    const permission = await Notification.requestPermission();
+    const permission = requestPermission
+      ? await Notification.requestPermission()
+      : Notification.permission;
     if (permission !== 'granted') return null;
 
     const registration = await navigator.serviceWorker.register(
