@@ -30,6 +30,7 @@ import type {
   GetNotificationsParams,
   JoinCoupleRequest,
   KakaoAuthorizeParams,
+  LogoutRequest,
   PresignedUrlRequest,
   RegisterDeviceTokenRequest,
   RemoveEmoticonRequest,
@@ -1309,7 +1310,7 @@ export const useRemoveEmoticon = <
 };
 
 /**
- * FCM 토큰을 등록합니다. 로그인 직후와 앱 실행 시마다 호출하면 되며 멱등합니다. 삭제 API는 없으며 로그아웃 시 자동으로 전부 삭제됩니다.
+ * FCM 토큰을 등록합니다. 로그인 직후와 앱 실행 시마다 호출하면 되며 멱등합니다. 별도 삭제 API는 없습니다. 로그아웃 요청 본문에 deviceToken 을 보내면 그 기기의 토큰만, 보내지 않으면 사용자의 토큰이 전부 삭제됩니다. FCM 이 UNREGISTERED 로 응답한 토큰은 서버가 발송 시 자동으로 정리합니다.
  * @summary 디바이스 토큰 등록
  */
 export const registerDeviceToken = (
@@ -1853,11 +1854,22 @@ export const useRefreshInvite = <
 };
 
 /**
- * 현재 로그인된 사용자의 세션을 종료합니다.
+ * 현재 로그인된 사용자의 세션(리프레시 토큰, 인증 쿠키)을 종료하고 푸시 디바이스 토큰을 삭제합니다.
+
+- 요청 본문은 **선택**입니다.
+- `deviceToken` 을 보내면 **이 기기의 토큰만** 삭제합니다. 같은 계정의 다른 기기는 계속 푸시를 받습니다.
+- 본문을 생략하거나 `deviceToken` 이 null·빈 문자열이면 사용자의 디바이스 토큰을 **전부** 삭제합니다(기존 동작).
+- 본문을 보낼 때는 `Content-Type: application/json` 을 사용하세요.
  * @summary 로그아웃
  */
-export const logout = (signal?: AbortSignal) => {
-  return customFetcher<void>({ url: `/auth/logout`, method: 'POST', signal });
+export const logout = (logoutRequest: LogoutRequest, signal?: AbortSignal) => {
+  return customFetcher<void>({
+    url: `/auth/logout`,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    data: logoutRequest,
+    signal,
+  });
 };
 
 export const getLogoutMutationOptions = <
@@ -1867,10 +1879,15 @@ export const getLogoutMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof logout>>,
     TError,
-    void,
+    { data: LogoutRequest },
     TContext
   >;
-}): UseMutationOptions<Awaited<ReturnType<typeof logout>>, TError, void, TContext> => {
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof logout>>,
+  TError,
+  { data: LogoutRequest },
+  TContext
+> => {
   const mutationKey = ['logout'];
   const { mutation: mutationOptions } = options
     ? options.mutation &&
@@ -1880,15 +1897,20 @@ export const getLogoutMutationOptions = <
       : { ...options, mutation: { ...options.mutation, mutationKey } }
     : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<Awaited<ReturnType<typeof logout>>, void> = () => {
-    return logout();
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof logout>>,
+    { data: LogoutRequest }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return logout(data);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
 export type LogoutMutationResult = NonNullable<Awaited<ReturnType<typeof logout>>>;
-
+export type LogoutMutationBody = LogoutRequest;
 export type LogoutMutationError = ApiResponseErrorDetail;
 
 /**
@@ -1898,10 +1920,15 @@ export const useLogout = <TError = ApiResponseErrorDetail, TContext = unknown>(o
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof logout>>,
     TError,
-    void,
+    { data: LogoutRequest },
     TContext
   >;
-}): UseMutationResult<Awaited<ReturnType<typeof logout>>, TError, void, TContext> => {
+}): UseMutationResult<
+  Awaited<ReturnType<typeof logout>>,
+  TError,
+  { data: LogoutRequest },
+  TContext
+> => {
   const mutationOptions = getLogoutMutationOptions(options);
 
   return useMutation(mutationOptions);
@@ -4844,8 +4871,8 @@ export const getGetCommentsResponseMock = (
           })),
           undefined,
         ]),
-        isEdited: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
         isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        isEdited: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
       }),
     ),
     undefined,
