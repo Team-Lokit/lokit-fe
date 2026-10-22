@@ -33,6 +33,11 @@ export const metadata: Metadata = {
 
 const enableMocking = process.env.NEXT_PUBLIC_ENABLE_MOCK === 'true';
 
+// 첫 API 요청 전에 API 서버와 TCP/TLS 핸드셰이크를 미리 맺어둔다.
+// API 호출이 credentials: 'include'라 같은 커넥션 풀을 쓰도록 use-credentials로 맞춘다.
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const apiOrigin = apiBaseUrl?.startsWith('http') ? new URL(apiBaseUrl).origin : null;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -43,6 +48,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        {apiOrigin && (
+          <link rel="preconnect" href={apiOrigin} crossOrigin="use-credentials" />
+        )}
         <GtmScript />
         <Script
           src="https://developers.kakao.com/sdk/js/kakao.js"
