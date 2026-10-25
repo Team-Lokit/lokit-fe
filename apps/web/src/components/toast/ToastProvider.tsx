@@ -9,6 +9,7 @@ interface ToastContextValue {
     duration?: number,
     variant?: 'default' | 'info' | 'warn' | 'success',
     action?: ToastAction,
+    description?: string,
   ) => void;
 }
 
@@ -35,10 +36,11 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
       duration = TOAST_DURATION,
       variant?: 'default' | 'info' | 'warn' | 'success',
       action?: ToastAction,
+      description?: string,
     ) => {
       const id = `${Date.now()}-${Math.random()}`;
 
-      setToasts((prev) => [...prev, { id, message, variant, action }]);
+      setToasts((prev) => [...prev, { id, message, description, variant, action }]);
 
       // 퇴장 애니메이션 시작
       setTimeout(() => {

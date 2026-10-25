@@ -15,6 +15,8 @@ export interface ToastAction {
 export interface ToastMessage {
   id: string;
   message: string;
+  /** message 아래 두 번째 줄 (예: 푸시 알림 body) */
+  description?: string;
   variant?: 'default' | 'info' | 'warn' | 'success';
   isExiting?: boolean;
   action?: ToastAction;
@@ -61,7 +63,12 @@ const Toast = ({ toasts, onDismiss }: ToastProps) => {
           {toast.variant && toast.variant !== 'default' && (
             <S.ToastIcon>{getIcon(toast.variant)}</S.ToastIcon>
           )}
-          <S.ToastText>{toast.message}</S.ToastText>
+          <S.ToastContent>
+            <S.ToastText>{toast.message}</S.ToastText>
+            {toast.description && (
+              <S.ToastDescription>{toast.description}</S.ToastDescription>
+            )}
+          </S.ToastContent>
           {toast.action && (
             <S.ToastAction
               type="button"

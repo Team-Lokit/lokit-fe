@@ -59,12 +59,24 @@ export const ToastIcon = styled.div`
   flex-shrink: 0;
 `;
 
+export const ToastContent = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+`;
+
 export const ToastText = styled.span`
   ${({ theme }) => theme.typography.body14Semibold};
-  flex: 1;
   color: ${({ theme }) => theme.colors.grayScale[0]};
   opacity: 0.9;
   white-space: nowrap;
+`;
+
+export const ToastDescription = styled.span`
+  ${({ theme }) => theme.typography.body14Regular};
+  color: ${({ theme }) => theme.colors.grayScale[300]};
 `;
 
 export const ToastAction = styled.button`
