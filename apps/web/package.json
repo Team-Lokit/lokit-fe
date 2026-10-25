@@ -11,6 +11,7 @@
     "lint": "eslint . --ext .ts,.tsx,js,jsx",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "chromatic": "chromatic --project-token=$CHROMATIC_PROJECT_TOKEN"

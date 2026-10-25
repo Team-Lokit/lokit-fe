@@ -8,6 +8,8 @@ export default defineConfig({
     baseURL: 'http://localhost:3000',
     headless: true,
     screenshot: 'only-on-failure',
+    permissions: ['geolocation'],
+    geolocation: { latitude: 37.5665, longitude: 126.978 },
   },
   retries: 1,
   workers: 1,
