@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import Toast, { ToastAction, ToastMessage } from './Toast';
+import Toast, { ToastAction, ToastMessage, ToastOptions } from './Toast';
 
 interface ToastContextValue {
   showToast: (
@@ -9,7 +9,7 @@ interface ToastContextValue {
     duration?: number,
     variant?: 'default' | 'info' | 'warn' | 'success',
     action?: ToastAction,
-    description?: string,
+    options?: ToastOptions,
   ) => void;
 }
 
@@ -36,11 +36,11 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
       duration = TOAST_DURATION,
       variant?: 'default' | 'info' | 'warn' | 'success',
       action?: ToastAction,
-      description?: string,
+      options?: ToastOptions,
     ) => {
       const id = `${Date.now()}-${Math.random()}`;
 
-      setToasts((prev) => [...prev, { id, message, description, variant, action }]);
+      setToasts((prev) => [...prev, { id, message, variant, action, ...options }]);
 
       // 퇴장 애니메이션 시작
       setTimeout(() => {

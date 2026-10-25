@@ -38,6 +38,7 @@ export const ToastContainer = styled.div`
 
 export const ToastItem = styled.div<{
   isExiting?: boolean;
+  isClickable?: boolean;
 }>`
   display: flex;
   align-items: center;
@@ -48,6 +49,7 @@ export const ToastItem = styled.div<{
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
   animation: ${({ isExiting }) => (isExiting ? slideDown : slideUp)} 0.3s ease;
   pointer-events: auto;
+  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
 
   background: ${({ theme }) => theme.colors.grayScale[900]};
 `;

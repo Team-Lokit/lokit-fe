@@ -105,13 +105,10 @@ const DescriptionToastTrigger = () => {
     <Button
       text="토스트 보기"
       onClick={() =>
-        showToast(
-          '새로운 반응',
-          undefined,
-          undefined,
-          undefined,
-          'OO님이 내 댓글에 😍 반응을 남겼어요.',
-        )
+        showToast('새로운 반응', undefined, undefined, undefined, {
+          description: 'OO님이 내 댓글에 😍 반응을 남겼어요.',
+          onClick: () => showToast('토스트를 눌렀어요.'),
+        })
       }
     />
   );
