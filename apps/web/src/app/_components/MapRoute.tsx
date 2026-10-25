@@ -309,7 +309,7 @@ export default function MapRoute() {
     });
     setViewContext({ type: VIEW_CONTEXT_TYPE.ALBUM_DETAIL, albumId });
     setIsSidebarOpen(false);
-    router.push(`/album/${albumId}`);
+    router.push(`/album/${albumId}?${searchParams.toString()}`);
   };
 
   const handleRenameAlbum = (albumId: number) => {

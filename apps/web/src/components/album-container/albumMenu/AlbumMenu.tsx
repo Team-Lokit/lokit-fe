@@ -47,7 +47,7 @@ const AlbumMenu = ({ onRename, onDelete, triggerElement }: AlbumMenuProps) => {
   return (
     <S.Wrapper ref={wrapperRef} onClick={handleToggle}>
       {triggerElement ?? (
-        <S.Button>
+        <S.Button type="button" aria-label="앨범 메뉴">
           <MenuIcon width={16} height={16} />
         </S.Button>
       )}
