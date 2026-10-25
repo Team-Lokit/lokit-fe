@@ -11,7 +11,7 @@ export default defineConfig({
     permissions: ['geolocation'],
     geolocation: { latitude: 37.5665, longitude: 126.978 },
   },
-  retries: 1,
+  retries: 0,
   workers: 1,
   webServer: {
     command: 'pnpm dev:mock',
