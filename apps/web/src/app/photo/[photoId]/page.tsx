@@ -26,6 +26,7 @@ const VALID_SOURCES: readonly PhotoDetailSource[] = [
 ];
 import {
   useLongPress,
+  useMarkPushNotificationAsRead,
   usePhotoData,
   usePhotoDelete,
   usePhotoEdit,
@@ -46,6 +47,8 @@ export default function PhotoViewPage() {
     ? Number(searchParams.get('albumId'))
     : undefined;
   const clusterIdFromQuery = searchParams.get('clusterId') || undefined;
+
+  useMarkPushNotificationAsRead();
 
   // --- Pending photo ---
   const {
