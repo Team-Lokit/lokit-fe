@@ -7,7 +7,7 @@ import { buildBridgeInjection } from './bridge/injection';
 import useBridgeHandler from './bridge/useBridgeHandler';
 import useAppLifecycleTracking from './useAppLifecycleTracking';
 import useDeepLinkHandling from './useDeepLinkHandling';
-import { getMessaging, onMessage } from '@react-native-firebase/messaging';
+import usePushNotificationHandling from './usePushNotificationHandling';
 
 /** 개발 환경에서 디버깅 콘솔 추가 */
 const erudaScript = `
@@ -42,6 +42,7 @@ function AppContent() {
   const webViewRef = useRef<WebView>(null);
   const { onWebViewLoad } = useAppLifecycleTracking(webViewRef);
   const { initialUrl } = useDeepLinkHandling(webViewRef);
+  const { initialPushUrl } = usePushNotificationHandling(webViewRef, defaultUrl);
   const onBridgeMessage = useBridgeHandler(webViewRef);
   const splashHiddenRef = useRef(false);
 
@@ -60,27 +61,6 @@ function AppContent() {
     onWebViewLoad();
     hideSplash();
   };
-
-  useEffect(() => {
-    const messagingInstance = getMessaging();
-
-    // 포그라운드 알림 수신
-    const unsubscribe = onMessage(messagingInstance, async remoteMessage => {
-      if (webViewRef.current) {
-        // 객체를 반드시 JSON 문자열로 변환하여 전송해야 합니다 (postMessage 표준 스펙)
-        const payload = {
-          type: 'FCM_FOREGROUND_NOTIFICATION',
-          title: remoteMessage.notification?.title || '',
-          body: remoteMessage.notification?.body || '',
-          url: remoteMessage.data?.url,
-        };
-
-        webViewRef.current.postMessage(JSON.stringify(payload));
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const onShouldStartLoadWithRequest = (request: {
     url: string;
@@ -105,13 +85,13 @@ function AppContent() {
     return false;
   };
 
-  // Linking이 resolve되기 전에는 WebView를 띄우지 않음(스플래시가 가려줌).
+  // Linking / 초기 알림이 resolve되기 전에는 WebView를 띄우지 않음(스플래시가 가려줌).
   // 콜드 스타트 딥링크는 buildBridgeInjection에서 페이지 로드 전 주입돼야 정확하다.
-  if (initialUrl === null) {
+  if (initialUrl === null || initialPushUrl === null) {
     return <View style={styles.content} />;
   }
 
-  const webUrl = initialUrl ?? defaultUrl;
+  const webUrl = initialUrl ?? initialPushUrl ?? defaultUrl;
   // RN의 URL 폴리필은 hostname을 지원하지 않아 정규식으로 호스트 판별
   const isDev = /^https?:\/\/(develop|local)\.lokit\.co\.kr(?=[:/?#]|$)/.test(webUrl);
 
