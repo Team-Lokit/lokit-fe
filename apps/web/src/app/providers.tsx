@@ -14,6 +14,7 @@ import { ToastProvider } from '@/components/toast';
 import { PhotoProvider } from './photo/_contexts/PhotoContext';
 import { PendingPhotosProvider } from '@/stores/pendingPhotos/PendingPhotosContext';
 import { useInitAnalytics } from '@/hooks/analytics/useInitAnalytics';
+import { usePushClickNavigation } from '@/hooks/usePushClickNavigation';
 
 export type AppProvidersProps = PropsWithChildren<{
   showDevtools?: boolean;
@@ -53,6 +54,7 @@ export function AppProviders({
   }, []);
 
   useInitAnalytics();
+  usePushClickNavigation();
 
   // Kakao SDK 초기화
   useEffect(() => {
