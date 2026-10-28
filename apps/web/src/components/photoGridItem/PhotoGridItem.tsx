@@ -30,11 +30,15 @@ const PhotoGridItem = ({
   const day = dateObj?.getDate();
   const month = dateObj ? dateObj.getMonth() + 1 : null;
 
+  const ariaLabel = dateObj
+    ? `${dateObj.getFullYear()}년 ${month}월 ${day}일 사진`
+    : '사진';
+
   const showFallback = hasError || !src;
   const showProgress = progress !== undefined && !uploadError;
 
   return (
-    <S.Container type="button" onClick={onClick}>
+    <S.Container type="button" onClick={onClick} aria-label={ariaLabel}>
       {showFallback ? (
         <S.Fallback>{alt}</S.Fallback>
       ) : (

@@ -1,14 +1,15 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { getGetClusterPhotosQueryOptions, useGetMyPage } from '@repo/api-client';
 import MapView from '@/components/map/MapView';
 import Sidebar from '@/components/sidebar/Sidebar';
 import ViewSwitcher, {
+  isViewType,
   VIEW_TYPE,
-  type ViewType,
+  VIEW_TYPE_PARAM,
 } from '@/components/viewSwitcher/ViewSwitcher';
 import PhotoGridContainer from '@/components/photoGridContainer/PhotoGridContainer';
 import PhotoGridItem from '@/components/photoGridItem/PhotoGridItem';
@@ -58,7 +59,9 @@ export default function MapRoute() {
 
   // 사이드바 상태
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeView, setActiveView] = useState<ViewType>(VIEW_TYPE.MAP);
+  const searchParams = useSearchParams();
+  const viewTypeParam = searchParams.get(VIEW_TYPE_PARAM);
+  const activeView = isViewType(viewTypeParam) ? viewTypeParam : VIEW_TYPE.MAP;
 
   // 사용자 프로필 데이터
   const { data: myPageData } = useGetMyPage();
@@ -306,7 +309,7 @@ export default function MapRoute() {
     });
     setViewContext({ type: VIEW_CONTEXT_TYPE.ALBUM_DETAIL, albumId });
     setIsSidebarOpen(false);
-    router.push(`/album/${albumId}`);
+    router.push(`/album/${albumId}?${searchParams.toString()}`);
   };
 
   const handleRenameAlbum = (albumId: number) => {
@@ -463,7 +466,9 @@ export default function MapRoute() {
                 to_mode: view,
               });
             }
-            setActiveView(view);
+            const params = new URLSearchParams(searchParams.toString());
+            params.set(VIEW_TYPE_PARAM, view);
+            router.replace(`?${params.toString()}`, { scroll: false });
           }}
         />
       </S.ViewSwitcherWrapper>
