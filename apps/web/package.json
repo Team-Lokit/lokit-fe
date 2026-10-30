@@ -9,6 +9,7 @@
     "build": "next build",
     "analyze": "ANALYZE=true next build",
     "start": "next start",
+    "start:https": "node scripts/start-https.mjs",
     "lint": "eslint . --ext .ts,.tsx,js,jsx",
     "test": "vitest run",
     "test:watch": "vitest",
