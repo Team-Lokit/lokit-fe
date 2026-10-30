@@ -2014,7 +2014,7 @@ export const useCreate1 = <
 };
 
 /**
- * 파트너 유저 1명을 생성(또는 재사용)하고 파트너 JWT를 발급합니다.
+ * 파트너 유저 1명을 생성(또는 재사용)하고 호출자와 커플 연결까지 완료한 뒤 파트너 JWT를 발급합니다. 초대 코드 입력이 필요 없으며, 호출자의 커플 상태 쿠키도 함께 갱신됩니다. 이미 이 파트너와 연결돼 있으면 연결은 그대로 두고 토큰만 재발급합니다.
  * @summary 개발용 커플 테스트 파트너 생성
  */
 export const createCouplePartner = (signal?: AbortSignal) => {
@@ -4871,8 +4871,8 @@ export const getGetCommentsResponseMock = (
           })),
           undefined,
         ]),
-        isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
         isEdited: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+        isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
       }),
     ),
     undefined,

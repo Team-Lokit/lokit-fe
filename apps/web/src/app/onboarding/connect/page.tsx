@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { getMyStatus, saveCoupleStatusCookie } from '@repo/api-client';
 import Button from '@/components/buttons/button/Button';
 import OnboardingHeader from '../_components/OnboardingHeader/OnboardingHeader';
+import QaSkipCoupleButton from '../_components/QaSkipCoupleButton/QaSkipCoupleButton';
 import { useInviteCode } from '../_hooks/useInviteCode';
 import { useOnboardingContext } from '../_contexts/OnboardingContext';
 import { useToast } from '@/components/toast';
@@ -164,6 +165,7 @@ export default function ConnectPage() {
       </S.Content>
 
       <S.ButtonGroup>
+        <QaSkipCoupleButton />
         <S.SignOutButton onClick={() => router.push(ROUTES.SIGNOUT)}>
           회원탈퇴 하기
         </S.SignOutButton>
