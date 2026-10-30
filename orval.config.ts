@@ -8,7 +8,8 @@ export default defineConfig({
       schemas: './packages/api-client/src/model',
       mock: true,
       client: 'react-query',
-      mode: 'single',
+      // mock(faker, msw)을 generated.msw.ts로 분리해 앱 번들에 섞이지 않게 한다.
+      mode: 'split',
       override: {
         mutator: {
           path: './packages/api-client/src/customFetcher.ts',

@@ -1,4 +1,4 @@
-import { getLokitAPIMock } from '@repo/api-client';
+import { getLokitAPIMock } from '@repo/api-client/src/generated.msw';
 import { customHandlers } from './handlers/index';
 
 // customHandlers에서 오버라이드하는 엔드포인트 제외

@@ -275,19 +275,19 @@ importers:
 
   packages/api-client:
     dependencies:
-      '@faker-js/faker':
-        specifier: ^8.4.1
-        version: 8.4.1
       '@repo/sentry':
         specifier: workspace:*
         version: link:../sentry
       '@tanstack/react-query':
         specifier: ^5.0.0
         version: 5.90.12(react@19.2.3)
+    devDependencies:
+      '@faker-js/faker':
+        specifier: ^8.4.1
+        version: 8.4.1
       msw:
         specifier: ^2.7.0
         version: 2.12.4(@types/node@25.5.2)(typescript@5.9.3)
-    devDependencies:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
