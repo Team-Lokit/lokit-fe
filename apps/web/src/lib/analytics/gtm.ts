@@ -1,4 +1,5 @@
 import type { EventName, EventParams } from './events';
+import { isAnalyticsEnabled } from './enabled';
 
 declare global {
   interface Window {
@@ -6,17 +7,15 @@ declare global {
   }
 }
 
-const isBrowser = () => typeof window !== 'undefined';
-
 export const gtmId = (): string | undefined => process.env.NEXT_PUBLIC_GTM_ID;
 
 export function ensureDataLayer() {
-  if (!isBrowser()) return;
+  if (!isAnalyticsEnabled()) return;
   window.dataLayer = window.dataLayer || [];
 }
 
 export function gtmTrack<E extends EventName>(event: E, params: EventParams<E> | null) {
-  if (!isBrowser()) return;
+  if (!isAnalyticsEnabled()) return;
   ensureDataLayer();
   window.dataLayer!.push({
     event,
@@ -25,7 +24,7 @@ export function gtmTrack<E extends EventName>(event: E, params: EventParams<E> |
 }
 
 export function gtmSetUserProperties(props: Record<string, unknown>) {
-  if (!isBrowser()) return;
+  if (!isAnalyticsEnabled()) return;
   ensureDataLayer();
   window.dataLayer!.push({
     event: 'set_user_properties',

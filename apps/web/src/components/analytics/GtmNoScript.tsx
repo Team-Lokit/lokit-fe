@@ -3,7 +3,8 @@
 
 export default function GtmNoScript() {
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
-  if (!gtmId) return null;
+  // noscript는 서버 렌더라 호스트를 알 수 없어 빌드 env로 판단
+  if (!gtmId || process.env.NEXT_PUBLIC_APP_ENV !== 'production') return null;
 
   return (
     <noscript>

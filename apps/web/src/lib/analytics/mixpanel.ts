@@ -1,7 +1,6 @@
 import mixpanel from 'mixpanel-browser';
 import type { EventName, EventParams } from './events';
-
-const isBrowser = () => typeof window !== 'undefined';
+import { isAnalyticsEnabled } from './enabled';
 
 let initialized = false;
 
@@ -9,7 +8,7 @@ export const mixpanelToken = (): string | undefined =>
   process.env.NEXT_PUBLIC_MIXPANEL_TOKEN;
 
 export function mixpanelInit() {
-  if (!isBrowser() || initialized) return;
+  if (!isAnalyticsEnabled() || initialized) return;
   const token = mixpanelToken();
   if (!token) return;
 

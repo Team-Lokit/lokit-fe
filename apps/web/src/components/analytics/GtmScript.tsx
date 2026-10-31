@@ -1,8 +1,17 @@
+'use client';
+
+import { useSyncExternalStore } from 'react';
 import Script from 'next/script';
+import { isAnalyticsEnabled } from '@/lib/analytics/enabled';
+
+const subscribe = () => () => {};
+// 서버에서는 렌더하지 않고, 하이드레이션 후 접속 도메인이 프로덕션일 때만 로드한다.
+const getServerSnapshot = () => false;
 
 export default function GtmScript() {
+  const enabled = useSyncExternalStore(subscribe, isAnalyticsEnabled, getServerSnapshot);
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
-  if (!gtmId) return null;
+  if (!gtmId || !enabled) return null;
 
   return (
     <Script
