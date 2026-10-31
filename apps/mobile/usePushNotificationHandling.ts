@@ -6,12 +6,12 @@ import {
   onMessage,
   onNotificationOpenedApp,
 } from '@react-native-firebase/messaging';
+import { getPushTargetPath } from '@repo/webview-bridge';
 import {
   displayForegroundNotification,
   getInitialForegroundNotificationUrl,
   onForegroundNotificationPress,
 } from './pushNotification/foregroundNotification';
-import { getPushTargetPath } from './pushNotification/getPushTargetPath';
 
 /**
  * 푸시 알림 표시/탭 처리.

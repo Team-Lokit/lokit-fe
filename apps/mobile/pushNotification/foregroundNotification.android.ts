@@ -1,6 +1,6 @@
 import notifee, { AndroidImportance, EventType, type Event } from '@notifee/react-native';
 import type { RemoteMessage } from '@react-native-firebase/messaging';
-import { getPushTargetPath } from './getPushTargetPath';
+import { getPushTargetPath } from '@repo/webview-bridge';
 
 /**
  * Android는 앱이 포그라운드일 때 온 FCM notification 메시지를 OS가 띄워주지 않아서

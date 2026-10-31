@@ -18,7 +18,8 @@ self.registration.showNotification = (title, options = {}) =>
   originalShowNotification(title, { icon: NOTIFICATION_ICON, ...options });
 
 // 알림 탭 시 사진 상세로 이동 + 읽음 처리(notifId).
-// 앱(apps/mobile/pushNotification/getPushTargetPath.ts)과 같은 규칙이라 바꿀 때 같이 맞춘다.
+// 서비스워커는 패키지를 import할 수 없어 packages/webview-bridge/src/utils/getPushTargetPath.ts와
+// 같은 규칙을 따로 둔다. 바꿀 때 같이 맞춘다.
 const getPushTargetPath = (data) => {
   const { photoId, notifId } = data ?? {};
   if (typeof photoId !== 'string' || !/^\d+$/.test(photoId)) return undefined;

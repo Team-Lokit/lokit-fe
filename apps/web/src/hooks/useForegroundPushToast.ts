@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/toast';
 import { listenToForegroundMessages } from '@/lib/firebase/messaging';
 import { checkIsInWebView } from '@/utils/environment';
-import { getPushTargetPath } from '@/utils/getPushTargetPath';
+import { getPushTargetPath } from '@repo/webview-bridge';
 
 // OS 알림 배너처럼 눌러서 이동할 수 있도록 기본(3초)보다 조금 길게 보여준다
 const PUSH_TOAST_DURATION = 5000;
