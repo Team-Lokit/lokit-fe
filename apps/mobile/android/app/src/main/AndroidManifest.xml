@@ -42,5 +42,13 @@
       android:name="com.google.firebase.messaging.default_notification_channel_id"
       android:value="@string/default_notification_channel_id"
       tools:replace="android:value" />
+    <!-- 백그라운드/종료 상태에서 OS가 자동으로 띄우는 FCM 알림의 small icon / 강조색 -->
+    <meta-data
+      android:name="com.google.firebase.messaging.default_notification_icon"
+      android:resource="@drawable/ic_notification" />
+    <meta-data
+      android:name="com.google.firebase.messaging.default_notification_color"
+      android:resource="@color/notification_color"
+      tools:replace="android:resource" />
   </application>
 </manifest>
