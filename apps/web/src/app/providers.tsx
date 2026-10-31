@@ -14,12 +14,19 @@ import { ToastProvider } from '@/components/toast';
 import { PhotoProvider } from './photo/_contexts/PhotoContext';
 import { PendingPhotosProvider } from '@/stores/pendingPhotos/PendingPhotosContext';
 import { useInitAnalytics } from '@/hooks/analytics/useInitAnalytics';
+import { useForegroundPushToast } from '@/hooks/useForegroundPushToast';
 import { usePushClickNavigation } from '@/hooks/usePushClickNavigation';
 
 export type AppProvidersProps = PropsWithChildren<{
   showDevtools?: boolean;
   enableMocking?: boolean;
 }>;
+
+// useToast를 쓰는 훅이라 ToastProvider 안에서 실행한다
+function ForegroundPushToastListener() {
+  useForegroundPushToast();
+  return null;
+}
 
 export function AppProviders({
   children,
@@ -82,6 +89,7 @@ export function AppProviders({
         <QueryClientProvider client={queryClient}>
           <PhotoProvider>
             <ToastProvider>
+              <ForegroundPushToastListener />
               <PendingPhotosProvider>{children}</PendingPhotosProvider>
             </ToastProvider>
           </PhotoProvider>
