@@ -1,9 +1,8 @@
 import type { EventName, EventParams, UserProperties } from './events';
 import { gtmTrack } from './gtm';
+import { isAnalyticsEnabled } from './enabled';
 import { mixpanelTrack, mixpanelIdentify, mixpanelReset, mixpanelInit } from './mixpanel';
 import { setSuperProperties, clearSuperProperties } from './superProperties';
-
-const isDev = process.env.NODE_ENV !== 'production';
 
 /**
  * 단일 진입점. GTM(dataLayer) + Mixpanel 양쪽으로 fan-out.
@@ -12,7 +11,7 @@ const isDev = process.env.NODE_ENV !== 'production';
  * track('login_success', { is_new_user: true, login_method: 'kakao' });
  */
 export function track<E extends EventName>(event: E, params: EventParams<E> | null) {
-  if (isDev && typeof window !== 'undefined') {
+  if (!isAnalyticsEnabled()) {
     console.debug('[analytics]', event, params);
     return;
   }
