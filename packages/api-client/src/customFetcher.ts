@@ -195,7 +195,13 @@ export async function customFetcher<TResponse>(
   const urlWithPath = buildUrlWithPathParams(baseTargetUrl, config.pathParams);
   const targetUrl = buildUrlWithQueryParams(urlWithPath, config.params);
   const body = config.body ?? config.data;
-  const headers = mergeHeaders(DEFAULT_HEADERS, config.headers, options.headers);
+  // body 없는 요청에 Content-Type: application/json을 붙이면 CORS preflight(OPTIONS)가 발생한다.
+  // preflight는 쿠키 없이 별도 커넥션으로 나가 왕복이 추가되므로 body가 있을 때만 붙인다.
+  const headers = mergeHeaders(
+    body ? DEFAULT_HEADERS : undefined,
+    config.headers,
+    options.headers,
+  );
 
   // Authorization 헤더 설정 (authHeaderProvider 사용)
   if (!headers.has('Authorization')) {

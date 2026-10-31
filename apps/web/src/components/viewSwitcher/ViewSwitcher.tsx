@@ -4,12 +4,17 @@ import MapPinIcon from '@/assets/images/mapPin.svg';
 import GridIcon from '@/assets/images/grid.svg';
 import * as S from './ViewSwitcher.styles';
 
+export const VIEW_TYPE_PARAM = 'viewType';
+
 export const VIEW_TYPE = {
   MAP: 'map',
   GRID: 'grid',
 } as const;
 
 export type ViewType = (typeof VIEW_TYPE)[keyof typeof VIEW_TYPE];
+
+export const isViewType = (value: string | null): value is ViewType =>
+  Object.values(VIEW_TYPE).includes(value as ViewType);
 
 interface ViewSwitcherProps {
   activeView: ViewType;

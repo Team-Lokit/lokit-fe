@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig(async () => {
@@ -10,6 +10,7 @@ export default defineConfig(async () => {
       globals: true,
       environment: 'jsdom',
       setupFiles: './src/tests/setupTests.ts',
+      exclude: [...configDefaults.exclude, 'e2e/**'],
       css: true,
       coverage: {
         reporter: ['text', 'lcov'],

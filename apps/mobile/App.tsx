@@ -8,6 +8,7 @@ import useBridgeHandler from './bridge/useBridgeHandler';
 import useAppLifecycleTracking from './useAppLifecycleTracking';
 import useDeepLinkHandling from './useDeepLinkHandling';
 import usePushNotificationHandling from './usePushNotificationHandling';
+import { isDevUrl } from '@repo/webview-bridge';
 
 /** 개발 환경에서 디버깅 콘솔 추가 */
 const erudaScript = `
@@ -92,8 +93,7 @@ function AppContent() {
   }
 
   const webUrl = initialUrl ?? initialPushUrl ?? defaultUrl;
-  // RN의 URL 폴리필은 hostname을 지원하지 않아 정규식으로 호스트 판별
-  const isDev = /^https?:\/\/(develop|local)\.lokit\.co\.kr(?=[:/?#]|$)/.test(webUrl);
+  const isDev = isDevUrl(webUrl);
 
   return (
     <View style={styles.content}>
