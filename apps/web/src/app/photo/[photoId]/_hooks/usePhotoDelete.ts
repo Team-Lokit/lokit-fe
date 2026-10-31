@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   useDelete,
@@ -11,6 +10,7 @@ import {
   type PhotoListResponse,
 } from '@repo/api-client';
 import { useToast } from '@/components/toast/ToastProvider';
+import { useGoBackOrHome } from '@/hooks/useGoBackOrHome';
 
 interface ConfirmDeleteParams {
   photoId: number;
@@ -19,7 +19,7 @@ interface ConfirmDeleteParams {
 }
 
 const usePhotoDelete = () => {
-  const router = useRouter();
+  const goBackOrHome = useGoBackOrHome();
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -83,7 +83,7 @@ const usePhotoDelete = () => {
     // 낙관적 업데이트: 삭제 완료를 기다리지 않고 즉시 이동
     showToast('사진이 삭제되었습니다');
     closeDeleteModal();
-    router.back();
+    goBackOrHome();
 
     try {
       await deletePhotoAsync({ id: photoId });
