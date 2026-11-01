@@ -15,6 +15,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useTrackPage } from '@/hooks/analytics/useTrackPage';
+import { useGoBackOrHome } from '@/hooks/useGoBackOrHome';
 import type { PhotoDetailSource } from '@/lib/analytics/events';
 import DeleteConfirmModal from './_components/DeleteConfirmModal';
 import PhotoEditOverlay from './_components/PhotoEditOverlay';
@@ -26,6 +27,7 @@ const VALID_SOURCES: readonly PhotoDetailSource[] = [
 ];
 import {
   useLongPress,
+  useMarkPushNotificationAsRead,
   usePhotoData,
   usePhotoDelete,
   usePhotoEdit,
@@ -40,12 +42,15 @@ export default function PhotoViewPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
+  const goBackOrHome = useGoBackOrHome();
 
   const photoId = Number(params.photoId);
   const albumIdFromQuery = searchParams.get('albumId')
     ? Number(searchParams.get('albumId'))
     : undefined;
   const clusterIdFromQuery = searchParams.get('clusterId') || undefined;
+
+  useMarkPushNotificationAsRead();
 
   // --- Pending photo ---
   const {
@@ -171,7 +176,7 @@ export default function PhotoViewPage() {
     if (activePendingId) {
       setActivePendingId(null);
     }
-    router.back();
+    goBackOrHome();
   };
 
   const handleCancelUpload = () => {

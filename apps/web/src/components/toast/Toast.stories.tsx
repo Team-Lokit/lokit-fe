@@ -97,3 +97,27 @@ export const WithUndoAction: Story = {
     </div>
   ),
 };
+
+const DescriptionToastTrigger = () => {
+  const { showToast } = useToast();
+
+  return (
+    <Button
+      text="토스트 보기"
+      onClick={() =>
+        showToast('새로운 반응', undefined, undefined, undefined, {
+          description: 'OO님이 내 댓글에 😍 반응을 남겼어요.',
+          onClick: () => showToast('토스트를 눌렀어요.'),
+        })
+      }
+    />
+  );
+};
+
+export const WithDescription: Story = {
+  render: () => (
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <DescriptionToastTrigger />
+    </div>
+  ),
+};
