@@ -8,7 +8,7 @@ export default function useDeepLinkHandling(webViewRef: React.RefObject<WebView 
   const [initialUrl, setInitialUrl] = useState<string | null | undefined>(null);
 
   useEffect(() => {
-    Linking.getInitialURL().then((url) => {
+    Linking.getInitialURL().then(url => {
       setInitialUrl(url ?? undefined);
     });
 

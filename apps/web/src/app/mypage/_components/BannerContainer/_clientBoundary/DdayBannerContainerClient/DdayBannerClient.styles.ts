@@ -9,9 +9,7 @@ export const Wrapper = styled.div`
   overflow: hidden;
   padding: 16px 20px;
   border-radius: 16px;
-  border: 1px solid rgba(226, 230, 255, 0.1);
-  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg5};
-  backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
   cursor: pointer;
 `;
 

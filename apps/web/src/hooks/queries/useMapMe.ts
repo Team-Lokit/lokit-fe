@@ -1,6 +1,10 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { getMapMe, getGetMapMeQueryKey } from '@repo/api-client';
-import type { ClusterResponse, MapPhotoResponse } from '@repo/api-client';
+import { getGetMapMeV11QueryKey, getMapMeV11 } from '@repo/api-client';
+import type {
+  ClusterResponse,
+  GetMapMeV11Params,
+  MapPhotoResponse,
+} from '@repo/api-client';
 import { useMemo, useRef, useState, useEffect } from 'react';
 import Supercluster from 'supercluster';
 import type { MapPin } from '@/types/map.type';
@@ -14,21 +18,12 @@ import {
   type ClusterPhotoResponse,
 } from './_utils/mapClustering.calc';
 
-interface UseMapMeParams {
-  longitude?: number;
-  latitude?: number;
-  zoom: number;
-  albumId?: number | null;
-}
-
 /**
- * /map/me API를 호출하여 앨범, 사진, 클러스터 데이터를 한 번에 조회
- * - albums: useMapMeAlbums로 별도 관리됨
+ * /map/me v1.1 API를 호출하여 앨범, 사진, 클러스터 데이터를 한 번에 조회
  * - photos/clusters: 이 훅에서 mapPins로 변환
  * - 줌레벨 >= MAP_CLUSTERING_CONFIG.CLIENT_CLUSTERING_MIN_ZOOM: 클라이언트 측 Supercluster로 동적 클러스터링
  */
-export const useMapMe = ({ longitude, latitude, zoom, albumId }: UseMapMeParams) => {
-  const isValid = longitude !== undefined && latitude !== undefined;
+export const useMapMe = ({ longitude, latitude, zoom, albumId }: GetMapMeV11Params) => {
   const [lastDataVersion, setLastDataVersion] = useState<number | undefined>(undefined);
 
   // 클라이언트 측 클러스터링을 위한 bbox 계산 (longitude, latitude 기반)
@@ -55,12 +50,11 @@ export const useMapMe = ({ longitude, latitude, zoom, albumId }: UseMapMeParams)
   );
 
   const response = useQuery({
-    queryKey: getGetMapMeQueryKey(params),
+    queryKey: getGetMapMeV11QueryKey(params),
     queryFn: ({ signal }) => {
       const requestParams = lastDataVersion ? { ...params, lastDataVersion } : params;
-      return getMapMe(requestParams, signal);
+      return getMapMeV11(requestParams, signal);
     },
-    enabled: isValid,
     placeholderData: keepPreviousData,
   });
 
@@ -73,16 +67,9 @@ export const useMapMe = ({ longitude, latitude, zoom, albumId }: UseMapMeParams)
     }
   }, [response.data?.dataVersion, lastDataVersion]);
 
-  // 세션 시작 시 유저 재식별 (/map/me 응답의 userId 사용).
-  // 백엔드가 userId를 추가했지만 생성된 클라이언트 타입엔 아직 없어 캐스팅한다.
-  // orval 재생성으로 MapMeResponse.userId가 반영되면 캐스팅 제거.
-  const userId = (response.data as { userId?: number } | undefined)?.userId;
+  // 세션 시작 시 유저 재식별
+  const userId = response.data?.userId;
   useIdentifyUser(userId);
-
-  const address = useMemo(() => {
-    if (!isValid) return '';
-    return response.data?.location?.address ?? '';
-  }, [response.data?.location?.address, isValid]);
 
   // Supercluster 인스턴스 생성 (한 번만)
   const superclusterInstance = useMemo(() => {
@@ -206,15 +193,8 @@ export const useMapMe = ({ longitude, latitude, zoom, albumId }: UseMapMeParams)
   );
 
   return {
-    address,
+    response,
     mapPins,
-    totalHistoryCount: response.data?.totalHistoryCount,
-    profileImageUrl: response.data?.profileImageUrl,
-    clusters: response.data?.clusters ?? [],
-    photos: response.data?.photos ?? [],
     clusterExpansionData,
-    isLoading: response.isLoading,
-    isError: response.isError,
-    error: response.error,
   };
 };

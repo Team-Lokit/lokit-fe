@@ -5,6 +5,7 @@
   "license": "UNLICENSED",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "sideEffects": false,
   "scripts": {
     "lint": "eslint src --ext .ts",
     "build": "tsc --emitDeclarationOnly"
@@ -13,11 +14,9 @@
     "@repo/sentry": "workspace:*",
     "@tanstack/react-query": "^5.0.0"
   },
-  "dependencies": {
-    "@faker-js/faker": "^8.4.1",
-    "msw": "^2.7.0"
-  },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "msw": "^2.7.0",
     "typescript": "^5.0.0"
   }
 }

@@ -13,7 +13,7 @@ export interface CreateCommentRequest {
   /**
    * 댓글 내용
    * @minLength 0
-   * @maxLength 200
+   * @maxLength 500
    */
   content: string;
 }

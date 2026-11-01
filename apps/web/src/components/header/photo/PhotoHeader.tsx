@@ -53,6 +53,7 @@ const PhotoHeaderMain = ({
       <S.Container>
         <CircleButton
           onClick={onClickBack}
+          aria-label="뒤로가기"
           style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
         >
           <ChevronLeftIcon width={ICON_SIZE} height={ICON_SIZE} />

@@ -6,6 +6,7 @@ export const Wrapper = styled.div<{ $size: MenuSize }>`
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
+  width: max-content;
 
   padding: 8px;
 
@@ -29,6 +30,7 @@ export const Item = styled.button<{
   align-items: center;
   justify-content: flex-start;
   background: transparent;
+  white-space: nowrap;
 
   border-radius: ${({ $size }) => ($size === 'md' ? '12px' : '8px')};
 

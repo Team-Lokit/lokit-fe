@@ -14,7 +14,5 @@ export interface EmoticonSummaryResponse {
   emoji?: string;
   /** 이모지 개수 */
   count?: number;
-  /** 현재 사용자가 반응했는지 여부 */
-  reacted?: boolean;
   isEditable?: boolean;
 }

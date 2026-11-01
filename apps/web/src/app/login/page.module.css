@@ -6,7 +6,7 @@
   min-height: 100vh;
   min-height: 100svh;
   min-height: 100dvh;
-  background-color: #0f1014;
+  background-color: #000000; /* blackOpacity[100] */
 }
 
 .srOnly {

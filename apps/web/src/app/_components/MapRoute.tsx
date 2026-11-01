@@ -1,14 +1,15 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { getGetClusterPhotosQueryOptions, useGetMyPage } from '@repo/api-client';
 import MapView from '@/components/map/MapView';
 import Sidebar from '@/components/sidebar/Sidebar';
 import ViewSwitcher, {
+  isViewType,
   VIEW_TYPE,
-  type ViewType,
+  VIEW_TYPE_PARAM,
 } from '@/components/viewSwitcher/ViewSwitcher';
 import PhotoGridContainer from '@/components/photoGridContainer/PhotoGridContainer';
 import PhotoGridItem from '@/components/photoGridItem/PhotoGridItem';
@@ -29,7 +30,6 @@ import { useMapRouteViewState } from '../_hooks/useMapRouteViewState';
 import { useMapRouteViewContext } from '../_hooks/useMapRouteViewContext';
 import { useMapRouteData } from '../_hooks/useMapRouteData';
 import { usePendingPhotosViewModel } from '@/hooks/usePendingPhotosViewModel';
-import { useAlbumPhotos } from '@/hooks/queries/useAlbumPhotos';
 import {
   calculatePhotoCount,
   calculateCenterFromAlbumPhotos,
@@ -44,6 +44,8 @@ import { validateCenterCoordinate } from '../_utils/mapRoute.calc';
 import { saveClusterToSession } from '@/utils/sessionStorage';
 import { checkIsInWebView } from '@/utils/environment';
 import { useLocationPermissionModal } from '@/hooks/useLocationPermissionModal';
+import { useNotificationPermissionSync } from '@/hooks/useNotificationPermissionSync';
+import { useDeviceTokenSync } from '@/hooks/useDeviceTokenSync';
 import { usePhotoContext } from '@/app/photo/_contexts/PhotoContext';
 import { usePhotoSelect } from '@/app/photo/add/_hooks/usePhotoSelect';
 import type { SelectedPhoto } from '@/app/photo/add/_types/photo';
@@ -55,7 +57,9 @@ export default function MapRoute() {
 
   // 사이드바 상태
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeView, setActiveView] = useState<ViewType>(VIEW_TYPE.MAP);
+  const searchParams = useSearchParams();
+  const viewTypeParam = searchParams.get(VIEW_TYPE_PARAM);
+  const activeView = isViewType(viewTypeParam) ? viewTypeParam : VIEW_TYPE.MAP;
 
   // 사용자 프로필 데이터
   const { data: myPageData } = useGetMyPage();
@@ -69,8 +73,8 @@ export default function MapRoute() {
   // 데이터 페칭
   const {
     albumList,
-    address,
     albumDetail,
+    isAlbumDetailLoading,
     albumMapInfo,
     mapPins,
     totalHistoryCount,
@@ -82,18 +86,9 @@ export default function MapRoute() {
     selectedAlbumId,
   });
 
-  // HOME 격자보기용 전체사진 앨범 fetch (전체사진 앨범 = albumList[0])
-  const allPhotosAlbumId = albumList[0]?.id ?? null;
-  const { albumDetail: homeGridAlbumDetail } = useAlbumPhotos(
-    viewContext.type === VIEW_CONTEXT_TYPE.HOME ? allPhotosAlbumId : null,
-  );
-
-  // Pending 사진 merge (앨범 리스트 + 앨범 상세)
-  const effectiveAlbumDetail =
-    viewContext.type === VIEW_CONTEXT_TYPE.HOME ? homeGridAlbumDetail : albumDetail;
   const { albumList: mergedAlbumList, displayPhotos } = usePendingPhotosViewModel(
     albumList,
-    effectiveAlbumDetail,
+    albumDetail,
   );
 
   // 사진 추가
@@ -136,6 +131,8 @@ export default function MapRoute() {
 
   const { isOpen: isLocationDeniedModalOpen, close: handleCloseLocationDeniedModal } =
     useLocationPermissionModal();
+  useNotificationPermissionSync();
+  useDeviceTokenSync();
 
   // 모달 상태 관리
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -210,13 +207,16 @@ export default function MapRoute() {
     return calculatePhotoCount(viewContext, albumDetail, 0, totalHistoryCount);
   }, [viewContext, albumDetail, totalHistoryCount]);
 
+  const hasPhoto = (albumDetail?.photoCount ?? 0) > 0 || displayPhotos.length > 0;
+
   const selectedAlbumTitle = albumDetail?.title;
 
   const handlePinClick = async (pin: MapPin) => {
     if (!pin.isCluster) {
       track('click_map_photo_pin', {
         photo_id: String(pin.id),
-        location_name: address ?? '',
+        /** @deprecated /map/me v1.1 응답에서 위치 정보 사라짐 */
+        location_name: '',
       });
       const pinSource =
         viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL ? 'album_detail' : 'home_map';
@@ -230,7 +230,8 @@ export default function MapRoute() {
 
     track('click_photo_cluster', {
       cluster_count: pin.imageCount,
-      location_name: address ?? '',
+      /** @deprecated /map/me v1.1 응답에서 위치 정보 사라짐 */
+      location_name: '',
     });
 
     let photos = clusterExpansionData?.get(clusterId);
@@ -278,7 +279,7 @@ export default function MapRoute() {
     });
     setViewContext({ type: VIEW_CONTEXT_TYPE.ALBUM_DETAIL, albumId });
     setIsSidebarOpen(false);
-    router.push(`/album/${albumId}`);
+    router.push(`/album/${albumId}?${searchParams.toString()}`);
   };
 
   const handleRenameAlbum = (albumId: number) => {
@@ -317,6 +318,7 @@ export default function MapRoute() {
           onDeleteAlbum={
             isCustomAlbumSelected ? () => handleDeleteAlbum(selectedAlbumId) : undefined
           }
+          onClickAlarm={() => router.push(ROUTES.NOTIFICATIONS)}
         />
       </S.HeaderContainer>
 
@@ -330,16 +332,9 @@ export default function MapRoute() {
         />
       )}
 
-      {activeView === VIEW_TYPE.GRID && (
+      {activeView === VIEW_TYPE.GRID && !isAlbumDetailLoading && (
         <S.GridViewContainer>
-          {displayPhotos.length === 0 ? (
-            <S.EmptyState>
-              <HomeEmptyState
-                onAddPhoto={() => selectPhotosFromLibrary()}
-                onAddAlbum={() => setIsAddModalOpen(true)}
-              />
-            </S.EmptyState>
-          ) : (
+          {hasPhoto ? (
             <PhotoGridContainer>
               {displayPhotos.map((photo) =>
                 photo.kind === 'pending' ? (
@@ -361,19 +356,32 @@ export default function MapRoute() {
                         photo_id: String(photo.id),
                         photo_date: photo.takenAt ?? '',
                       });
-                      const url = ROUTES.PHOTO.VIEW(photo.id!);
+
                       const gridSource =
                         viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL
                           ? 'album_detail'
                           : 'home_grid';
+
                       router.push(
-                        `${url}${url.includes('?') ? '&' : '?'}source=${gridSource}`,
+                        ROUTES.PHOTO.VIEW(photo.id!, {
+                          source: gridSource,
+                          ...(selectedAlbumId !== null
+                            ? { albumId: selectedAlbumId }
+                            : {}),
+                        }),
                       );
                     }}
                   />
                 ),
               )}
             </PhotoGridContainer>
+          ) : (
+            <S.EmptyState>
+              <HomeEmptyState
+                onAddPhoto={() => selectPhotosFromLibrary()}
+                onAddAlbum={() => setIsAddModalOpen(true)}
+              />
+            </S.EmptyState>
           )}
         </S.GridViewContainer>
       )}
@@ -428,7 +436,9 @@ export default function MapRoute() {
                 to_mode: view,
               });
             }
-            setActiveView(view);
+            const params = new URLSearchParams(searchParams.toString());
+            params.set(VIEW_TYPE_PARAM, view);
+            router.replace(`?${params.toString()}`, { scroll: false });
           }}
         />
       </S.ViewSwitcherWrapper>

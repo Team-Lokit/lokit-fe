@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background-color: #000000; /* blackOpacity[100] */
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sectionContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  /* 헤더가 fixed로 빠지는 만큼(60px) 콘텐츠가 가려지지 않도록 보정 */
+  padding-top: 60px;
+}

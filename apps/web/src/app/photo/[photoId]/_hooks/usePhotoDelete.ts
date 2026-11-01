@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   useDelete,
   getGetPhotosQueryKey,
-  getGetMapMeQueryKey,
+  getGetMapMeV11QueryKey,
   getGetPhotoDetailQueryKey,
   getGetClusterPhotosQueryKey,
   type AlbumThumbnails,
   type PhotoListResponse,
 } from '@repo/api-client';
-import { getMapMeAlbumsQueryKey } from '@/hooks/queries/useMapMeAlbums';
 import { useToast } from '@/components/toast/ToastProvider';
+import { useGoBackOrHome } from '@/hooks/useGoBackOrHome';
 
 interface ConfirmDeleteParams {
   photoId: number;
@@ -20,7 +19,7 @@ interface ConfirmDeleteParams {
 }
 
 const usePhotoDelete = () => {
-  const router = useRouter();
+  const goBackOrHome = useGoBackOrHome();
   const queryClient = useQueryClient();
   const { showToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,7 +37,7 @@ const usePhotoDelete = () => {
   const confirmDelete = async ({ photoId, albumId, clusterId }: ConfirmDeleteParams) => {
     // 낙관적 업데이트를 위한 이전 데이터 스냅샷
     const previousAlbums = queryClient.getQueryData<AlbumThumbnails[]>(
-      getMapMeAlbumsQueryKey(),
+      getGetMapMeV11QueryKey(),
     );
     const previousPhotos = albumId
       ? queryClient.getQueryData<PhotoListResponse>(getGetPhotosQueryKey(albumId))
@@ -68,7 +67,7 @@ const usePhotoDelete = () => {
 
     // 앨범 썸네일 목록 낙관적 업데이트 (photoCount만 갱신, thumbnailUrls는 invalidate로 동기화)
     if (albumId) {
-      queryClient.setQueryData<AlbumThumbnails[]>(getMapMeAlbumsQueryKey(), (old) => {
+      queryClient.setQueryData<AlbumThumbnails[]>(getGetMapMeV11QueryKey(), (old) => {
         if (!old) return old;
         return old.map((album) =>
           album.id === albumId
@@ -84,17 +83,16 @@ const usePhotoDelete = () => {
     // 낙관적 업데이트: 삭제 완료를 기다리지 않고 즉시 이동
     showToast('사진이 삭제되었습니다');
     closeDeleteModal();
-    router.back();
+    goBackOrHome();
 
     try {
       await deletePhotoAsync({ id: photoId });
       queryClient.removeQueries({ queryKey: getGetPhotoDetailQueryKey(photoId) });
-      queryClient.invalidateQueries({ queryKey: getGetMapMeQueryKey() });
-      queryClient.invalidateQueries({ queryKey: getMapMeAlbumsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: getGetMapMeV11QueryKey() });
 
       // 전체 사진 앨범(첫 번째 앨범)은 항상 invalidate
       const cachedAlbums = queryClient.getQueryData<AlbumThumbnails[]>(
-        getMapMeAlbumsQueryKey(),
+        getGetMapMeV11QueryKey(),
       );
       const allPhotosAlbumId = cachedAlbums?.[0]?.id;
       if (allPhotosAlbumId) {
@@ -115,7 +113,7 @@ const usePhotoDelete = () => {
       queryClient.invalidateQueries({ queryKey: ['mapPhotos'] });
     } catch {
       if (previousAlbums !== undefined) {
-        queryClient.setQueryData(getMapMeAlbumsQueryKey(), previousAlbums);
+        queryClient.setQueryData(getGetMapMeV11QueryKey(), previousAlbums);
       }
       if (albumId && previousPhotos !== undefined) {
         queryClient.setQueryData(getGetPhotosQueryKey(albumId), previousPhotos);

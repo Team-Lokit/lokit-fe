@@ -1,4 +1,4 @@
-import type { MapMeResponse } from '@repo/api-client';
+import type { GetMapMeV11QueryResult } from '@repo/api-client';
 import { API_URL } from '@/constants';
 import type { MockApiResponse } from '@/mocks/types';
 import { 지도_ME_조회_성공, 지도_ME_조회_사진없음 } from './mockData';
@@ -37,5 +37,5 @@ export const mockGetMe = {
   },
 } satisfies MockApiResponse<
   '지도_ME_조회_성공' | '지도_ME_조회_사진없음' | '파라미터_누락',
-  MapMeResponse
+  GetMapMeV11QueryResult
 >;

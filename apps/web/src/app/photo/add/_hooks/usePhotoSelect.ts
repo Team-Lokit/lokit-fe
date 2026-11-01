@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react';
 import type { PickImageSource } from '@repo/webview-bridge';
-import type { SelectedPhoto } from '../_types/photo';
+import type { PhotoLocation, SelectedPhoto } from '../_types/photo';
 import { fileToSelectedPhoto } from '../_utils/fileToSelectedPhoto';
 import { ALLOWED_IMAGE_MIME_TYPES, isAllowedImageType } from '@/constants/image';
 import { requestImageFromBridge } from '@/utils/bridge/requestImageFromBridge';
@@ -26,14 +26,19 @@ export const usePhotoSelect = (options?: UsePhotoSelectOptions): UsePhotoSelectR
   const optionsRef = useRef(options);
   optionsRef.current = options;
 
-  const processFiles = useCallback(async (files: File[]) => {
-    const validFiles = files.filter(isAllowedImageType);
-    const photoPromises = validFiles.map((file) => fileToSelectedPhoto(file));
-    const results = await Promise.all(photoPromises);
-    const newPhotos = results.filter((photo): photo is SelectedPhoto => photo !== null);
+  const processFiles = useCallback(
+    async (items: Array<{ file: File; location?: PhotoLocation; takenAt?: string }>) => {
+      const validItems = items.filter((item) => isAllowedImageType(item.file));
+      const photoPromises = validItems.map((item) =>
+        fileToSelectedPhoto(item.file, item.location, item.takenAt),
+      );
+      const results = await Promise.all(photoPromises);
+      const newPhotos = results.filter((photo): photo is SelectedPhoto => photo !== null);
 
-    optionsRef.current?.onPhotosSelected?.(newPhotos);
-  }, []);
+      optionsRef.current?.onPhotosSelected?.(newPhotos);
+    },
+    [],
+  );
 
   const selectPhotosFromBridge = useCallback(
     async (source: PickImageSource) => {
@@ -41,7 +46,9 @@ export const usePhotoSelect = (options?: UsePhotoSelectOptions): UsePhotoSelectR
       try {
         const picked = await requestImageFromBridge({ source, selectionLimit: 1 });
         if (!picked || picked.length === 0) return;
-        await processFiles(picked.map((p) => p.file));
+        await processFiles(
+          picked.map((p) => ({ file: p.file, location: p.location, takenAt: p.takenAt })),
+        );
       } finally {
         setIsLoading(false);
       }
@@ -75,7 +82,8 @@ export const usePhotoSelect = (options?: UsePhotoSelectOptions): UsePhotoSelectR
 
         setIsLoading(true);
         try {
-          await processFiles(Array.from(files));
+          // 웹에서는 위치 정보를 별도로 넘기지 않는다. File 자체의 EXIF에서 위치 정보를 뽑기 때문이다.
+          await processFiles(Array.from(files).map((file) => ({ file })));
         } finally {
           setIsLoading(false);
           cleanup();

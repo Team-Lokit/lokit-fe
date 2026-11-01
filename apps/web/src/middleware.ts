@@ -105,7 +105,8 @@ export const config = {
      * - _next/static (정적 파일)
      * - _next/image (이미지 최적화)
      * - favicon.ico (파비콘)
+     * - public 이미지 (이미지 최적화가 쿠키 없이 내부 요청하므로 리다이렉트되면 깨짐)
      */
-    '/((?!_next/static|_next/image|favicon.ico|mockServiceWorker.js).*)',
+    '/((?!_next/static|_next/image|favicon.ico|mockServiceWorker.js|.*\\.(?:png|jpg|jpeg|gif|svg|webp|ico)$).*)',
   ],
 };

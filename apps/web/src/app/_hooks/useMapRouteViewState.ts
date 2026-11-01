@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
 import type { MapViewHandle } from '@/components/map/MapView';
 import { LocationState } from '@/types/map.type';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { DEFAULT_LOCATION } from '../constants';
 
 interface UseMapRouteViewStateReturn {
-  viewState: LocationState | null;
+  viewState: LocationState;
   mapViewRef: React.RefObject<MapViewHandle | null>;
   handleViewStateChange: (newViewState: LocationState) => void;
   handleGoToCurrentLocation: () => void;
@@ -18,7 +18,7 @@ interface UseMapRouteViewStateReturn {
  * - 뷰 상태 변경 시 debounce 적용 (API 호출 빈도 제한)
  */
 export const useMapRouteViewState = (): UseMapRouteViewStateReturn => {
-  const [viewState, setViewState] = useState<LocationState | null>(DEFAULT_LOCATION);
+  const [viewState, setViewState] = useState<LocationState>(DEFAULT_LOCATION);
   const mapViewRef = useRef<MapViewHandle>(null);
   const viewStateChangeTimerRef = useRef<NodeJS.Timeout | null>(null);
 

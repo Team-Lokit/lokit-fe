@@ -1,13 +1,8 @@
-import type { MapMeResponse } from '@repo/api-client';
+import type { GetMapMeV11QueryResult, MapMeResponse } from '@repo/api-client';
 
 const center = { latitude: 37.5665, longitude: 126.978 };
 
-export const 지도_ME_조회_성공: MapMeResponse = {
-  location: {
-    address: '서울특별시 영등포구 여의도동',
-    placeName: '여의도 한강공원',
-    regionName: '영등포구',
-  },
+export const 지도_ME_조회_성공: GetMapMeV11QueryResult = {
   boundingBox: {
     west: 126.9,
     south: 37.5,
@@ -123,11 +118,6 @@ export const 지도_ME_조회_성공: MapMeResponse = {
 };
 
 export const 지도_ME_조회_사진없음: MapMeResponse = {
-  location: {
-    address: '서울특별시 강남구 역삼동',
-    placeName: '역삼역',
-    regionName: '강남구',
-  },
   boundingBox: undefined,
   totalHistoryCount: 0,
   albums: [],

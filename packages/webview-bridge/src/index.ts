@@ -4,14 +4,39 @@
  * - 새 메시지 타입 추가 시 BRIDGE_MESSAGE_TYPES와 해당 Request/Response 인터페이스를 함께 추가.
  */
 
+import type { GpsCoordinates } from './utils/parseGpsFromExif';
+
 export const BRIDGE_MESSAGE_TYPES = {
   PICK_IMAGE: 'PICK_IMAGE',
   PICK_IMAGE_RESULT: 'PICK_IMAGE_RESULT',
+  CHECK_NOTIFICATION_PERMISSION: 'CHECK_NOTIFICATION_PERMISSION',
+  CHECK_NOTIFICATION_PERMISSION_RESULT: 'CHECK_NOTIFICATION_PERMISSION_RESULT',
+  REQUEST_NOTIFICATION_PERMISSION: 'REQUEST_NOTIFICATION_PERMISSION',
+  REQUEST_NOTIFICATION_PERMISSION_RESULT: 'REQUEST_NOTIFICATION_PERMISSION_RESULT',
+  OPEN_NOTIFICATION_SETTINGS: 'OPEN_NOTIFICATION_SETTINGS',
+  OPEN_NOTIFICATION_SETTINGS_RESULT: 'OPEN_NOTIFICATION_SETTINGS_RESULT',
+  GET_DEVICE_TOKEN: 'GET_DEVICE_TOKEN',
+  GET_DEVICE_TOKEN_RESULT: 'GET_DEVICE_TOKEN_RESULT',
 } as const;
 
-export type BridgeMessageType = (typeof BRIDGE_MESSAGE_TYPES)[keyof typeof BRIDGE_MESSAGE_TYPES];
+export type BridgeMessageType =
+  (typeof BRIDGE_MESSAGE_TYPES)[keyof typeof BRIDGE_MESSAGE_TYPES];
 
 export type BridgeStatus = 'success' | 'cancelled' | 'error';
+
+/** 모든 브릿지 Request가 공통으로 갖는 필드 */
+export interface CommonRequest {
+  type: BridgeMessageType;
+  requestId: string;
+}
+
+/** 모든 브릿지 Response가 공통으로 갖는 필드 */
+export interface CommonResponse {
+  type: BridgeMessageType;
+  requestId: string;
+  status: BridgeStatus;
+  error?: string;
+}
 
 export type PickImageSource = 'library' | 'camera';
 
@@ -24,9 +49,8 @@ export interface PickImageOptions {
   quality?: number;
 }
 
-export interface PickImageRequest {
+export interface PickImageRequest extends CommonRequest {
   type: typeof BRIDGE_MESSAGE_TYPES.PICK_IMAGE;
-  requestId: string;
   options?: PickImageOptions;
 }
 
@@ -38,15 +62,92 @@ export interface PickedAsset {
   fileSize?: number;
   width?: number;
   height?: number;
+  /**
+   * 원본 사진 EXIF에서 추출한 촬영 위치
+   * - 네이티브 리사이즈 시 EXIF GPS가 소실되므로, 원본에서 뽑아 실어 보낸다.
+   */
+  location?: GpsCoordinates;
+  /**
+   * 원본 사진의 촬영 일시 (ISO 8601)
+   * - 리사이즈본은 촬영일 메타데이터가 없으므로, 원본에서 뽑아 실어 보낸다.
+   */
+  takenAt?: string;
 }
 
-export interface PickImageResponse {
+export interface PickImageResponse extends CommonResponse {
   type: typeof BRIDGE_MESSAGE_TYPES.PICK_IMAGE_RESULT;
-  requestId: string;
-  status: BridgeStatus;
   assets?: PickedAsset[];
-  error?: string;
 }
 
-export type BridgeRequest = PickImageRequest;
-export type BridgeResponse = PickImageResponse;
+/**
+ * react-native-permissions의 PermissionStatus와 동일한 값셋.
+ * - unavailable: 기기가 해당 권한 자체를 지원하지 않음
+ * - denied: 아직 승인되지 않았지만 재요청 가능한 상태.
+ *   iOS는 정말 한 번도 응답한 적 없는 최초 상태만 여기 해당하고, 응답 후엔 granted/blocked로 넘어가 다시 돌아오지 않는다.
+ *   Android 13+(POST_NOTIFICATIONS)는 "한 번도 안 물어봄"과 "거부했지만 재요청 가능"을 둘 다 denied로 취급한다.
+ *   Android 13 미만은 런타임 권한 자체가 없어 denied가 사실상 발생하지 않는다(기본 granted, 끄면 blocked).
+ * - blocked: 사용자가 명시적으로 꺼둠 - 앱에서 재요청 불가, 기기 설정에서만 허용 가능
+ * - granted / limited: 알림 수신 가능
+ */
+export type NotificationPermissionStatus =
+  | 'unavailable'
+  | 'denied'
+  | 'blocked'
+  | 'granted'
+  | 'limited';
+
+export interface CheckNotificationPermissionRequest extends CommonRequest {
+  type: typeof BRIDGE_MESSAGE_TYPES.CHECK_NOTIFICATION_PERMISSION;
+}
+
+export interface CheckNotificationPermissionResponse extends CommonResponse {
+  type: typeof BRIDGE_MESSAGE_TYPES.CHECK_NOTIFICATION_PERMISSION_RESULT;
+  permissionStatus?: NotificationPermissionStatus;
+}
+
+export interface RequestNotificationPermissionRequest extends CommonRequest {
+  type: typeof BRIDGE_MESSAGE_TYPES.REQUEST_NOTIFICATION_PERMISSION;
+}
+
+export interface RequestNotificationPermissionResponse extends CommonResponse {
+  type: typeof BRIDGE_MESSAGE_TYPES.REQUEST_NOTIFICATION_PERMISSION_RESULT;
+  permissionStatus?: NotificationPermissionStatus;
+}
+
+export interface OpenNotificationSettingsRequest extends CommonRequest {
+  type: typeof BRIDGE_MESSAGE_TYPES.OPEN_NOTIFICATION_SETTINGS;
+}
+
+export interface OpenNotificationSettingsResponse extends CommonResponse {
+  type: typeof BRIDGE_MESSAGE_TYPES.OPEN_NOTIFICATION_SETTINGS_RESULT;
+}
+
+/** RegisterDeviceTokenRequestPlatform과 동일한 값 (WEB 제외 - 네이티브 브릿지 전용) */
+export type DeviceTokenPlatform = 'ANDROID' | 'IOS';
+
+export interface GetDeviceTokenRequest extends CommonRequest {
+  type: typeof BRIDGE_MESSAGE_TYPES.GET_DEVICE_TOKEN;
+}
+
+export interface GetDeviceTokenResponse extends CommonResponse {
+  type: typeof BRIDGE_MESSAGE_TYPES.GET_DEVICE_TOKEN_RESULT;
+  token?: string;
+  platform?: DeviceTokenPlatform;
+}
+
+export type BridgeRequest =
+  | PickImageRequest
+  | CheckNotificationPermissionRequest
+  | RequestNotificationPermissionRequest
+  | OpenNotificationSettingsRequest
+  | GetDeviceTokenRequest;
+export type BridgeResponse =
+  | PickImageResponse
+  | CheckNotificationPermissionResponse
+  | RequestNotificationPermissionResponse
+  | OpenNotificationSettingsResponse
+  | GetDeviceTokenResponse;
+
+export { parseGpsFromExif, type GpsCoordinates } from './utils/parseGpsFromExif';
+export { getPushTargetPath } from './utils/getPushTargetPath';
+export { isDevUrl } from './utils/isDevUrl';

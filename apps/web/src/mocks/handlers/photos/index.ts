@@ -1,4 +1,5 @@
 import { createHandler } from '@/mocks/createHandler';
+import { commentsHandlers } from './comments/handlers';
 import { mockCreatePhoto } from './createPhoto/mockCreatePhoto';
 import { mockDeletePhoto } from './deletePhoto/mockDeletePhoto';
 import { mockGetPhotoDetail } from './getPhotoDetail/mockGetPhotoDetail';
@@ -29,4 +30,5 @@ export const photosHandlers = [
   createHandler(mockCreatePhoto, '사진_생성_성공'),
   createHandler(mockDeletePhoto, '사진_삭제_성공'),
   createHandler(mockUpdatePhoto, '사진_수정_성공'),
+  ...commentsHandlers,
 ];

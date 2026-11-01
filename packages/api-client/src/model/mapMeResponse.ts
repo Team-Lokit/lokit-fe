@@ -5,7 +5,6 @@
  * Lokit API 문서
  * OpenAPI spec version: 1.0.0
  */
-import type { LocationInfoResponse } from './locationInfoResponse';
 import type { BoundingBoxResponse } from './boundingBoxResponse';
 import type { AlbumThumbnails } from './albumThumbnails';
 import type { ClusterResponse } from './clusterResponse';
@@ -15,8 +14,6 @@ import type { MapPhotoResponse } from './mapPhotoResponse';
  * 지도 ME 응답 (홈 + 사진 조회 통합)
  */
 export interface MapMeResponse {
-  /** 위치 정보 */
-  location?: LocationInfoResponse;
   /** 바운딩 박스 */
   boundingBox?: BoundingBoxResponse;
   /** 기록 수(전체 보기 사진 개수) */
@@ -31,4 +28,6 @@ export interface MapMeResponse {
   photos?: MapPhotoResponse[];
   /** 내 프로필 이미지 URL */
   profileImageUrl?: string;
+  /** 내 회원 ID */
+  userId?: number;
 }

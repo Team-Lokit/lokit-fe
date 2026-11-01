@@ -2,12 +2,11 @@
 
 import type { PhotoLocation, SelectedPhoto } from '@/app/photo/add/_types/photo';
 import { useToast } from '@/components/toast';
-import { getMapMeAlbumsQueryKey } from '@/hooks/queries/useMapMeAlbums';
 import { track } from '@/lib/analytics';
 import type { PhotoUploadErrorType } from '@/lib/analytics/events';
 import {
   create,
-  getGetMapMeQueryKey,
+  getGetMapMeV11QueryKey,
   getGetPhotosQueryKey,
   getPresignedUrl,
 } from '@repo/api-client';
@@ -227,8 +226,7 @@ export function PendingPhotosProvider({ children }: PropsWithChildren) {
           }
 
           // 성공 시 쿼리 invalidate
-          queryClient.invalidateQueries({ queryKey: getGetMapMeQueryKey() });
-          queryClient.invalidateQueries({ queryKey: getMapMeAlbumsQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetMapMeV11QueryKey() });
           if (albumId) {
             queryClient.invalidateQueries({
               queryKey: getGetPhotosQueryKey(albumId),

@@ -7,7 +7,7 @@ export const ButtonWrapper = styled.div`
   align-items: flex-start;
   align-self: stretch;
   border-radius: 16px;
-  background-color: ${({ theme }) => theme.colors.blueWhiteOpacity['bg5']};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
 `;
 
 export const Button = styled.button`

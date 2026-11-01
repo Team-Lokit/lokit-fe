@@ -12,7 +12,7 @@ export const Container = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.layout.maxWidth};
   height: 100dvh;
-  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
+  background-color: ${({ theme }) => theme.colors.blackOpacity[100]};
   overflow: hidden;
 `;
 

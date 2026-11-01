@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Alert, Linking, Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
@@ -7,16 +7,28 @@ import { buildBridgeInjection } from './bridge/injection';
 import useBridgeHandler from './bridge/useBridgeHandler';
 import useAppLifecycleTracking from './useAppLifecycleTracking';
 import useDeepLinkHandling from './useDeepLinkHandling';
+import usePushNotificationHandling from './usePushNotificationHandling';
+import { isDevUrl } from '@repo/webview-bridge';
+
+/** 개발 환경에서 디버깅 콘솔 추가 */
+const erudaScript = `
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/eruda';
+      document.body.appendChild(script);
+      script.onload = function () { 
+        eruda.init(); 
+      }
+    })();
+    true;
+  `;
+
+// 스플래시가 WebView 첫 페인트를 가려주도록, 마운트 즉시가 아니라
+// WebView 로드 완료(or 실패) 시점까지 유지한다. 응답이 아예 없을 경우를
+// 대비해 최대 대기 시간 이후엔 강제로 내린다.
+const SPLASH_FALLBACK_TIMEOUT_MS = 6000;
 
 function App() {
-  useEffect(() => {
-    const hideSplash = async () => {
-      await BootSplash.hide({ fade: true });
-    };
-
-    hideSplash();
-  }, []);
-
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
@@ -31,40 +43,71 @@ function AppContent() {
   const webViewRef = useRef<WebView>(null);
   const { onWebViewLoad } = useAppLifecycleTracking(webViewRef);
   const { initialUrl } = useDeepLinkHandling(webViewRef);
-  const onMessage = useBridgeHandler(webViewRef);
+  const { initialPushUrl } = usePushNotificationHandling(webViewRef, defaultUrl);
+  const onBridgeMessage = useBridgeHandler(webViewRef);
+  const splashHiddenRef = useRef(false);
 
-  const onShouldStartLoadWithRequest = (request: { url: string }) => {
-    const { url } = request;
-    if (url.startsWith('http://') || url.startsWith('https://')) {
+  const hideSplash = useCallback(() => {
+    if (splashHiddenRef.current) return;
+    splashHiddenRef.current = true;
+    BootSplash.hide({ fade: true });
+  }, []);
+
+  useEffect(() => {
+    const fallback = setTimeout(hideSplash, SPLASH_FALLBACK_TIMEOUT_MS);
+    return () => clearTimeout(fallback);
+  }, [hideSplash]);
+
+  const handleWebViewLoad = () => {
+    onWebViewLoad();
+    hideSplash();
+  };
+
+  const onShouldStartLoadWithRequest = (request: {
+    url: string;
+    isTopFrame?: boolean;
+  }) => {
+    const { url, isTopFrame } = request;
+    // iframe 로드(예: SDK가 만드는 about:blank)는 웹뷰 내부에서 처리
+    if (isTopFrame === false) {
       return true;
     }
-    Linking.canOpenURL(url).then(supported => {
-      if (supported) {
-        Linking.openURL(url);
-      } else {
+    if (/^(https?|about|data|blob|javascript):/i.test(url)) {
+      return true;
+    }
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (supported) {
+          return Linking.openURL(url);
+        }
         Alert.alert('카카오톡 필요', '카카오톡이 설치되어 있지 않습니다.');
-      }
-    });
+      })
+      .catch(e => console.log('[onShouldStartLoadWithRequest] cannot open', url, e));
     return false;
   };
 
-  // Linking이 resolve되기 전에는 WebView를 띄우지 않음(스플래시가 가려줌).
+  // Linking / 초기 알림이 resolve되기 전에는 WebView를 띄우지 않음(스플래시가 가려줌).
   // 콜드 스타트 딥링크는 buildBridgeInjection에서 페이지 로드 전 주입돼야 정확하다.
-  if (initialUrl === null) {
+  if (initialUrl === null || initialPushUrl === null) {
     return <View style={styles.content} />;
   }
+
+  const webUrl = initialUrl ?? initialPushUrl ?? defaultUrl;
+  const isDev = isDevUrl(webUrl);
 
   return (
     <View style={styles.content}>
       <WebView
         ref={webViewRef}
-        source={{ uri: initialUrl ?? defaultUrl }}
+        source={{ uri: webUrl }}
         style={styles.webView}
         // Android 전용 옵션이며 기본값이 false라, 켜주지 않으면 WebView 내 navigator.geolocation이 동작하지 않음
         geolocationEnabled
+        // iOS 16.4+에서 기본값이 false라, 켜주지 않으면 Safari 개발자 도구(Develop 메뉴)에 WebView가 안 뜬다
+        webviewDebuggingEnabled={__DEV__}
         injectedJavaScriptBeforeContentLoaded={buildBridgeInjection(initialUrl)}
-        onLoad={onWebViewLoad}
-        onMessage={onMessage}
+        onLoad={handleWebViewLoad}
+        onMessage={onBridgeMessage}
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
         // dvh 단위가 모바일 웹뷰에서 제대로 작동하지 않는 문제를 해결
         injectedJavaScript={`
@@ -85,12 +128,15 @@ function AppContent() {
             });
           })();
           true;
+          ${isDev ? erudaScript : ''}
         `}
         onError={e => {
           console.log('WebView error', e.nativeEvent);
+          hideSplash();
         }}
         onHttpError={e => {
           console.log('WebView http error', e.nativeEvent);
+          hideSplash();
         }}
       />
     </View>

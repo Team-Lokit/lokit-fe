@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  background-color: #0f1014; /* grayScale.1000 */
+  background-color: #000000; /* blackOpacity[100] */
 }
 
 .srOnly {

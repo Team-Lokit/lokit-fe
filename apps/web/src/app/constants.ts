@@ -3,5 +3,3 @@ export const DEFAULT_LOCATION = {
   longitude: 127.5,
   zoom: 5.5,
 } as const;
-
-export const DEFAULT_ZOOM = 14;

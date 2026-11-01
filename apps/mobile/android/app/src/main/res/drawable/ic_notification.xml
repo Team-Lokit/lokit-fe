@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 상태바/알림 small icon. Android는 알파값만 사용하므로 단색(흰색) 실루엣이어야 한다. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="128"
+    android:viewportHeight="128">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M74.6689,90.4479a10.6667,10.6667 0,1 1,21.3334 0a10.6667,10.6667 0,1 1,-21.3334 0z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M45.9036,29.3334C48.1122,29.3339 49.9034,31.1248 49.9036,33.3334V77.3177C49.9036,80.2633 52.2915,82.6511 55.237,82.6511H66.8385C64.683,84.5628 63.3231,87.3507 63.3229,90.4584C63.3229,94.2539 65.3479,97.5773 68.3776,99.4037H48C39.164,99.403 32,92.2398 32,83.4037V33.3334C32.0002,31.1248 33.7916,29.334 36,29.3334H45.9036Z" />
+</vector>

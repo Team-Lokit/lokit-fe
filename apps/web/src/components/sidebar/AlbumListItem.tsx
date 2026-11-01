@@ -24,12 +24,14 @@ const AlbumListItem = ({
   onDelete,
 }: AlbumListItemProps) => {
   return (
-    <Container $isSelected={isSelected} onClick={onClick} data-album-list-item>
-      {icon && <IconWrapper>{icon}</IconWrapper>}
-      <TextGroup>
-        <Title>{title}</Title>
-        {totalCount !== undefined && <Count>{totalCount}</Count>}
-      </TextGroup>
+    <Container $isSelected={isSelected} data-album-list-item>
+      <SelectButton type="button" onClick={onClick} aria-label={`${title} 앨범`}>
+        {icon && <IconWrapper>{icon}</IconWrapper>}
+        <TextGroup>
+          <Title>{title}</Title>
+          {totalCount !== undefined && <Count>{totalCount}</Count>}
+        </TextGroup>
+      </SelectButton>
       {showMenu && onRename && onDelete && (
         <AlbumMenu onRename={onRename} onDelete={onDelete} />
       )}
@@ -42,10 +44,8 @@ export default AlbumListItem;
 const Container = styled.div<{ $isSelected: boolean }>`
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
+  padding-right: 12px;
   border-radius: 12px;
-  cursor: pointer;
   overflow: hidden;
   transition: background-color 0.15s ease;
   background-color: ${({ $isSelected, theme }) =>
@@ -54,6 +54,21 @@ const Container = styled.div<{ $isSelected: boolean }>`
   &:hover {
     background-color: ${({ theme }) => theme.colors.blueWhiteOpacity.bg8};
   }
+`;
+
+const SelectButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
 `;
 
 const IconWrapper = styled.div`

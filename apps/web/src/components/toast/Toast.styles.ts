@@ -28,6 +28,7 @@ export const ToastContainer = styled.div`
   top: 100px;
   left: 50%;
   transform: translateX(-50%);
+  width: min(calc(100% - 24px), calc(${({ theme }) => theme.layout.maxWidth} - 24px));
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -37,15 +38,18 @@ export const ToastContainer = styled.div`
 
 export const ToastItem = styled.div<{
   isExiting?: boolean;
+  isClickable?: boolean;
 }>`
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 12px;
   padding: 12px 16px;
   border-radius: 12px;
   backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
   animation: ${({ isExiting }) => (isExiting ? slideDown : slideUp)} 0.3s ease;
   pointer-events: auto;
+  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
 
   background: ${({ theme }) => theme.colors.grayScale[900]};
 `;
@@ -57,8 +61,33 @@ export const ToastIcon = styled.div`
   flex-shrink: 0;
 `;
 
+export const ToastContent = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+`;
+
 export const ToastText = styled.span`
   ${({ theme }) => theme.typography.body14Semibold};
-  color: ${({ theme }) => theme.colors.grayScale[100]};
+  color: ${({ theme }) => theme.colors.grayScale[0]};
+  opacity: 0.9;
   white-space: nowrap;
+`;
+
+export const ToastDescription = styled.span`
+  ${({ theme }) => theme.typography.body14Regular};
+  color: ${({ theme }) => theme.colors.grayScale[300]};
+`;
+
+export const ToastAction = styled.button`
+  ${({ theme }) => theme.typography.body14Semibold};
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: ${({ theme }) => theme.colors.grayScale[400]};
+  white-space: nowrap;
+  cursor: pointer;
 `;

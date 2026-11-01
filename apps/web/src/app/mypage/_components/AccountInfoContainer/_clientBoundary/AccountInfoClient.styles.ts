@@ -8,9 +8,7 @@ export const Wrapper = styled.div`
   align-self: stretch;
   padding: 14px 8px 8px 8px;
   border-radius: 16px;
-  border: 1px solid rgba(226, 230, 255, 0.1);
-  background: ${({ theme }) => theme.colors.blueWhiteOpacity.bg5};
-  backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[40]};
+  background-color: ${({ theme }) => theme.colors.grayScale[1000]};
 `;
 
 export const SectionTitle = styled.span`

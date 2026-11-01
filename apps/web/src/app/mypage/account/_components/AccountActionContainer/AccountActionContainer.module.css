@@ -5,5 +5,5 @@
   align-items: flex-start;
   align-self: stretch;
   border-radius: 16px;
-  background-color: rgba(226, 230, 255, 0.05); /* blueWhiteOpacity['bg5'] */
+  background-color: #0f1014; /* grayScale.1000 */
 }
