@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { AppProviders } from './providers';
 import { pretendard } from '@/theme/font';
 import EmotionRegistry from './emotion-registry';
@@ -29,6 +29,14 @@ export const metadata: Metadata = {
       },
     ],
   },
+};
+
+// viewport-fit=cover: 앱 WebView가 홈 인디케이터 아래까지 확장되므로 iOS에서 env(safe-area-inset-*)가
+// 실제 값을 갖도록 한다(없으면 항상 0). 네이티브는 같은 값을 --safe-area-inset-* CSS 변수로도 주입한다.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 };
 
 const enableMocking = process.env.NEXT_PUBLIC_ENABLE_MOCK === 'true';
