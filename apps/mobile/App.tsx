@@ -11,6 +11,7 @@ import { buildBridgeInjection } from './bridge/injection';
 import useBridgeHandler from './bridge/useBridgeHandler';
 import useAppLifecycleTracking from './useAppLifecycleTracking';
 import useDeepLinkHandling from './useDeepLinkHandling';
+import useKeyboardSafeArea from './useKeyboardSafeArea';
 import usePushNotificationHandling from './usePushNotificationHandling';
 import { isDevUrl } from '@repo/webview-bridge';
 
@@ -54,6 +55,7 @@ function AppContent() {
   const splashHiddenRef = useRef(false);
   const insets = useSafeAreaInsets();
   const webSafeAreaInsets = { top: 0, bottom: insets.bottom, left: 0, right: 0 };
+  useKeyboardSafeArea(webViewRef, insets.bottom);
 
   const hideSplash = useCallback(() => {
     if (splashHiddenRef.current) return;
