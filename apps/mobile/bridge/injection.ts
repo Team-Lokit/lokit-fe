@@ -60,15 +60,23 @@ export const buildBridgeInjection = (
   };
   const safeAreaCssVars = (Object.keys(insets) as (keyof typeof insets)[])
     .map(
-      edge =>
-        `document.documentElement.style.setProperty('--safe-area-inset-${edge}', '${insets[edge]}px');`,
+      edge => `el.style.setProperty('--safe-area-inset-${edge}', '${insets[edge]}px');`,
     )
-    .join('\n    ');
+    .join('\n        ');
+  // Android는 onPageStarted에서 evaluateJavascript로 주입하므로 <html> 생성 전에 실행될 수 있다.
+  // documentElement가 없으면 DOMContentLoaded까지 미뤄서 적용한다.
   return `
     window.__BRIDGE__ = ${JSON.stringify({ ...bridge, safeAreaInsets: insets })};
-    ${safeAreaCssVars}
     ${dispatcherScript}
     ${deeplinkAssign}
+    (function applySafeArea() {
+      var el = document.documentElement;
+      if (!el) {
+        document.addEventListener('DOMContentLoaded', applySafeArea, { once: true });
+        return;
+      }
+      ${safeAreaCssVars}
+    })();
     true;
   `;
 };
