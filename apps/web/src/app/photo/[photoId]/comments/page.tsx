@@ -3,7 +3,12 @@
 import { useParams, useRouter } from 'next/navigation';
 import DefaultHeader from '@/components/header/default/DefaultHeader';
 import { CommentItem, CommentInput, CommentDeleteModal } from './_components';
-import { useComments, useCommentReaction, useCommentDelete } from './_hooks';
+import {
+  useComments,
+  useCommentReaction,
+  useCommentDelete,
+  useKeepScrollBottomOnShrink,
+} from './_hooks';
 import * as S from './page.styles';
 
 export default function CommentsPage() {
@@ -15,12 +20,13 @@ export default function CommentsPage() {
   const { toggleReaction } = useCommentReaction(photoId);
   const { isModalOpen, isDeleting, openDeleteModal, closeDeleteModal, confirmDelete } =
     useCommentDelete(photoId);
+  const listRef = useKeepScrollBottomOnShrink<HTMLDivElement>();
 
   return (
     <S.Container>
       <DefaultHeader onClickBack={() => router.back()} />
 
-      <S.List>
+      <S.List ref={listRef}>
         {comments.length === 0 ? (
           <S.EmptyState>아직 댓글이 없어요</S.EmptyState>
         ) : (
