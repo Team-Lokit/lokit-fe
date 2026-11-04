@@ -54,7 +54,8 @@ export default function RootLayout({
   const beusableId = process.env.NEXT_PUBLIC_BEUSABLE_ID;
 
   return (
-    <html lang="ko">
+    // 앱 WebView가 <html>에 safe area CSS 변수를 주입하므로 서버 HTML과 style 속성이 다르다
+    <html lang="ko" suppressHydrationWarning>
       <head>
         {apiOrigin && (
           <link rel="preconnect" href={apiOrigin} crossOrigin="use-credentials" />
