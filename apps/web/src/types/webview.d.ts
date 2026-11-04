@@ -3,6 +3,7 @@ import type { BridgeResponse } from '@repo/webview-bridge';
 interface WebViewBridge {
   isIOS: boolean;
   isAndroid: boolean;
+  safeAreaInsets?: { top: number; bottom: number; left: number; right: number };
 }
 
 interface LokitBridge {

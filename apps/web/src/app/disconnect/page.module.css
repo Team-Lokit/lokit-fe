@@ -22,7 +22,7 @@
 .cta {
   margin-top: 13px;
   padding: 0 16px;
-  padding-bottom: 18px;
+  padding-bottom: calc(18px + var(--safe-area-inset-bottom));
 }
 
 .srOnly {

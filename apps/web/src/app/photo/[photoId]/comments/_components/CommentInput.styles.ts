@@ -4,7 +4,7 @@ export const Wrapper = styled.div`
   position: sticky;
   bottom: 0;
   padding: 12px;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(12px + var(--safe-area-inset-bottom));
   background: transparent;
 `;
 

@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 
+const BOTTOM_FLOATING_OFFSET = '40px';
+
 export const Wrapper = styled.div`
   width: 100%;
   height: 100dvh;
@@ -24,7 +26,7 @@ export const FloatingButtonWrapper = styled.div`
 export const ActionColumn = styled.div`
   position: absolute;
   right: 12px;
-  bottom: 24px;
+  bottom: ${BOTTOM_FLOATING_OFFSET};
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -48,7 +50,7 @@ export const EmptyState = styled.div`
 
 export const ViewSwitcherWrapper = styled.div`
   position: absolute;
-  bottom: 40px;
+  bottom: ${BOTTOM_FLOATING_OFFSET};
   left: 50%;
   transform: translateX(-50%);
   z-index: 999;

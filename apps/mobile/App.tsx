@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { Alert, Linking, Platform, StyleSheet, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { Alert, Linking, Platform, StatusBar, StyleSheet, View } from 'react-native';
+import {
+  SafeAreaProvider,
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import BootSplash from 'react-native-bootsplash';
 import { buildBridgeInjection } from './bridge/injection';
@@ -31,7 +35,9 @@ const SPLASH_FALLBACK_TIMEOUT_MS = 6000;
 function App() {
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container} edges={['top', 'left', 'right', 'bottom']}>
+      {/* 상태바 배경색이 어두운 색이므로, 아이콘과 글자를 흰색으로 표시 */}
+      <StatusBar barStyle="light-content" />
+      <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
         <AppContent />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -46,6 +52,8 @@ function AppContent() {
   const { initialPushUrl } = usePushNotificationHandling(webViewRef, defaultUrl);
   const onBridgeMessage = useBridgeHandler(webViewRef);
   const splashHiddenRef = useRef(false);
+  const insets = useSafeAreaInsets();
+  const webSafeAreaInsets = { top: 0, bottom: insets.bottom, left: 0, right: 0 };
 
   const hideSplash = useCallback(() => {
     if (splashHiddenRef.current) return;
@@ -105,7 +113,10 @@ function AppContent() {
         geolocationEnabled
         // iOS 16.4+에서 기본값이 false라, 켜주지 않으면 Safari 개발자 도구(Develop 메뉴)에 WebView가 안 뜬다
         webviewDebuggingEnabled={__DEV__}
-        injectedJavaScriptBeforeContentLoaded={buildBridgeInjection(initialUrl)}
+        injectedJavaScriptBeforeContentLoaded={buildBridgeInjection(
+          initialUrl,
+          webSafeAreaInsets,
+        )}
         onLoad={handleWebViewLoad}
         onMessage={onBridgeMessage}
         onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
@@ -160,7 +171,8 @@ function getWebAppUrl() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F1014',
+    // 상태바 뒤 배경색
+    backgroundColor: '#000000',
   },
   content: {
     flex: 1,

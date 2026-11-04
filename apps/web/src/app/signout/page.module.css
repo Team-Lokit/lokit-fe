@@ -31,7 +31,7 @@
 .cta {
   margin-top: 56px;
   padding: 0 16px;
-  margin-bottom: 18px;
+  padding-bottom: calc(18px + var(--safe-area-inset-bottom));
 }
 
 .srOnly {

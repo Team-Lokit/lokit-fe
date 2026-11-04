@@ -185,7 +185,7 @@ export const ContainerB = styled.div`
 `;
 
 export const SliderWrapper = styled.div`
-  padding: 8px 0 calc(37px + env(safe-area-inset-bottom, 0px)) 0;
+  padding: 8px 0 calc(37px + var(--safe-area-inset-bottom)) 0;
   margin: 16px -16px 0 -16px;
   background: ${({ theme }) => theme.colors.blackOpacity[100]};
 `;
@@ -285,12 +285,9 @@ export const LoadingContainer = styled.div`
   color: ${({ theme }) => theme.colors.grayScale[400]};
 `;
 
-export const EmptySlider = styled.div`
-  padding: 8px 0 calc(37px + env(safe-area-inset-bottom, 0px)) 0;
-  margin: 16px -16px 0 -16px;
+export const EmptySlider = styled(SliderWrapper)`
   height: 60px;
   box-sizing: content-box;
-  background: ${({ theme }) => theme.colors.blackOpacity[100]};
 `;
 
 export const ChipIcon = styled.div`
