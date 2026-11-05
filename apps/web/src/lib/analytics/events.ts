@@ -3,7 +3,7 @@
  * 새 이벤트 추가 시 CSV를 먼저 갱신하고 이 파일에 반영한다.
  */
 
-export type ViewMode = 'map' | 'grid';
+export type ViewMode = 'map' | 'calendar' | 'grid';
 export type PhotoDetailSource = 'home_map' | 'home_grid' | 'album_detail';
 export type PhotoPickerSource = 'home' | 'album_detail';
 export type LoginMethod = 'kakao' | 'apple';

@@ -14,12 +14,16 @@ test.describe('홈', () => {
   });
 
   test.describe('뷰 전환', () => {
-    test('지도보기/격자보기 탭 전환', async ({ page }) => {
+    test('지도/캘린더/격자 탭 전환', async ({ page }) => {
       await page.getByLabel('격자보기').click();
-      await expect(page.getByText('격자보기')).toBeVisible();
+      await expect(page.getByText('격자', { exact: true })).toBeVisible();
+
+      await page.getByLabel('캘린더보기').click();
+      await expect(page).toHaveURL(/viewType=calendar/);
+      await expect(page.getByText('캘린더', { exact: true })).toBeVisible();
 
       await page.getByLabel('지도보기').click();
-      await expect(page.getByText('지도보기')).toBeVisible();
+      await expect(page.getByText('지도', { exact: true })).toBeVisible();
     });
 
     test('격자뷰에서 사진 상세로 이동 후 뒤로가기 하면 격자뷰가 유지된다', async ({
@@ -34,8 +38,8 @@ test.describe('홈', () => {
       await page.getByLabel('뒤로가기').click();
       await expect(page).toHaveURL(/\/\?.*viewType=grid/);
 
-      await expect(page.getByText('격자보기')).toBeVisible();
-      await expect(page.getByText('지도보기')).not.toBeVisible();
+      await expect(page.getByText('격자', { exact: true })).toBeVisible();
+      await expect(page.getByText('지도', { exact: true })).not.toBeVisible();
     });
 
     test('격자뷰에서 다른 앨범 상세로 이동해도 격자뷰가 유지된다', async ({ page }) => {
@@ -46,8 +50,8 @@ test.describe('홈', () => {
       await page.getByRole('button', { name: /앨범$/ }).nth(1).click();
       await expect(page).toHaveURL(/\/album\/\d+\?.*viewType=grid/);
 
-      await expect(page.getByText('격자보기')).toBeVisible();
-      await expect(page.getByText('지도보기')).not.toBeVisible();
+      await expect(page.getByText('격자', { exact: true })).toBeVisible();
+      await expect(page.getByText('지도', { exact: true })).not.toBeVisible();
     });
   });
 });
