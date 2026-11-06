@@ -13,6 +13,7 @@ import ViewSwitcher, {
 } from '@/components/viewSwitcher/ViewSwitcher';
 import PhotoGridContainer from '@/components/photoGridContainer/PhotoGridContainer';
 import PhotoGridItem from '@/components/photoGridItem/PhotoGridItem';
+import CalendarView from './CalendarView';
 import HomeEmptyState from '@/components/common/homeEmptyState/HomeEmptyState';
 import CrossHairIcon from '@/assets/images/crossHair.svg';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
@@ -330,6 +331,12 @@ export default function MapRoute() {
           onPinClick={handlePinClick}
           onViewStateChange={handleViewStateChange}
         />
+      )}
+
+      {activeView === VIEW_TYPE.CALENDAR && !isAlbumDetailLoading && (
+        <S.CalendarViewContainer>
+          <CalendarView photos={displayPhotos} firstMetDate={myPageData?.firstMetDate} />
+        </S.CalendarViewContainer>
       )}
 
       {activeView === VIEW_TYPE.GRID && !isAlbumDetailLoading && (
