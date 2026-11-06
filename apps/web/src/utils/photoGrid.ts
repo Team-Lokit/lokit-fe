@@ -7,7 +7,7 @@ interface PhotoWithDateDisplay extends PhotoResponse {
 /**
  * 날짜 문자열에서 KST(UTC+9) 기준 날짜 부분만 추출 (YYYY-MM-DD)
  */
-const getDateOnly = (dateString?: string): string | null => {
+export const getDateOnly = (dateString?: string): string | null => {
   if (!dateString) return null;
   const date = new Date(dateString);
   const kstOffset = 9 * 60 * 60 * 1000;
