@@ -25,8 +25,8 @@ export const ROUTES = {
       `/photo/${photoId}?clusterId=${clusterId}`,
   },
   ONBOARDING: {
+    // TODO(#103): 미들웨어의 isOnboarding·/onboarding 리다이렉트를 정리할 때 함께 제거한다.
     START: '/onboarding',
-    PROFILE: '/onboarding/profile',
     CONNECT: '/onboarding/connect',
     VERIFY: '/onboarding/verify',
   },

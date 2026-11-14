@@ -42,7 +42,7 @@ function SyncContent() {
       try {
         await saveCoupleStatusCookie();
       } catch {
-        router.replace(ROUTES.ONBOARDING.START);
+        router.replace(ROUTES.HOME);
         return;
       }
 
