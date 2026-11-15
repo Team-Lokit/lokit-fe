@@ -429,9 +429,11 @@ export default function MapRoute() {
         </CircleButton>
       </S.ActionColumn>
 
-      <S.FloatingButtonWrapper>
-        <Chip text={`기록 ${photoCount}개`} size="medium" />
-      </S.FloatingButtonWrapper>
+      {activeView !== VIEW_TYPE.CALENDAR && (
+        <S.FloatingButtonWrapper>
+          <Chip text={`기록 ${photoCount}개`} size="medium" />
+        </S.FloatingButtonWrapper>
+      )}
 
       <S.ViewSwitcherWrapper>
         <ViewSwitcher

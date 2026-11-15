@@ -44,7 +44,8 @@ export const CalendarViewContainer = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  padding-top: 106px;
+  /* 기록 개수 뱃지가 없으므로 헤더(60px) 바로 아래부터 시작 */
+  padding-top: 60px;
   /* 6주짜리 달에서도 마지막 주가 하단 뷰 스위처에 가리지 않도록 */
   padding-bottom: 100px;
   background-color: ${({ theme }) => theme.colors.blackOpacity[100]};
