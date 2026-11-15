@@ -3,7 +3,7 @@ import { fn } from 'storybook/test';
 import styled from '@emotion/styled';
 import { useState } from 'react';
 import Sidebar from '@/components/sidebar/Sidebar';
-import ViewSwitcher from '@/components/viewSwitcher/ViewSwitcher';
+import ViewSwitcher, { type ViewType } from '@/components/viewSwitcher/ViewSwitcher';
 import FloatingButton from '@/components/buttons/floatingButton/FloatingButton';
 import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import MapView from '@/components/map/MapView';
@@ -72,7 +72,7 @@ const MapPlaceholder = styled.div`
 
 function HomeMapViewEmpty() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeView, setActiveView] = useState<'map' | 'grid'>('map');
+  const [activeView, setActiveView] = useState<ViewType>('map');
 
   return (
     <ScreenWrapper>
@@ -169,7 +169,7 @@ const KOREA_CENTER = { latitude: 37.5665, longitude: 126.978, zoom: 13 };
 
 function HomeMapViewWithPhotos() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeView, setActiveView] = useState<'map' | 'grid'>('map');
+  const [activeView, setActiveView] = useState<ViewType>('map');
 
   return (
     <ScreenWrapper>

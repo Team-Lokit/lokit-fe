@@ -35,9 +35,27 @@ export const MapView: Story = {
   },
 };
 
+export const CalendarView: Story = {
+  args: {
+    activeView: 'calendar',
+  },
+};
+
 export const GridView: Story = {
   args: {
     activeView: 'grid',
+  },
+};
+
+export const SwitchToCalendar: Story = {
+  args: {
+    activeView: 'map',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const calendarTab = canvas.getByLabelText('캘린더보기');
+    await userEvent.click(calendarTab);
+    expect(args.onChangeView).toHaveBeenCalledWith('calendar');
   },
 };
 
