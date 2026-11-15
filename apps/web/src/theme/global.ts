@@ -33,6 +33,7 @@ export const globalStyles = (theme: Theme) => css`
   }
 
   button {
+    font-family: inherit;
     cursor: pointer;
     border: none;
     background: none;
