@@ -10,7 +10,12 @@ export interface CalendarDay {
   isCurrentMonth: boolean;
 }
 
+/**
+ * 캘린더에 표시할 연도와 월. (예: { year: 2026, month: 10 } → 2026년 10월)
+ * 월 이동 시 12월 → 다음 해 1월처럼 두 값이 함께 바뀌므로 하나로 묶어 관리한다.
+ */
 export interface YearMonth {
+  /** 4자리 연도 (예: 2026) */
   year: number;
   /** 1 ~ 12 */
   month: number;
