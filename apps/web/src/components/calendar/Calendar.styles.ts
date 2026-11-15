@@ -113,18 +113,11 @@ export const DayNumber = styled.span<{ $variant: DayVariant }>`
   }
 `;
 
-/**
- * Figma(360px 기준)의 셀 콘텐츠 너비(45px)로 고정.
- * 화면이 넓어져도 썸네일·배지가 가로로 늘어나지 않도록 max-width로 제한한다.
- */
-const DAY_CONTENT_MAX_WIDTH = '45px';
-
 export const DayContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
   width: 100%;
-  max-width: ${DAY_CONTENT_MAX_WIDTH};
 `;
 
 export const AnniversaryBadge = styled.span`
