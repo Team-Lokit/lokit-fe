@@ -15,25 +15,21 @@ const RECONNECT_STATUSES: CoupleStatus[] = [
   COUPLE_STATUS.DISCONNECTED_EXPIRED,
 ];
 
+const getConnectHref = (coupleStatus?: CoupleStatus) =>
+  coupleStatus && RECONNECT_STATUSES.includes(coupleStatus)
+    ? ROUTES.RECONNECT
+    : // TODO(#103): 새 파트너 연결 페이지 경로로 교체한다.
+      ROUTES.ONBOARDING.CONNECT;
+
 export default function BannerContainer({ coupleStatus }: BannerContainerProps) {
-  if (coupleStatus !== COUPLE_STATUS.COUPLED) {
-    const href =
-      coupleStatus && RECONNECT_STATUSES.includes(coupleStatus)
-        ? ROUTES.RECONNECT
-        : // TODO(#103): 새 파트너 연결 페이지 경로로 교체한다.
-          ROUTES.ONBOARDING.CONNECT;
-
-    return (
-      <section>
-        <CoupleConnectBannerClient href={href} />
-      </section>
-    );
-  }
-
   return (
     <section>
       <Suspense fallback={<BannerFallback />}>
-        <DdayBannerContainerClient />
+        {coupleStatus === COUPLE_STATUS.COUPLED ? (
+          <DdayBannerContainerClient />
+        ) : (
+          <CoupleConnectBannerClient href={getConnectHref(coupleStatus)} />
+        )}
       </Suspense>
     </section>
   );
