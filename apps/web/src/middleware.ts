@@ -32,7 +32,7 @@ export function middleware(request: NextRequest) {
   }
 
   // TODO(#103): 파트너 연결 페이지가 /onboarding 밖으로 옮겨지면 isOnboarding을 새 연결 페이지 경로 기준으로 교체한다.
-  // (COUPLED·DISCONNECTED_BY_PARTNER 사용자가 연결 페이지에 접근하지 못하게 막는 규칙은 유지해야 함)
+  // (COUPLED 사용자가 연결 페이지에 접근하지 못하게 막는 규칙은 유지해야 함)
   const isOnboarding = pathname.startsWith(ROUTES.ONBOARDING.START);
 
   // coupleStatus 쿠키 없음 → /sync에서 쿠키 동기화 후 원래 경로로 복귀
@@ -59,16 +59,10 @@ export function middleware(request: NextRequest) {
       }
       break;
 
-    case COUPLE_STATUS.DISCONNECTED_BY_PARTNER:
-      // 상대가 끊음 → 온보딩만 접근 불가
-      if (isOnboarding) {
-        return NextResponse.redirect(new URL(ROUTES.MYPAGE, request.url));
-      }
-      break;
-
     default:
-      // NOT_COUPLED, DISCONNECTED_BY_ME, DISCONNECTED_EXPIRED,
+      // NOT_COUPLED, DISCONNECTED_BY_ME, DISCONNECTED_BY_PARTNER, DISCONNECTED_EXPIRED,
       // /sync 쿠키 동기화 실패 → 커플 연결 없이도 서비스 전체 이용 가능.
+      // 끊긴 사용자도 파트너 연결 페이지에서 재연결한다.
       // 온보딩 시작 페이지는 없어졌으므로 홈으로 보낸다.
       // TODO(#103): /onboarding 경로가 완전히 없어지면 이 리다이렉트도 제거한다.
       if (pathname === ROUTES.ONBOARDING.START) {

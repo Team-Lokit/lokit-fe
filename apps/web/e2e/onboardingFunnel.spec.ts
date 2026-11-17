@@ -63,7 +63,7 @@ test.describe('마이페이지 - 파트너 연결 배너', () => {
     await expect(page).toHaveURL(ROUTES.ONBOARDING.CONNECT);
   });
 
-  test('상대가 연결을 끊은 상태에서는 연결 배너를 누르면 재연결 페이지로 이동한다', async ({
+  test('상대가 연결을 끊은 상태에서도 연결 배너를 누르면 파트너 연결 페이지로 이동한다', async ({
     page,
     context,
   }) => {
@@ -74,7 +74,7 @@ test.describe('마이페이지 - 파트너 연결 배너', () => {
     await expect(banner).toBeVisible();
 
     await banner.click();
-    await expect(page).toHaveURL(ROUTES.RECONNECT);
+    await expect(page).toHaveURL(ROUTES.ONBOARDING.CONNECT);
   });
 
   test('커플 상태에서는 연결 배너가 보이지 않는다', async ({ page, context }) => {
@@ -83,5 +83,26 @@ test.describe('마이페이지 - 파트너 연결 배너', () => {
 
     await expect(page.getByText('계정 정보 관리')).toBeVisible();
     await expect(page.getByText(CONNECT_BANNER_TITLE)).toHaveCount(0);
+  });
+});
+
+test.describe('계정 정보 관리 - 연결 메뉴', () => {
+  test('커플이 아니면 재연결하기·연결 끊기 메뉴가 보이지 않는다', async ({
+    page,
+    context,
+  }) => {
+    await loginAs(context, COUPLE_STATUS.DISCONNECTED_BY_PARTNER);
+    await page.goto(ROUTES.ACCOUNT);
+
+    await expect(page.getByText('로그아웃')).toBeVisible();
+    await expect(page.getByText('재연결하기')).toHaveCount(0);
+    await expect(page.getByText('상대방과 연결 끊기')).toHaveCount(0);
+  });
+
+  test('커플이면 연결 끊기 메뉴가 보인다', async ({ page, context }) => {
+    await loginAs(context, COUPLE_STATUS.COUPLED);
+    await page.goto(ROUTES.ACCOUNT);
+
+    await expect(page.getByText('상대방과 연결 끊기')).toBeVisible();
   });
 });

@@ -1,21 +1,18 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
 import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
 import HeartGradientIcon from '@/assets/images/heartGradient.svg';
 import * as S from '../DdayBannerContainerClient/DdayBannerClient.styles';
 
-interface CoupleConnectBannerClientProps {
-  href: string;
-}
-
-export default function CoupleConnectBannerClient({
-  href,
-}: CoupleConnectBannerClientProps) {
+export default function CoupleConnectBannerClient() {
   const router = useRouter();
 
+  // 미연결·끊김·만료 모두 같은 파트너 연결 페이지로 보낸다. (재연결 안내는 연결 페이지에서 처리)
   const handleClick = () => {
-    router.push(href);
+    // TODO(#103): 새 파트너 연결 페이지 경로로 교체한다.
+    router.push(ROUTES.ONBOARDING.CONNECT);
   };
 
   return (
