@@ -68,6 +68,10 @@ export function middleware(request: NextRequest) {
       if (pathname === ROUTES.ONBOARDING.START) {
         return NextResponse.redirect(new URL(ROUTES.HOME, request.url));
       }
+      // 연결 끊기는 커플일 때만 가능하다.
+      if (pathname.startsWith(ROUTES.DISCONNECT)) {
+        return NextResponse.redirect(new URL(ROUTES.MYPAGE, request.url));
+      }
       break;
   }
 

@@ -99,6 +99,13 @@ test.describe('계정 정보 관리 - 연결 메뉴', () => {
     await expect(page.getByText('상대방과 연결 끊기')).toHaveCount(0);
   });
 
+  test('커플이 아니면 연결 끊기 페이지에 접근할 수 없다', async ({ page, context }) => {
+    await loginAs(context, COUPLE_STATUS.NOT_COUPLED);
+    await page.goto(ROUTES.DISCONNECT);
+
+    await expect(page).toHaveURL(ROUTES.MYPAGE);
+  });
+
   test('커플이면 연결 끊기 메뉴가 보인다', async ({ page, context }) => {
     await loginAs(context, COUPLE_STATUS.COUPLED);
     await page.goto(ROUTES.ACCOUNT);
