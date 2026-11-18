@@ -113,3 +113,29 @@ test.describe('계정 정보 관리 - 연결 메뉴', () => {
     await expect(page.getByText('상대방과 연결 끊기')).toBeVisible();
   });
 });
+
+test.describe('홈 - 연결 끊김 알림창', () => {
+  const NOTICE_TITLE = '상대방과 연결이 끊어졌어요';
+
+  test('상대가 연결을 끊은 경우 알림창이 뜨고, 닫기를 누르면 사라진다', async ({
+    page,
+    context,
+  }) => {
+    await loginAs(context, COUPLE_STATUS.DISCONNECTED_BY_PARTNER);
+    await page.goto(ROUTES.HOME);
+
+    const dialog = page.getByRole('dialog');
+    await expect(dialog.getByText(NOTICE_TITLE)).toBeVisible();
+
+    await dialog.getByRole('button', { name: '닫기' }).click();
+    await expect(page.getByText(NOTICE_TITLE)).toHaveCount(0);
+  });
+
+  test('상대가 끊은 경우가 아니면 알림창이 뜨지 않는다', async ({ page, context }) => {
+    await loginAs(context, COUPLE_STATUS.DISCONNECTED_BY_ME);
+    await page.goto(ROUTES.HOME);
+
+    await expect(page.getByLabel('격자보기')).toBeVisible();
+    await expect(page.getByText(NOTICE_TITLE)).toHaveCount(0);
+  });
+});

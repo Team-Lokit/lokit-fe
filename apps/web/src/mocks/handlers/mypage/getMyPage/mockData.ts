@@ -28,4 +28,5 @@ export const 마이페이지_조회_미연결: MyPageResponse = {
   couplePhotoCount: 0,
   defaultAlbumId: 100,
   joinedDate: '2022-11-09',
+  reconnectDeadline: '2026-02-11',
 };

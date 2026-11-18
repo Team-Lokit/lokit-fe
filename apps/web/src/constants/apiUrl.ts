@@ -24,6 +24,8 @@ export const API_URL = {
     BASE: '/couples/me',
     STATUS: '/couples/me/status',
     FIRST_MET_DATE: '/couples/me/first-met-date',
+    DISCONNECT_NOTICE: '/couples/me/disconnect-notice',
+    DISCONNECT_NOTICE_CONFIRM: '/couples/me/disconnect-notice/confirm',
     INVITES: '/couples/invites',
   },
   MY_PAGE: {
