@@ -19,6 +19,7 @@ import type {
   ClusterPhotoResponse,
   CommentListResponse,
   CoupleStatusResponse,
+  DisconnectNoticeResponse,
   IdResponse,
   InviteCodePreviewResponse,
   InviteCodeResponse,
@@ -1322,6 +1323,60 @@ export const getReconnectMockHandler = (
   );
 };
 
+export const getGetDisconnectNoticeResponseMock = (
+  overrideResponse: Partial<DisconnectNoticeResponse> = {},
+): DisconnectNoticeResponse => ({
+  shouldShow: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+  ...overrideResponse,
+});
+
+export const getConfirmDisconnectNoticeMockHandler = (
+  overrideResponse?:
+    | void
+    | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions,
+) => {
+  return http.post(
+    '*/couples/me/disconnect-notice/confirm',
+    async (info) => {
+      await delay(1000);
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info);
+      }
+      return new HttpResponse(null, { status: 204 });
+    },
+    options,
+  );
+};
+
+export const getGetDisconnectNoticeMockHandler = (
+  overrideResponse?:
+    | DisconnectNoticeResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<DisconnectNoticeResponse> | DisconnectNoticeResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/couples/me/disconnect-notice',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetDisconnectNoticeResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
 export const getSaveCoupleStatusCookieMockHandler = (
   overrideResponse?:
     | void
@@ -2220,4 +2275,6 @@ export const getLokitAPIMock = () => [
   getWithdrawMockHandler(),
   getDisconnectMockHandler(),
   getDeleteAllByEmailMockHandler(),
+  getConfirmDisconnectNoticeMockHandler(),
+  getGetDisconnectNoticeMockHandler(),
 ];
