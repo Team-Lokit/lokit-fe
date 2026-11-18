@@ -24,9 +24,9 @@ export default function DdayEmptyBannerClient() {
         }}
       >
         <S.ContentContainer>
-          <S.CalendarContainer>
+          <S.IconContainer>
             <CalendarIcon />
-          </S.CalendarContainer>
+          </S.IconContainer>
           <S.TextContainer>
             <S.Title>첫 만남은 언제인가요?</S.Title>
             <S.Description>날짜 설정하고 D-day 확인하기</S.Description>

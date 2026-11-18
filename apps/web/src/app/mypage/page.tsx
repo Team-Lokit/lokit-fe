@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { COUPLE_STATUS_COOKIE } from '@/constants/cookie';
-import { COUPLE_STATUS } from '@/constants/coupleStatus';
+import { COUPLE_STATUS, isCoupleStatus } from '@/constants/coupleStatus';
 import { getGetMyPageQueryKey, getMyPageServer } from '@repo/api-client';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { cookies } from 'next/headers';
@@ -18,8 +18,11 @@ import CustomerSupportContainer from './_components/CustomerSupportContainer/Cus
 
 export default async function MyPage() {
   const cookieStore = await cookies();
-  const isCoupled =
-    cookieStore.get(COUPLE_STATUS_COOKIE)?.value === COUPLE_STATUS.COUPLED;
+  const coupleStatusCookie = cookieStore.get(COUPLE_STATUS_COOKIE)?.value;
+  const coupleStatus = isCoupleStatus(coupleStatusCookie)
+    ? coupleStatusCookie
+    : undefined;
+  const isCoupled = coupleStatus === COUPLE_STATUS.COUPLED;
 
   const queryClient = createStreamingQueryClient();
   void queryClient.prefetchQuery({
@@ -39,7 +42,7 @@ export default async function MyPage() {
             <CoupleInfoContainer isCoupled={isCoupled} />
           </div>
           <div className={styles.sectionContainer}>
-            <BannerContainer />
+            <BannerContainer coupleStatus={coupleStatus} />
             <AccountInfoContainer />
             <CustomerSupportContainer />
           </div>

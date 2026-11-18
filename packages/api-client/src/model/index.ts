@@ -33,6 +33,7 @@ export * from './createCoupleRequest';
 export * from './createParams';
 export * from './createPhotoRequest';
 export * from './createWorkspaceRequest';
+export * from './disconnectNoticeResponse';
 export * from './emoticonSummaryResponse';
 export * from './errorDetail';
 export * from './errorDetailErrors';

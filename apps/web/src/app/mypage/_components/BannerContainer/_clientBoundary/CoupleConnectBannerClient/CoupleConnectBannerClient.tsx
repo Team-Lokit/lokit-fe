@@ -1,0 +1,44 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/constants/routes';
+import ChevronRightSmallIcon from '@/assets/images/chevronRightSmall.svg';
+import HeartGradientIcon from '@/assets/images/heartGradient.svg';
+import * as S from '../DdayBannerContainerClient/DdayBannerClient.styles';
+
+export default function CoupleConnectBannerClient() {
+  const router = useRouter();
+
+  // 미연결·끊김·만료 모두 같은 파트너 연결 페이지로 보낸다. (재연결 안내는 연결 페이지에서 처리)
+  const handleClick = () => {
+    // TODO(#103): 새 파트너 연결 페이지 경로로 교체한다.
+    router.push(ROUTES.ONBOARDING.CONNECT);
+  };
+
+  return (
+    <S.Wrapper
+      role="button"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+    >
+      <S.ContentContainer>
+        <S.IconContainer>
+          <HeartGradientIcon />
+        </S.IconContainer>
+        <S.TextContainer>
+          <S.Title>함께할 사람과 연결하기</S.Title>
+          <S.Description>추억을 같이 모아보세요</S.Description>
+        </S.TextContainer>
+      </S.ContentContainer>
+      <S.ChevronIcon>
+        <ChevronRightSmallIcon />
+      </S.ChevronIcon>
+    </S.Wrapper>
+  );
+}

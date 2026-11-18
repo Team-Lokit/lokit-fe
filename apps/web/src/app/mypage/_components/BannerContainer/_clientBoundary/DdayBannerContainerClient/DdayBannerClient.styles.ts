@@ -19,7 +19,7 @@ export const ContentContainer = styled.div`
   align-items: center;
 `;
 
-export const CalendarContainer = styled.div`
+export const IconContainer = styled.div`
   padding: 6px;
   border-radius: 12px;
   background-color: ${({ theme }) => theme.colors.blueWhiteOpacity['bg8']};

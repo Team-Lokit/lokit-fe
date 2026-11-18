@@ -7,3 +7,6 @@ export const COUPLE_STATUS = {
 } as const;
 
 export type CoupleStatus = (typeof COUPLE_STATUS)[keyof typeof COUPLE_STATUS];
+
+export const isCoupleStatus = (value: unknown): value is CoupleStatus =>
+  Object.values(COUPLE_STATUS).includes(value as CoupleStatus);

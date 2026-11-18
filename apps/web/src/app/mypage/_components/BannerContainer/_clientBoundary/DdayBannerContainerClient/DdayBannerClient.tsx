@@ -27,9 +27,9 @@ export default function DdayBannerClient() {
         }}
       >
         <S.ContentContainer>
-          <S.CalendarContainer>
+          <S.IconContainer>
             <CalendarIcon />
-          </S.CalendarContainer>
+          </S.IconContainer>
           <S.TextContainer>
             <S.Title>{data.coupledDay}일째 사랑 중</S.Title>
             <S.Description>{`${year}년 ${month}월 ${date}일 첫 만남`}</S.Description>

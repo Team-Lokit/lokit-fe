@@ -1,0 +1,9 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 12.7989C4 18.4485 8.824 21.4587 12.3544 24.154C13.6 25.1043 14.8 26 16 26C17.2 26 18.4 25.1054 19.6456 24.1528C23.1772 21.4598 28 18.4485 28 12.8001C28 7.1516 21.4 3.14233 16 8.5747C10.6 3.14233 4 7.1492 4 12.7989Z" fill="url(#heartGradient_paint)"/>
+<defs>
+<linearGradient id="heartGradient_paint" x1="16" y1="6" x2="16" y2="26" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FF8793"/>
+<stop offset="0.600962" stop-color="#F84154"/>
+</linearGradient>
+</defs>
+</svg>

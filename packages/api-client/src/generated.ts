@@ -31,6 +31,7 @@ import type {
   ClusterPhotoResponse,
   CommentListResponse,
   CoupleStatusResponse,
+  DisconnectNoticeResponse,
   CreateCommentRequest,
   CreatePhotoRequest,
   GetLocationInfoParams,
@@ -1450,6 +1451,202 @@ export const useReconnect = <
 
   return useMutation(mutationOptions);
 };
+
+/**
+ * 사용자가 연결 끊김 알림창을 닫았을 때 호출합니다. 이후 조회 시 shouldShow=false 가 됩니다. 보여줄 알림창이 없을 때 호출해도 204 입니다.
+ * @summary 연결 끊김 알림창 확인 처리
+ */
+export const confirmDisconnectNotice = (signal?: AbortSignal) => {
+  return customFetcher<void>({
+    url: `/couples/me/disconnect-notice/confirm`,
+    method: 'POST',
+    signal,
+  });
+};
+
+export const getConfirmDisconnectNoticeMutationOptions = <
+  TError = ApiResponseErrorDetail,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof confirmDisconnectNotice>>,
+    TError,
+    void,
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof confirmDisconnectNotice>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ['confirmDisconnectNotice'];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof confirmDisconnectNotice>>,
+    void
+  > = () => {
+    return confirmDisconnectNotice();
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ConfirmDisconnectNoticeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof confirmDisconnectNotice>>
+>;
+
+export type ConfirmDisconnectNoticeMutationError = ApiResponseErrorDetail;
+
+/**
+ * @summary 연결 끊김 알림창 확인 처리
+ */
+export const useConfirmDisconnectNotice = <
+  TError = ApiResponseErrorDetail,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof confirmDisconnectNotice>>,
+    TError,
+    void,
+    TContext
+  >;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof confirmDisconnectNotice>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions = getConfirmDisconnectNoticeMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
+
+/**
+ * 상대방이 연결을 끊은 뒤 아직 '상대방과 연결이 끊어졌어요' 알림창을 확인하지 않았으면 shouldShow=true 를 반환합니다. 확인 여부는 서버에 저장되므로 기기가 바뀌어도 한 번만 노출됩니다. 내가 끊은 경우·연결 중인 경우는 항상 false 입니다.
+ * @summary 연결 끊김 알림창 노출 여부 조회
+ */
+export const getDisconnectNotice = (signal?: AbortSignal) => {
+  return customFetcher<DisconnectNoticeResponse>({
+    url: `/couples/me/disconnect-notice`,
+    method: 'GET',
+    signal,
+  });
+};
+
+export const getGetDisconnectNoticeQueryKey = () => {
+  return [`/couples/me/disconnect-notice`] as const;
+};
+
+export const getGetDisconnectNoticeQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getDisconnectNotice>>, TError, TData>;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetDisconnectNoticeQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDisconnectNotice>>> = ({
+    signal,
+  }) => getDisconnectNotice(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getDisconnectNotice>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetDisconnectNoticeQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDisconnectNotice>>
+>;
+export type GetDisconnectNoticeQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 연결 끊김 알림창 노출 여부 조회
+ */
+
+export function useGetDisconnectNotice<
+  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getDisconnectNotice>>, TError, TData>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDisconnectNoticeQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetDisconnectNoticeSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getDisconnectNotice>>,
+    TError,
+    TData
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetDisconnectNoticeQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDisconnectNotice>>> = ({
+    signal,
+  }) => getDisconnectNotice(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getDisconnectNotice>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetDisconnectNoticeSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDisconnectNotice>>
+>;
+export type GetDisconnectNoticeSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 연결 끊김 알림창 노출 여부 조회
+ */
+
+export function useGetDisconnectNoticeSuspense<
+  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getDisconnectNotice>>,
+    TError,
+    TData
+  >;
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDisconnectNoticeSuspenseQueryOptions(options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * 현재 사용자의 커플 상태를 coupleStatus 쿠키에 저장합니다.

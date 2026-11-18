@@ -5,7 +5,7 @@ type ResponseKey<T> = T extends MockApiResponse<infer K, unknown> ? K : never;
 
 interface CreateHandlerOptions<TData extends JsonBodyType> {
   validator?: (request: Request) => string | null;
-  dataResolver?: (params: PathParams) => TData;
+  dataResolver?: (params: PathParams, cookies: Record<string, string>) => TData;
 }
 
 /**
@@ -28,7 +28,7 @@ export const createHandler = <T extends MockApiResponse<string, JsonBodyType>>(
       ? { validator: options, dataResolver: undefined }
       : (options ?? {});
 
-  return http[config.method](`*${config.url}`, async ({ request, params }) => {
+  return http[config.method](`*${config.url}`, async ({ request, params, cookies }) => {
     await delay(responseItem.delayTime);
 
     if (validator) {
@@ -42,7 +42,7 @@ export const createHandler = <T extends MockApiResponse<string, JsonBodyType>>(
     }
 
     // dataResolver가 있으면 동적으로 데이터 생성
-    const data = dataResolver ? dataResolver(params) : responseItem.data;
+    const data = dataResolver ? dataResolver(params, cookies) : responseItem.data;
 
     return HttpResponse.json(
       { data },
