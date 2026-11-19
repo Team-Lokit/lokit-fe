@@ -29,3 +29,25 @@ export const BBOX_ZOOM_CALCULATION = {
   /** 범위를 계산할 수 없을 때 기본 줌 레벨 */
   DEFAULT_ZOOM: 15,
 } as const;
+
+/**
+ * 행정구역 영역 설정
+ * 백엔드 /map/me v2 응답의 clusterId prefix 와 경계 파일 경로를 매핑한다.
+ * - 줌 < 8: 시·도 / 8 ≤ 줌 < 12: 시·군·구 / 12 ≤ 줌 < 15: 읍·면·동 / 줌 ≥ 15: 개별 사진
+ */
+export const MAP_REGION_CONFIG = {
+  /** /map/me 행정구역 클러스터 응답 버전 헤더 */
+  API_VERSION: '2.0',
+  /** clusterId prefix → 구역 단위 */
+  CLUSTER_PREFIX: {
+    sd_: 'sido',
+    sgg_: 'sgg',
+    emd_: 'emd',
+  },
+  /** 경계 GeoJSON 경로 (public/geo, scripts/build-region-boundaries.mjs 로 생성) */
+  BOUNDARY_PATH: {
+    sido: '/geo/sido.json',
+    sgg: '/geo/sgg.json',
+    emd: (sidoCode: string) => `/geo/emd/${sidoCode}.json`,
+  },
+} as const;
