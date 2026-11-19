@@ -33,6 +33,8 @@ export default function ConnectPage() {
   const [isMismatchModalOpen, setIsMismatchModalOpen] = useState(false);
   const previousCodeRef = useRef<string | null>(null);
   const hasNavigatedRef = useRef(false);
+  // 내가 코드로 연결하는 중에는 폴링이 같은 연결을 성공으로 중복 처리하지 않게 막는다
+  const isJoiningRef = useRef(false);
   const { data: myPageData } = useGetMyPage();
   const { inviteCode, createCode, copyCode } = useInviteCode();
   const { joinCode, isJoining } = useCodeVerification();
@@ -42,7 +44,7 @@ export default function ConnectPage() {
     const checkCoupleStatus = async () => {
       try {
         const data = await getMyStatus();
-        if (data.isCoupled && !hasNavigatedRef.current) {
+        if (data.isCoupled && !hasNavigatedRef.current && !isJoiningRef.current) {
           hasNavigatedRef.current = true;
           showToast(CONNECT_SUCCESS_MESSAGE, 3000, 'success');
           track('couple_connect_success', {
@@ -116,7 +118,9 @@ export default function ConnectPage() {
   const handleConnectClick = useCallback(async () => {
     if (partnerCode.length !== INVITE_CODE_LENGTH || isJoining) return;
 
+    isJoiningRef.current = true;
     const result = await joinCode(partnerCode);
+    isJoiningRef.current = false;
 
     if (result.success) {
       hasNavigatedRef.current = true;
