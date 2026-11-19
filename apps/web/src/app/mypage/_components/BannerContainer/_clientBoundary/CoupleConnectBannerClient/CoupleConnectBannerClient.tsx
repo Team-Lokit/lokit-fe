@@ -11,8 +11,7 @@ export default function CoupleConnectBannerClient() {
 
   // 미연결·끊김·만료 모두 같은 파트너 연결 페이지로 보낸다. (재연결 안내는 연결 페이지에서 처리)
   const handleClick = () => {
-    // TODO(#103): 새 파트너 연결 페이지 경로로 교체한다.
-    router.push(ROUTES.ONBOARDING.CONNECT);
+    router.push(ROUTES.CONNECT);
   };
 
   return (

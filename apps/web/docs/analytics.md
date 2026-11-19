@@ -348,13 +348,13 @@ const onLoginSuccess = (res: LoginResponse) => {
   - 한계: 클라이언트가 회원 가입 일자를 알 수 없음 (`MyPageResponse`에 가입일 필드 부재). 신규 가입 직후 연결은 0이 맞지만, 재연결(끊고 다시) 케이스는 부정확
   - 보강안: 백엔드 `/my-page` 또는 `/users/me` 응답에 `signupAt` / `createdAt` 필드 추가, 로그인 시점에 super property로 등록 후 차감
 - **inviter 측 `couple_connect_success` 트리거 정확도**
-  - 현재: `/onboarding/connect`에서 3초 폴링으로 `isCoupled` false→true 전환을 감지해 발송 (`invite_method: 'link'`)
+  - 현재: `/connect`에서 3초 폴링으로 `isCoupled` false→true 전환을 감지해 발송 (`invite_method: 'link'`)
   - 한계: 폴링 간격만큼 지연. 사용자가 페이지를 빨리 떠나면 누락 가능. 또한 카카오 공유 외 경로(예: 단순 코드 복사 후 구두 전달)도 'link'로 잡힘
   - 보강안: 서버 측 웹훅/소켓으로 즉시 알림. 'link' vs 'code' 구분이 inviter/joiner 역할 구분 의도라면 필드명 자체 재검토 권장
 - **`couple_connect_fail` 에러 코드 매핑**
-  - 현재: `INVITE_001` → `invalid_code`, `INVITE_002` → `expired`, `COUPLE_001` → `already_connected`. 매핑 외 코드는 모두 `invalid_code`로 폴백
+  - 현재: `COUPLE_008`·`009`·`011`·`012`·`014` → `invalid_code`, `COUPLE_010` → `expired`, `COUPLE_013` → `already_connected`. 매핑 외 코드(요청 제한 `COUPLE_017`, 동시 요청 충돌 `COUPLE_018`, 네트워크 오류 등)는 코드 문제가 아니므로 이벤트를 보내지 않음
   - 한계: 백엔드가 새 에러 코드를 추가해도 자동으로 분류되지 않음
-  - 보강안: 신규 에러 코드 추가 시 [verify/page.tsx](../src/app/onboarding/verify/page.tsx)의 `ERROR_TYPE_BY_CODE` 매핑 갱신
+  - 보강안: 신규 에러 코드 추가 시 [events.ts](../src/lib/analytics/events.ts)의 `COUPLE_CONNECT_ERROR_TYPE_BY_CODE` 매핑 갱신
 
 ### 홈 / 지도 / 격자
 
