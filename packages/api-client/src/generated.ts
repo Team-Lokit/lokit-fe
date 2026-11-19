@@ -28,14 +28,18 @@ import type {
   AlbumRequest,
   ApiResponseErrorDetail,
   AppleAuthorizeParams,
+  CalendarDayPhotosResponse,
+  CalendarMonthResponse,
   ClusterPhotoResponse,
   CommentListResponse,
   CoupleStatusResponse,
-  DisconnectNoticeResponse,
   CreateCommentRequest,
   CreatePhotoRequest,
+  DisconnectNoticeResponse,
   GetLocationInfoParams,
+  GetMapMeV11200,
   GetMapMeV11Params,
+  GetMonthParams,
   GetNotificationsParams,
   IdResponse,
   InviteCodePreviewResponse,
@@ -44,7 +48,6 @@ import type {
   KakaoAuthorizeParams,
   LocationInfoResponse,
   LogoutRequest,
-  MapMeResponse,
   MyPageResponse,
   NotificationSettingsResponse,
   PageResultNotificationResponse,
@@ -696,7 +699,7 @@ export const create = (createPhotoRequest: CreatePhotoRequest, signal?: AbortSig
 };
 
 export const getCreateMutationOptions = <
-  TError = ApiResponseErrorDetail | IdResponse,
+  TError = void | ApiResponseErrorDetail | IdResponse,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -734,13 +737,13 @@ export const getCreateMutationOptions = <
 
 export type CreateMutationResult = NonNullable<Awaited<ReturnType<typeof create>>>;
 export type CreateMutationBody = CreatePhotoRequest;
-export type CreateMutationError = ApiResponseErrorDetail | IdResponse;
+export type CreateMutationError = void | ApiResponseErrorDetail | IdResponse;
 
 /**
  * @summary 사진 생성
  */
 export const useCreate = <
-  TError = ApiResponseErrorDetail | IdResponse,
+  TError = void | ApiResponseErrorDetail | IdResponse,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -1530,125 +1533,6 @@ export const useConfirmDisconnectNotice = <
 };
 
 /**
- * 상대방이 연결을 끊은 뒤 아직 '상대방과 연결이 끊어졌어요' 알림창을 확인하지 않았으면 shouldShow=true 를 반환합니다. 확인 여부는 서버에 저장되므로 기기가 바뀌어도 한 번만 노출됩니다. 내가 끊은 경우·연결 중인 경우는 항상 false 입니다.
- * @summary 연결 끊김 알림창 노출 여부 조회
- */
-export const getDisconnectNotice = (signal?: AbortSignal) => {
-  return customFetcher<DisconnectNoticeResponse>({
-    url: `/couples/me/disconnect-notice`,
-    method: 'GET',
-    signal,
-  });
-};
-
-export const getGetDisconnectNoticeQueryKey = () => {
-  return [`/couples/me/disconnect-notice`] as const;
-};
-
-export const getGetDisconnectNoticeQueryOptions = <
-  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
-  TError = ApiResponseErrorDetail,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof getDisconnectNotice>>, TError, TData>;
-}) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetDisconnectNoticeQueryKey();
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDisconnectNotice>>> = ({
-    signal,
-  }) => getDisconnectNotice(signal);
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getDisconnectNotice>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GetDisconnectNoticeQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getDisconnectNotice>>
->;
-export type GetDisconnectNoticeQueryError = ApiResponseErrorDetail;
-
-/**
- * @summary 연결 끊김 알림창 노출 여부 조회
- */
-
-export function useGetDisconnectNotice<
-  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
-  TError = ApiResponseErrorDetail,
->(options?: {
-  query?: UseQueryOptions<Awaited<ReturnType<typeof getDisconnectNotice>>, TError, TData>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetDisconnectNoticeQueryOptions(options);
-
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-}
-
-export const getGetDisconnectNoticeSuspenseQueryOptions = <
-  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
-  TError = ApiResponseErrorDetail,
->(options?: {
-  query?: UseSuspenseQueryOptions<
-    Awaited<ReturnType<typeof getDisconnectNotice>>,
-    TError,
-    TData
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetDisconnectNoticeQueryKey();
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDisconnectNotice>>> = ({
-    signal,
-  }) => getDisconnectNotice(signal);
-
-  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
-    Awaited<ReturnType<typeof getDisconnectNotice>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GetDisconnectNoticeSuspenseQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getDisconnectNotice>>
->;
-export type GetDisconnectNoticeSuspenseQueryError = ApiResponseErrorDetail;
-
-/**
- * @summary 연결 끊김 알림창 노출 여부 조회
- */
-
-export function useGetDisconnectNoticeSuspense<
-  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
-  TError = ApiResponseErrorDetail,
->(options?: {
-  query?: UseSuspenseQueryOptions<
-    Awaited<ReturnType<typeof getDisconnectNotice>>,
-    TError,
-    TData
-  >;
-}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetDisconnectNoticeSuspenseQueryOptions(options);
-
-  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
-    TData,
-    TError
-  > & { queryKey: QueryKey };
-
-  query.queryKey = queryOptions.queryKey;
-
-  return query;
-}
-
-/**
  * 현재 사용자의 커플 상태를 coupleStatus 쿠키에 저장합니다.
  * @summary 커플 상태 쿠키 저장
  */
@@ -2050,6 +1934,7 @@ export const useRefreshInvite = <
 - `deviceToken` 을 보내면 **이 기기의 토큰만** 삭제합니다. 같은 계정의 다른 기기는 계속 푸시를 받습니다.
 - 본문을 생략하거나 `deviceToken` 이 null·빈 문자열이면 사용자의 디바이스 토큰을 **전부** 삭제합니다(기존 동작).
 - 본문을 보낼 때는 `Content-Type: application/json` 을 사용하세요.
+- 토큰이 없거나 유효하지 않아도 401 대신 204 를 반환하며, 인증 쿠키만 삭제합니다(서버 측 토큰은 건드리지 않음).
  * @summary 로그아웃
  */
 export const logout = (logoutRequest: LogoutRequest, signal?: AbortSignal) => {
@@ -3581,19 +3466,22 @@ export function useSearchPlacesSuspense<
 
 /**
  * 
-            홈 정보와 지도 사진을 한 번에 조회합니다.
+    홈 정보와 지도 사진을 한 번에 조회합니다.
 
-            - 위치 정보, 앨범 목록, 바운딩 박스 (map/home 응답)
-            - 줌 레벨과 바운딩 박스 기반 사진/클러스터 (map/photos 응답)
-            - 두 API를 하나로 통합하여 네트워크 요청을 줄입니다.
-            - v1.0.0은 Deprecated 상태인 기본 버전이며, X-API-VERSION 헤더 없이 호출 가능합니다.
-            - v1.1 응답 형식을 사용하려면 X-API-VERSION=1.1 헤더가 필요합니다.
-            - v1.1 응답 형식을 사용합니다.
-        
- * @summary 지도 ME 조회 (v1.1, 홈 + 사진 조회 통합)
+    - 위치 정보, 앨범 목록, 바운딩 박스 (map/home 응답)
+    - 줌 레벨과 바운딩 박스 기반 사진/클러스터 (map/photos 응답)
+    - 두 API를 하나로 통합하여 네트워크 요청을 줄입니다.
+    - v1.0.0은 Deprecated 상태인 기본 버전이며, X-API-VERSION 헤더 없이 호출 가능합니다.
+    - v1.1 응답 형식을 사용하려면 X-API-VERSION=1.1 헤더가 필요합니다. 클러스터는 격자 기반입니다.
+    - 행정구역 클러스터(MapMeV2Response)를 사용하려면 X-API-VERSION=2.0 헤더가 필요합니다.
+      - 줌 < 8: 시·도 / 8 <= 줌 < 12: 시·군·구(일반구는 시 단위) / 12 <= 줌 < 15: 읍·면·동(행정동)
+      - 구역마다 가장 최근 사진 1장과 구역 이름(regionName)을 반환합니다.
+      - 줌 >= 15: 개별 사진 (clusters 는 null, photos 반환)
+
+ * @summary 지도 ME 조회 (홈 + 사진 조회 통합)
  */
 export const getMapMeV11 = (params: GetMapMeV11Params, signal?: AbortSignal) => {
-  return customFetcher<MapMeResponse>({ url: `/map/me`, method: 'GET', params, signal });
+  return customFetcher<GetMapMeV11200>({ url: `/map/me`, method: 'GET', params, signal });
 };
 
 export const getGetMapMeV11QueryKey = (params?: GetMapMeV11Params) => {
@@ -3627,7 +3515,7 @@ export type GetMapMeV11QueryResult = NonNullable<Awaited<ReturnType<typeof getMa
 export type GetMapMeV11QueryError = ApiResponseErrorDetail;
 
 /**
- * @summary 지도 ME 조회 (v1.1, 홈 + 사진 조회 통합)
+ * @summary 지도 ME 조회 (홈 + 사진 조회 통합)
  */
 
 export function useGetMapMeV11<
@@ -3683,7 +3571,7 @@ export type GetMapMeV11SuspenseQueryResult = NonNullable<
 export type GetMapMeV11SuspenseQueryError = ApiResponseErrorDetail;
 
 /**
- * @summary 지도 ME 조회 (v1.1, 홈 + 사진 조회 통합)
+ * @summary 지도 ME 조회 (홈 + 사진 조회 통합)
  */
 
 export function useGetMapMeV11Suspense<
@@ -3851,12 +3739,13 @@ export function useGetLocationInfoSuspense<
 
 /**
  * 
-            클러스터 ID를 기반으로 해당 그리드 셀 영역 내의 모든 사진을 조회합니다.
+            클러스터 ID에 해당하는 사진을 조회합니다.
 
-            - clusterId는 GET /map/photos 응답에서 반환된 값을 사용
-            - clusterId 형식: z{zoom}_{cellX}_{cellY}[_g{n}][_mz{zoom*1000}] (예: z14_130234_38456_mz14700)
-            - 사진은 생성일시 기준 내림차순 정렬
-            - 페이지네이션 지원 (page, size 파라미터)
+            - clusterId는 GET /map/me 응답의 clusters[].clusterId 값을 사용
+            - v2 응답의 행정구역 형식: sd_{시도 2자리} / sgg_{시군구 5자리} / emd_{읍면동 8자리} (예: sgg_41110)
+              - 시군구는 시 단위로 묶이므로 sgg_41110(수원시)은 장안구·권선구 등 일반구 사진을 모두 포함
+            - v1.x 응답의 격자 형식: z{zoom}_{cellX}_{cellY}[_g{n}][_mz{zoom*1000}] (예: z14_130234_38456_mz14700)
+            - 사진은 촬영일시(takenAt) 내림차순, 같으면 ID 내림차순 정렬
         
  * @summary 클러스터 내 사진 목록 조회
  */
@@ -4219,6 +4108,384 @@ export function useGetMyStatusSuspense<
   query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMyStatus>>, TError, TData>;
 }): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetMyStatusSuspenseQueryOptions(options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * 상대방이 연결을 끊은 뒤 아직 '상대방과 연결이 끊어졌어요' 알림창을 확인하지 않았으면 shouldShow=true 를 반환합니다. 확인 여부는 서버에 저장되므로 기기가 바뀌어도 한 번만 노출됩니다. 내가 끊은 경우·연결 중인 경우는 항상 false 입니다.
+ * @summary 연결 끊김 알림창 노출 여부 조회
+ */
+export const getDisconnectNotice = (signal?: AbortSignal) => {
+  return customFetcher<DisconnectNoticeResponse>({
+    url: `/couples/me/disconnect-notice`,
+    method: 'GET',
+    signal,
+  });
+};
+
+export const getGetDisconnectNoticeQueryKey = () => {
+  return [`/couples/me/disconnect-notice`] as const;
+};
+
+export const getGetDisconnectNoticeQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getDisconnectNotice>>, TError, TData>;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetDisconnectNoticeQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDisconnectNotice>>> = ({
+    signal,
+  }) => getDisconnectNotice(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getDisconnectNotice>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetDisconnectNoticeQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDisconnectNotice>>
+>;
+export type GetDisconnectNoticeQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 연결 끊김 알림창 노출 여부 조회
+ */
+
+export function useGetDisconnectNotice<
+  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseQueryOptions<Awaited<ReturnType<typeof getDisconnectNotice>>, TError, TData>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDisconnectNoticeQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetDisconnectNoticeSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getDisconnectNotice>>,
+    TError,
+    TData
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetDisconnectNoticeQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDisconnectNotice>>> = ({
+    signal,
+  }) => getDisconnectNotice(signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getDisconnectNotice>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetDisconnectNoticeSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDisconnectNotice>>
+>;
+export type GetDisconnectNoticeSuspenseQueryError = ApiResponseErrorDetail;
+
+/**
+ * @summary 연결 끊김 알림창 노출 여부 조회
+ */
+
+export function useGetDisconnectNoticeSuspense<
+  TData = Awaited<ReturnType<typeof getDisconnectNotice>>,
+  TError = ApiResponseErrorDetail,
+>(options?: {
+  query?: UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getDisconnectNotice>>,
+    TError,
+    TData
+  >;
+}): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDisconnectNoticeSuspenseQueryOptions(options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * 
+            해당 월에 사진 또는 기념일이 있는 날짜 목록을 조회합니다.
+
+            - 사진은 기준 시각(촬영 시각, 없으면 업로드 시각)의 날짜에 배치됩니다.
+            - 대표 사진은 같은 날짜 사진 중 기준 시각 최신(같으면 나중에 등록된) 1장입니다.
+            - 기념일은 커플이 된 날짜를 1일째로 계산한 100일 단위 기념일과 N주년입니다.
+              커플이 된 날짜가 없거나 연결된 커플이 아니면 생성하지 않습니다.
+        
+ * @summary 월간 캘린더 조회
+ */
+export const getMonth = (params: GetMonthParams, signal?: AbortSignal) => {
+  return customFetcher<CalendarMonthResponse>({
+    url: `/calendar`,
+    method: 'GET',
+    params,
+    signal,
+  });
+};
+
+export const getGetMonthQueryKey = (params?: GetMonthParams) => {
+  return [`/calendar`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetMonthQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMonth>>,
+  TError = ApiResponseErrorDetail | void,
+>(
+  params: GetMonthParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getMonth>>, TError, TData>;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMonthQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMonth>>> = ({ signal }) =>
+    getMonth(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getMonth>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMonthQueryResult = NonNullable<Awaited<ReturnType<typeof getMonth>>>;
+export type GetMonthQueryError = ApiResponseErrorDetail | void;
+
+/**
+ * @summary 월간 캘린더 조회
+ */
+
+export function useGetMonth<
+  TData = Awaited<ReturnType<typeof getMonth>>,
+  TError = ApiResponseErrorDetail | void,
+>(
+  params: GetMonthParams,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getMonth>>, TError, TData>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMonthQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetMonthSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getMonth>>,
+  TError = ApiResponseErrorDetail | void,
+>(
+  params: GetMonthParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMonth>>, TError, TData>;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetMonthQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getMonth>>> = ({ signal }) =>
+    getMonth(params, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getMonth>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetMonthSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getMonth>>
+>;
+export type GetMonthSuspenseQueryError = ApiResponseErrorDetail | void;
+
+/**
+ * @summary 월간 캘린더 조회
+ */
+
+export function useGetMonthSuspense<
+  TData = Awaited<ReturnType<typeof getMonth>>,
+  TError = ApiResponseErrorDetail | void,
+>(
+  params: GetMonthParams,
+  options?: {
+    query?: UseSuspenseQueryOptions<Awaited<ReturnType<typeof getMonth>>, TError, TData>;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetMonthSuspenseQueryOptions(params, options);
+
+  const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
+    TData,
+    TError
+  > & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+/**
+ * 
+            해당 날짜의 사진을 기준 시각 최신순으로 조회합니다.
+            첫 번째 사진은 월간 캘린더의 대표 사진과 같습니다. 사진 상세는 GET /photos/{id} 로 조회합니다.
+        
+ * @summary 날짜별 사진 목록 조회
+ */
+export const getDayPhotos = (date: string, signal?: AbortSignal) => {
+  return customFetcher<CalendarDayPhotosResponse>({
+    url: `/calendar/days/${date}/photos`,
+    method: 'GET',
+    signal,
+  });
+};
+
+export const getGetDayPhotosQueryKey = (date?: string) => {
+  return [`/calendar/days/${date}/photos`] as const;
+};
+
+export const getGetDayPhotosQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDayPhotos>>,
+  TError = ApiResponseErrorDetail | void,
+>(
+  date: string,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getDayPhotos>>, TError, TData>;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetDayPhotosQueryKey(date);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDayPhotos>>> = ({ signal }) =>
+    getDayPhotos(date, signal);
+
+  return { queryKey, queryFn, enabled: !!date, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getDayPhotos>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetDayPhotosQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDayPhotos>>
+>;
+export type GetDayPhotosQueryError = ApiResponseErrorDetail | void;
+
+/**
+ * @summary 날짜별 사진 목록 조회
+ */
+
+export function useGetDayPhotos<
+  TData = Awaited<ReturnType<typeof getDayPhotos>>,
+  TError = ApiResponseErrorDetail | void,
+>(
+  date: string,
+  options?: {
+    query?: UseQueryOptions<Awaited<ReturnType<typeof getDayPhotos>>, TError, TData>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDayPhotosQueryOptions(date, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const getGetDayPhotosSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDayPhotos>>,
+  TError = ApiResponseErrorDetail | void,
+>(
+  date: string,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getDayPhotos>>,
+      TError,
+      TData
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetDayPhotosQueryKey(date);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getDayPhotos>>> = ({ signal }) =>
+    getDayPhotos(date, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getDayPhotos>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetDayPhotosSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDayPhotos>>
+>;
+export type GetDayPhotosSuspenseQueryError = ApiResponseErrorDetail | void;
+
+/**
+ * @summary 날짜별 사진 목록 조회
+ */
+
+export function useGetDayPhotosSuspense<
+  TData = Awaited<ReturnType<typeof getDayPhotos>>,
+  TError = ApiResponseErrorDetail | void,
+>(
+  date: string,
+  options?: {
+    query?: UseSuspenseQueryOptions<
+      Awaited<ReturnType<typeof getDayPhotos>>,
+      TError,
+      TData
+    >;
+  },
+): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDayPhotosSuspenseQueryOptions(date, options);
 
   const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
     TData,
@@ -4837,8 +5104,12 @@ export const useDisconnect = <
 };
 
 /**
- * 사용자와 연결된 커플/앨범/사진/토큰 데이터를 함께 삭제합니다.
- * @summary 이메일 기준 사용자 데이터 전체 삭제
+ * 사용자와 현재 커플의 앨범/사진/댓글, 토큰, 알림 데이터를 DB와 S3에서 **복구할 수 없게** 삭제합니다.
+
+- 소프트 삭제된 행도 함께 삭제됩니다.
+- 파트너의 사진도 현재 커플에 속해 있으면 함께 삭제되며, 파트너 계정은 남습니다.
+- 다른 활성 멤버가 남아 있는 과거 커플의 데이터는 유지됩니다.
+ * @summary 이메일 기준 사용자 데이터 물리 삭제
  */
 export const deleteAllByEmail = (email: string) => {
   return customFetcher<AdminActionResponse>({
@@ -4894,7 +5165,7 @@ export type DeleteAllByEmailMutationError =
   | AdminActionResponse;
 
 /**
- * @summary 이메일 기준 사용자 데이터 전체 삭제
+ * @summary 이메일 기준 사용자 데이터 물리 삭제
  */
 export const useDeleteAllByEmail = <
   TError = ApiResponseErrorDetail | void | AdminActionResponse,

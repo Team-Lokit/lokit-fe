@@ -9,6 +9,8 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { LocationState, MapPin } from '@/types/map.type';
 import * as S from './MapView.styels';
 import ImagePin from '../image/ImagePin';
+import RegionPhotoLayer from './regionPhotoLayer/RegionPhotoLayer';
+import { useRegionPhotos } from './regionPhotoLayer/useRegionPhotos';
 
 interface MapViewProps {
   locationState: LocationState;
@@ -52,6 +54,11 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
       [],
     );
 
+    const { regionPhotos, pinPhotos, handleRegionClick } = useRegionPhotos(
+      pins,
+      onPinClick,
+    );
+
     useEffect(() => {
       if (locationState && mapRef.current) {
         isProgrammaticMoveRef.current = true;
@@ -78,6 +85,9 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
             [133, 43],
           ]}
           maxPitch={0}
+          // 지구본 투영이면 영역(SVG)이 경계와 어긋나므로 평면 지도로 고정
+          projection="mercator"
+          onClick={handleRegionClick}
           onMove={(evt) => {
             if (!isProgrammaticMoveRef.current && onViewStateChange) {
               onViewStateChange({
@@ -100,8 +110,9 @@ const MapView = forwardRef<MapViewHandle, MapViewProps>(
             position="bottom-right"
             style={{ display: 'none' }}
           />
+          <RegionPhotoLayer regions={regionPhotos} />
           <AnimatePresence mode="sync">
-            {pins.map((pin) => (
+            {pinPhotos.map((pin) => (
               <Marker
                 key={pin.isCluster ? pin.clusterId : pin.id}
                 latitude={pin.latitude}

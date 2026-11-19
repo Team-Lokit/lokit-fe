@@ -21,8 +21,8 @@ export interface CreatePhotoRequest {
   longitude: number;
   /** 사진 위도 */
   latitude: number;
-  /** 촬영일시 (EXIF 데이터) */
-  takenAt: string;
+  /** 촬영일시 (EXIF 데이터). 확인할 수 없으면 null 로 보내며, 서버가 업로드 시각으로 저장한다. */
+  takenAt?: string;
   /** 사진 설명 */
   description?: string;
 }

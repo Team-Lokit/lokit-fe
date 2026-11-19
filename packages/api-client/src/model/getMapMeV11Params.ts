@@ -16,7 +16,7 @@ export type GetMapMeV11Params = {
    */
   latitude: number;
   /**
-   * 줌 레벨(소수점 지원). 15 미만이면 클러스터링, 15 이상이면 개별 사진 반환
+   * 줌 레벨(소수점 지원). 15 미만이면 행정구역 클러스터, 15 이상이면 개별 사진 반환
    */
   zoom: number;
   /**

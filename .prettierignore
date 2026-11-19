@@ -11,3 +11,6 @@ dist
 build
 out
 coverage
+
+# 생성된 지도 경계 데이터 (scripts/build-region-boundaries.mjs) — 용량을 위해 압축 상태 유지
+apps/web/public/geo
