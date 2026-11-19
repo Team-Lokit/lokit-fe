@@ -29,7 +29,6 @@ export const ROUTES = {
   POLICIES: '/mypage/policies',
   ACCOUNT: '/mypage/account',
   NOTIFICATION: '/mypage/notification',
-  RECONNECT: '/reconnect',
   DISCONNECT: '/disconnect',
   SIGNOUT: '/signout',
   SYNC: '/sync',
