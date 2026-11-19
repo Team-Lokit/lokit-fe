@@ -2,9 +2,8 @@
 
 import { useRef, useEffect, KeyboardEvent, ClipboardEvent } from 'react';
 import { isDigit, isValidInviteCode } from '@/utils/inviteCode';
+import { INVITE_CODE_LENGTH } from '../../constants';
 import * as S from './CodeInput.styles';
-
-const CODE_LENGTH = 6;
 
 interface CodeInputProps {
   value: string;
@@ -18,7 +17,7 @@ export default function CodeInput({
   value,
   onChange,
   onComplete,
-  length = CODE_LENGTH,
+  length = INVITE_CODE_LENGTH,
 }: CodeInputProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 

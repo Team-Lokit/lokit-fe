@@ -13,7 +13,7 @@ import { useCodeVerification } from './_hooks/useCodeVerification';
 import { useToast } from '@/components/toast';
 import { ROUTES } from '@/constants/routes';
 import { KAKAO_TEMPLATE_ID } from '@/constants/kakao';
-import { INVITE_CODE_LENGTH } from '@/constants/onboarding';
+import { INVITE_CODE_LENGTH } from './constants';
 import { track } from '@/lib/analytics';
 import CopySvg from '@/assets/images/copy.svg';
 import KakaoSvg from '@/assets/images/kakao.svg';
