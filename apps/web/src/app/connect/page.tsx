@@ -133,18 +133,23 @@ export default function ConnectPage() {
       return;
     }
 
-    track('couple_connect_fail', {
-      error_type: toCoupleConnectErrorType(result.errorCode),
-    });
+    const errorType = toCoupleConnectErrorType(result.errorCode);
 
-    if (result.errorCode === 'INVITE_002') {
+    // 코드 문제가 아닌 실패(요청 제한, 동시 요청 충돌, 네트워크 등)는 다시 시도하도록 안내한다
+    if (!errorType) {
+      showToast('잠시 후 다시 시도해주세요', 3000, 'warn');
+      return;
+    }
+
+    track('couple_connect_fail', { error_type: errorType });
+    setPartnerCode('');
+
+    if (errorType === 'expired') {
       showToast('만료된 코드예요', 3000, 'warn');
-      setPartnerCode('');
-    } else if (result.errorCode === 'COUPLE_001') {
-      showToast('이미 연결된 계정이에요', 3000, 'warn');
-      router.replace(ROUTES.MYPAGE);
+    } else if (errorType === 'already_connected') {
+      // 내가 이미 커플이면 합류 API가 성공으로 응답하므로, 이 경우는 코드 주인이 이미 연결된 경우다
+      showToast('이미 다른 사람과 연결된 코드예요', 3000, 'warn');
     } else {
-      setPartnerCode('');
       setIsMismatchModalOpen(true);
     }
   }, [partnerCode, isJoining, joinCode, showToast, router]);
