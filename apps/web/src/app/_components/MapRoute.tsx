@@ -233,8 +233,7 @@ export default function MapRoute() {
 
     track('click_photo_cluster', {
       cluster_count: pin.imageCount,
-      /** @deprecated /map/me v1.1 응답에서 위치 정보 사라짐 */
-      location_name: '',
+      location_name: pin.regionName ?? '',
     });
 
     let photos = clusterExpansionData?.get(clusterId);
