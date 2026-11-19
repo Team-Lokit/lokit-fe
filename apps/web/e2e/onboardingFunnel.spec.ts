@@ -37,12 +37,12 @@ test.describe('온보딩 퍼널 - 커플 연결 없이 서비스 이용', () => 
     await expect(page).toHaveURL(ROUTES.HOME);
   });
 
-  test('없어진 온보딩 시작 페이지에 접근하면 홈으로 이동한다', async ({
+  test('커플 상태에서 파트너 연결 페이지에 접근하면 홈으로 이동한다', async ({
     page,
     context,
   }) => {
-    await loginAs(context, COUPLE_STATUS.NOT_COUPLED);
-    await page.goto(ROUTES.ONBOARDING.START);
+    await loginAs(context, COUPLE_STATUS.COUPLED);
+    await page.goto(ROUTES.CONNECT);
 
     await expect(page).toHaveURL(ROUTES.HOME);
   });
@@ -60,7 +60,7 @@ test.describe('마이페이지 - 파트너 연결 배너', () => {
     await expect(banner).toBeVisible();
 
     await banner.click();
-    await expect(page).toHaveURL(ROUTES.ONBOARDING.CONNECT);
+    await expect(page).toHaveURL(ROUTES.CONNECT);
   });
 
   test('상대가 연결을 끊은 상태에서도 연결 배너를 누르면 파트너 연결 페이지로 이동한다', async ({
@@ -74,7 +74,7 @@ test.describe('마이페이지 - 파트너 연결 배너', () => {
     await expect(banner).toBeVisible();
 
     await banner.click();
-    await expect(page).toHaveURL(ROUTES.ONBOARDING.CONNECT);
+    await expect(page).toHaveURL(ROUTES.CONNECT);
   });
 
   test('커플 상태에서는 연결 배너가 보이지 않는다', async ({ page, context }) => {

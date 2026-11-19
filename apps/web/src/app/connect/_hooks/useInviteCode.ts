@@ -1,12 +1,16 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useCreateInvite, useRefreshInvite } from '@repo/api-client';
-import { useOnboardingContext } from '../_contexts/OnboardingContext';
 import { useToast } from '@/components/toast';
 
+interface InviteCodeData {
+  code: string;
+  expiresAt: string;
+}
+
 export function useInviteCode() {
-  const { inviteCode, setInviteCode } = useOnboardingContext();
+  const [inviteCode, setInviteCode] = useState<InviteCodeData | null>(null);
   const { showToast } = useToast();
   const { mutateAsync: create, isPending: isCreating } = useCreateInvite();
   const { mutateAsync: refresh, isPending: isRefreshing } = useRefreshInvite();

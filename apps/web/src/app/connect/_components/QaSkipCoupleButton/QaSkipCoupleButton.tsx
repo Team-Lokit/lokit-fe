@@ -6,7 +6,6 @@ import { createCouplePartner } from '@repo/api-client';
 import { useToast } from '@/components/toast';
 import { ROUTES } from '@/constants/routes';
 import { useIsDevHost } from '@/hooks/useIsDevHost';
-import { useOnboardingContext } from '../../_contexts/OnboardingContext';
 import * as S from './QaSkipCoupleButton.styles';
 
 /**
@@ -17,7 +16,6 @@ const QaSkipCoupleButton = () => {
   const router = useRouter();
   const { showToast } = useToast();
   const isDevHost = useIsDevHost();
-  const { markStepCompleted } = useOnboardingContext();
   const [isSkipping, setIsSkipping] = useState(false);
 
   const handleClick = useCallback(async () => {
@@ -26,14 +24,13 @@ const QaSkipCoupleButton = () => {
     try {
       await createCouplePartner();
       showToast('QA 파트너와 연결됐어요', 3000, 'success');
-      markStepCompleted('connect');
       router.push(ROUTES.HOME);
     } catch (error) {
       console.error('QA 커플 연결 실패:', error);
       showToast('QA 커플 연결에 실패했어요', 3000, 'warn');
       setIsSkipping(false);
     }
-  }, [isSkipping, markStepCompleted, router, showToast]);
+  }, [isSkipping, router, showToast]);
 
   if (!isDevHost) return null;
 

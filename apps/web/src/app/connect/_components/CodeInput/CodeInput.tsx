@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, KeyboardEvent, ClipboardEvent } from 'react';
+import { useRef, useEffect, KeyboardEvent, ClipboardEvent } from 'react';
 import { isDigit, isValidInviteCode } from '@/utils/inviteCode';
 import * as S from './CodeInput.styles';
 
@@ -9,7 +9,8 @@ const CODE_LENGTH = 6;
 interface CodeInputProps {
   value: string;
   onChange: (value: string) => void;
-  onComplete: (value: string) => void;
+  /** 코드를 모두 입력했을 때 호출 (선택) */
+  onComplete?: (value: string) => void;
   length?: number;
 }
 
@@ -19,13 +20,12 @@ export default function CodeInput({
   onComplete,
   length = CODE_LENGTH,
 }: CodeInputProps) {
-  const [focusedIndex, setFocusedIndex] = useState(0);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const digits = value.padEnd(length, ' ').split('').slice(0, length);
 
   useEffect(() => {
-    if (isValidInviteCode(value, length)) {
+    if (onComplete && isValidInviteCode(value, length)) {
       onComplete(value);
     }
   }, [value, length, onComplete]);
@@ -85,11 +85,10 @@ export default function CodeInput({
           inputMode="numeric"
           maxLength={1}
           value={digit.trim()}
+          isFilled={!!digit.trim()}
           onChange={(e) => handleChange(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(index, e)}
           onPaste={handlePaste}
-          onFocus={() => setFocusedIndex(index)}
-          isFocused={focusedIndex === index}
         />
       ))}
     </S.Container>
