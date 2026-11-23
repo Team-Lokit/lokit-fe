@@ -4,6 +4,7 @@ import {
   useDelete,
   getGetPhotosQueryKey,
   getGetMapMeV11QueryKey,
+  getGetMonthQueryKey,
   getGetPhotoDetailQueryKey,
   getGetClusterPhotosQueryKey,
   type AlbumThumbnails,
@@ -89,6 +90,7 @@ const usePhotoDelete = () => {
       await deletePhotoAsync({ id: photoId });
       queryClient.removeQueries({ queryKey: getGetPhotoDetailQueryKey(photoId) });
       queryClient.invalidateQueries({ queryKey: getGetMapMeV11QueryKey() });
+      queryClient.invalidateQueries({ queryKey: getGetMonthQueryKey() });
 
       // 전체 사진 앨범(첫 번째 앨범)은 항상 invalidate
       const cachedAlbums = queryClient.getQueryData<AlbumThumbnails[]>(

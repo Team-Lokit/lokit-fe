@@ -335,7 +335,13 @@ export default function MapRoute() {
 
       {activeView === VIEW_TYPE.CALENDAR && !isAlbumDetailLoading && (
         <S.CalendarViewContainer>
-          <CalendarView photos={displayPhotos} firstMetDate={myPageData?.firstMetDate} />
+          <CalendarView
+            albumId={
+              viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL
+                ? viewContext.albumId
+                : undefined
+            }
+          />
         </S.CalendarViewContainer>
       )}
 

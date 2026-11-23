@@ -1,3 +1,8 @@
+import {
+  AnniversaryResponseType,
+  type AnniversaryResponse,
+  type CalendarDayResponse,
+} from '@repo/api-client';
 import { getDateOnly } from './photoGrid';
 
 export interface CalendarDay {
@@ -58,56 +63,38 @@ export const getTodayYearMonth = (): YearMonth => {
   return { year, month };
 };
 
-/**
- * 사진을 촬영일(KST) 기준 YYYY-MM-DD로 묶는다.
- * 촬영일이 없는 사진은 제외한다.
- */
-export const groupPhotosByDate = <T extends { takenAt?: string }>(
-  photos: T[],
-): Map<string, T[]> => {
-  const grouped = new Map<string, T[]>();
-  for (const photo of photos) {
-    const dateKey = getDateOnly(photo.takenAt);
-    if (!dateKey) continue;
-    const list = grouped.get(dateKey);
-    if (list) {
-      list.push(photo);
-    } else {
-      grouped.set(dateKey, [photo]);
-    }
-  }
-  return grouped;
-};
-
-const DAY_MS = 24 * 60 * 60 * 1000;
-
-const parseDateKey = (dateKey: string) => {
-  const [year, month, day] = dateKey.split('-').map(Number);
-  return { year, month, day, utc: Date.UTC(year, month - 1, day) };
-};
+/** API 조회 파라미터용 연월 문자열 (yyyy-MM) */
+export const toYearMonthKey = ({ year, month }: YearMonth) => `${year}-${pad(month)}`;
 
 /**
- * 커플 기념일 배지 라벨.
- * - 커플이 된 날을 1일째로 계산해 100일 단위(100, 200, ...)를 표시한다.
- * - 커플이 된 날과 같은 월·일에 매년 N주년을 표시한다. (같은 날이면 주년 우선)
- * - 커플이 된 날짜가 없거나 기념일이 아니면 null.
+ * 기념일 배지 라벨. (DAY_COUNT 100 → '100', YEARLY 1 → '1주년')
+ * 같은 날 여러 기념일이 겹치면 주년을 우선한다.
  */
 export const getAnniversaryLabel = (
-  dateKey: string,
-  firstMetDate?: string,
+  anniversaries?: AnniversaryResponse[],
 ): string | null => {
-  if (!firstMetDate) return null;
-  const start = parseDateKey(firstMetDate);
-  const target = parseDateKey(dateKey);
-  if (Number.isNaN(start.utc) || Number.isNaN(target.utc)) return null;
-
-  const years = target.year - start.year;
-  if (years > 0 && target.month === start.month && target.day === start.day) {
-    return `${years}주년`;
-  }
-
-  const dayCount = Math.round((target.utc - start.utc) / DAY_MS) + 1;
-  if (dayCount > 0 && dayCount % 100 === 0) return String(dayCount);
-
+  if (!anniversaries?.length) return null;
+  const yearly = anniversaries.find(
+    (item) => item.type === AnniversaryResponseType.YEARLY,
+  );
+  if (yearly?.value) return `${yearly.value}주년`;
+  const dayCount = anniversaries.find(
+    (item) => item.type === AnniversaryResponseType.DAY_COUNT,
+  );
+  if (dayCount?.value) return String(dayCount.value);
   return null;
+};
+
+/** 월간 캘린더 응답을 날짜(YYYY-MM-DD)별 대표 썸네일 / 기념일 라벨로 변환한다. */
+export const mapCalendarDays = (days: CalendarDayResponse[] = []) => {
+  const thumbnails: Record<string, string> = {};
+  const anniversaries: Record<string, string> = {};
+  for (const day of days) {
+    if (!day.date) continue;
+    const thumbnail = day.representativePhoto?.url;
+    if (thumbnail) thumbnails[day.date] = thumbnail;
+    const label = getAnniversaryLabel(day.anniversaries);
+    if (label) anniversaries[day.date] = label;
+  }
+  return { thumbnails, anniversaries };
 };

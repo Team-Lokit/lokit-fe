@@ -1,4 +1,8 @@
-import { useUpdate, getGetPhotoDetailQueryKey } from '@repo/api-client';
+import {
+  useUpdate,
+  getGetMonthQueryKey,
+  getGetPhotoDetailQueryKey,
+} from '@repo/api-client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/toast/ToastProvider';
 import { usePhotoContext } from '@/app/photo/_contexts/PhotoContext';
@@ -25,6 +29,8 @@ const usePhotoEdit = () => {
         queryClient.invalidateQueries({
           queryKey: getGetPhotoDetailQueryKey(variables.id),
         });
+        // 앨범 이동 시 앨범 캘린더 반영
+        queryClient.invalidateQueries({ queryKey: getGetMonthQueryKey() });
         showToast('기록이 수정되었어요');
         setEditingPhotoId(null);
         initPhotoEditState({});

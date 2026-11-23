@@ -2,12 +2,7 @@
 
 import { useMemo } from 'react';
 import ChevronDownIcon from '@/assets/images/chevronDownSmall.svg';
-import {
-  buildCalendarWeeks,
-  getAnniversaryLabel,
-  type CalendarDay,
-  type YearMonth,
-} from '@/utils/calendar';
+import { buildCalendarWeeks, type CalendarDay, type YearMonth } from '@/utils/calendar';
 import * as S from './Calendar.styles';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -25,8 +20,8 @@ export interface CalendarProps {
   todayKey: string;
   /** 날짜(YYYY-MM-DD)별 대표 썸네일 URL */
   thumbnails: Record<string, string>;
-  /** 커플이 된 날짜 (YYYY-MM-DD). 없으면 기념일 배지를 표시하지 않음 */
-  firstMetDate?: string;
+  /** 날짜(YYYY-MM-DD)별 기념일 라벨 (예: '100', '1주년') */
+  anniversaries?: Record<string, string>;
   /** 연/월 영역 클릭 */
   onClickMonth?: () => void;
   /** 날짜 클릭 */
@@ -37,7 +32,7 @@ const Calendar = ({
   yearMonth,
   todayKey,
   thumbnails,
-  firstMetDate,
+  anniversaries = {},
   onClickMonth,
   onClickDate,
 }: CalendarProps) => {
@@ -64,7 +59,7 @@ const Calendar = ({
         <S.WeekRow key={week[0].dateKey}>
           {week.map((day) => {
             const thumbnail = thumbnails[day.dateKey];
-            const anniversary = getAnniversaryLabel(day.dateKey, firstMetDate);
+            const anniversary = anniversaries[day.dateKey];
             const [year, month] = day.dateKey.split('-');
             const label = [
               `${year}년 ${Number(month)}월 ${day.day}일`,

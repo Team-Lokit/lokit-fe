@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   useUpdateFirstMetDate,
+  getGetMonthQueryKey,
   getGetMyPageQueryKey,
   type MyPageResponse,
 } from '@repo/api-client';
@@ -91,6 +92,8 @@ export default function DdayEditModal({
         },
         onSettled: () => {
           queryClient.invalidateQueries({ queryKey });
+          // 기념일 배지 갱신
+          queryClient.invalidateQueries({ queryKey: getGetMonthQueryKey() });
         },
       },
     );

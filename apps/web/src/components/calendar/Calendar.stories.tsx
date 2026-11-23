@@ -47,10 +47,10 @@ export const Empty: Story = {
   },
 };
 
-/** 커플이 된 날(2026-07-10)을 1일째로 계산해 10/17이 100일 */
+/** 100일 단위 기념일 */
 export const HundredDays: Story = {
   args: {
-    firstMetDate: '2026-07-10',
+    anniversaries: { '2026-10-17': '100' },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -61,10 +61,10 @@ export const HundredDays: Story = {
   },
 };
 
-/** 같은 월·일에 매년 N주년 */
+/** N주년 기념일 */
 export const FirstYear: Story = {
   args: {
-    firstMetDate: '2025-10-17',
+    anniversaries: { '2026-10-17': '1주년' },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
