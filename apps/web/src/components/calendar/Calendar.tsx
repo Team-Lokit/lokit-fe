@@ -18,39 +18,45 @@ const getDayVariant = (day: CalendarDay, todayKey: string): S.DayVariant => {
   return 'default';
 };
 
-export interface CalendarProps {
-  /** 조회 중인 연/월 */
+interface CalendarMonthButtonProps {
+  yearMonth: YearMonth;
+  onClick?: () => void;
+}
+
+/** 연/월 라벨 버튼 (스와이프 시에도 고정) */
+export const CalendarMonthButton = ({ yearMonth, onClick }: CalendarMonthButtonProps) => (
+  <S.MonthButton type="button" onClick={onClick}>
+    <S.MonthLabel>
+      {yearMonth.year} {yearMonth.month}월
+    </S.MonthLabel>
+    <S.MonthIcon aria-hidden>
+      <ChevronDownIcon />
+    </S.MonthIcon>
+  </S.MonthButton>
+);
+
+export interface CalendarGridProps {
+  /** 그릴 연/월 */
   yearMonth: YearMonth;
   /** 오늘 날짜 (YYYY-MM-DD) */
   todayKey: string;
   /** 날짜(YYYY-MM-DD)별 칸 정보 (대표 썸네일, 기념일 라벨) */
   days: Record<string, CalendarDayInfo>;
-  /** 연/월 영역 클릭 */
-  onClickMonth?: () => void;
   /** 날짜 클릭 */
   onClickDate?: (dateKey: string) => void;
 }
 
-const Calendar = ({
+/** 요일 줄 + 날짜 격자 (스와이프 시 옆 달과 함께 이동하는 영역) */
+export const CalendarGrid = ({
   yearMonth,
   todayKey,
   days,
-  onClickMonth,
   onClickDate,
-}: CalendarProps) => {
+}: CalendarGridProps) => {
   const weeks = useMemo(() => buildCalendarWeeks(yearMonth), [yearMonth]);
 
   return (
     <S.Container>
-      <S.MonthButton type="button" onClick={onClickMonth}>
-        <S.MonthLabel>
-          {yearMonth.year} {yearMonth.month}월
-        </S.MonthLabel>
-        <S.MonthIcon aria-hidden>
-          <ChevronDownIcon />
-        </S.MonthIcon>
-      </S.MonthButton>
-
       <S.WeekdayRow aria-hidden>
         {WEEKDAYS.map((weekday) => (
           <span key={weekday}>{weekday}</span>
@@ -97,5 +103,18 @@ const Calendar = ({
     </S.Container>
   );
 };
+
+export interface CalendarProps extends CalendarGridProps {
+  /** 연/월 영역 클릭 */
+  onClickMonth?: () => void;
+}
+
+/** 연/월 버튼 + 한 달 격자 */
+const Calendar = ({ onClickMonth, ...gridProps }: CalendarProps) => (
+  <S.Container>
+    <CalendarMonthButton yearMonth={gridProps.yearMonth} onClick={onClickMonth} />
+    <CalendarGrid {...gridProps} />
+  </S.Container>
+);
 
 export default Calendar;

@@ -4,6 +4,7 @@ import {
   buildCalendarWeeks,
   getAnniversaryLabel,
   mapCalendarDays,
+  shiftYearMonth,
   toYearMonthKey,
 } from '@/utils/calendar';
 
@@ -90,5 +91,26 @@ describe('mapCalendarDays', () => {
 
   it('응답이 없으면 빈 객체', () => {
     expect(mapCalendarDays(undefined)).toEqual({});
+  });
+});
+
+describe('shiftYearMonth', () => {
+  it('같은 해 안에서 이동한다', () => {
+    expect(shiftYearMonth({ year: 2026, month: 5 }, 1)).toEqual({ year: 2026, month: 6 });
+    expect(shiftYearMonth({ year: 2026, month: 5 }, -1)).toEqual({
+      year: 2026,
+      month: 4,
+    });
+  });
+
+  it('연도 경계를 넘는다', () => {
+    expect(shiftYearMonth({ year: 2026, month: 12 }, 1)).toEqual({
+      year: 2027,
+      month: 1,
+    });
+    expect(shiftYearMonth({ year: 2026, month: 1 }, -1)).toEqual({
+      year: 2025,
+      month: 12,
+    });
   });
 });

@@ -63,6 +63,12 @@ export const getTodayYearMonth = (): YearMonth => {
   return { year, month };
 };
 
+/** 연/월을 offset개월만큼 이동한다. (양수: 이후 달, 음수: 이전 달 / 예: 2026-12 +1 → 2027-01) */
+export const shiftYearMonth = ({ year, month }: YearMonth, offset: number): YearMonth => {
+  const index = year * 12 + (month - 1) + offset;
+  return { year: Math.floor(index / 12), month: (index % 12) + 1 };
+};
+
 /** API 조회 파라미터용 연월 문자열 (yyyy-MM) */
 export const toYearMonthKey = ({ year, month }: YearMonth) => `${year}-${pad(month)}`;
 
