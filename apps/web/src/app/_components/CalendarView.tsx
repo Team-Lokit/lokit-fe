@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Calendar from '@/components/calendar/Calendar';
+import MonthPickerModal from '@/components/calendar/monthPickerModal/MonthPickerModal';
 import { useCalendarMonth } from '@/hooks/queries';
 import { ROUTES } from '@/constants/routes';
-import { getTodayKey, getTodayYearMonth } from '@/utils/calendar';
+import { getTodayKey, getTodayYearMonth, type YearMonth } from '@/utils/calendar';
 
 interface CalendarViewProps {
   /** 앨범 상세에서 볼 때만 전달 */
@@ -14,7 +15,8 @@ interface CalendarViewProps {
 
 const CalendarView = ({ albumId }: CalendarViewProps) => {
   const [todayKey] = useState(getTodayKey);
-  const [yearMonth] = useState(getTodayYearMonth);
+  const [yearMonth, setYearMonth] = useState(getTodayYearMonth);
+  const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
 
   const router = useRouter();
 
@@ -33,13 +35,27 @@ const CalendarView = ({ albumId }: CalendarViewProps) => {
     );
   };
 
+  const handleConfirmMonth = (nextYearMonth: YearMonth) => {
+    setYearMonth(nextYearMonth);
+    setIsMonthPickerOpen(false);
+  };
+
   return (
-    <Calendar
-      yearMonth={yearMonth}
-      todayKey={todayKey}
-      days={days}
-      onClickDate={handleClickDate}
-    />
+    <>
+      <Calendar
+        yearMonth={yearMonth}
+        todayKey={todayKey}
+        days={days}
+        onClickDate={handleClickDate}
+        onClickMonth={() => setIsMonthPickerOpen(true)}
+      />
+      <MonthPickerModal
+        isOpen={isMonthPickerOpen}
+        initialYearMonth={yearMonth}
+        onClose={() => setIsMonthPickerOpen(false)}
+        onConfirm={handleConfirmMonth}
+      />
+    </>
   );
 };
 
