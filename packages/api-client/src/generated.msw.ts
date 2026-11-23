@@ -16,6 +16,8 @@ import type {
   AdminPartnerResponse,
   AdminUserSummaryResponse,
   AlbumMapInfoResponse,
+  CalendarDayPhotosResponse,
+  CalendarMonthResponse,
   ClusterPhotoResponse,
   CommentListResponse,
   CoupleStatusResponse,
@@ -906,6 +908,93 @@ export const getDeleteAllByEmailResponseMock = (
 ): AdminActionResponse => ({
   message: faker.helpers.arrayElement([
     faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
+  ...overrideResponse,
+});
+
+export const getGetMonthResponseMock = (
+  overrideResponse: Partial<CalendarMonthResponse> = {},
+): CalendarMonthResponse => ({
+  yearMonth: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
+    undefined,
+  ]),
+  days: faker.helpers.arrayElement([
+    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+      () => ({
+        date: faker.helpers.arrayElement([
+          faker.date.past().toISOString().split('T')[0],
+          undefined,
+        ]),
+        representativePhoto: faker.helpers.arrayElement([
+          {
+            id: faker.helpers.arrayElement([
+              faker.number.int({ min: undefined, max: undefined }),
+              undefined,
+            ]),
+            url: faker.helpers.arrayElement([
+              faker.string.alpha({ length: { min: 10, max: 20 } }),
+              undefined,
+            ]),
+            takenAt: faker.helpers.arrayElement([
+              `${faker.date.past().toISOString().split('.')[0]}Z`,
+              undefined,
+            ]),
+          },
+          undefined,
+        ]),
+        anniversaries: faker.helpers.arrayElement([
+          Array.from(
+            { length: faker.number.int({ min: 1, max: 10 }) },
+            (_, i) => i + 1,
+          ).map(() => ({
+            type: faker.helpers.arrayElement([
+              faker.helpers.arrayElement(['DAY_COUNT', 'YEARLY'] as const),
+              undefined,
+            ]),
+            value: faker.helpers.arrayElement([
+              faker.number.int({ min: undefined, max: undefined }),
+              undefined,
+            ]),
+          })),
+          undefined,
+        ]),
+      }),
+    ),
+    undefined,
+  ]),
+  ...overrideResponse,
+});
+
+export const getGetDayPhotosResponseMock = (
+  overrideResponse: Partial<CalendarDayPhotosResponse> = {},
+): CalendarDayPhotosResponse => ({
+  date: faker.helpers.arrayElement([
+    faker.date.past().toISOString().split('T')[0],
+    undefined,
+  ]),
+  photos: faker.helpers.arrayElement([
+    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+      () => ({
+        id: faker.helpers.arrayElement([
+          faker.number.int({ min: undefined, max: undefined }),
+          undefined,
+        ]),
+        url: faker.helpers.arrayElement([
+          faker.string.alpha({ length: { min: 10, max: 20 } }),
+          undefined,
+        ]),
+        takenAt: faker.helpers.arrayElement([
+          `${faker.date.past().toISOString().split('.')[0]}Z`,
+          undefined,
+        ]),
+        address: faker.helpers.arrayElement([
+          faker.string.alpha({ length: { min: 10, max: 20 } }),
+          undefined,
+        ]),
+      }),
+    ),
     undefined,
   ]),
   ...overrideResponse,
@@ -2225,6 +2314,62 @@ export const getDeleteAllByEmailMockHandler = (
     options,
   );
 };
+export const getGetMonthMockHandler = (
+  overrideResponse?:
+    | CalendarMonthResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<CalendarMonthResponse> | CalendarMonthResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/calendar',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetMonthResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
+export const getGetDayPhotosMockHandler = (
+  overrideResponse?:
+    | CalendarDayPhotosResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<CalendarDayPhotosResponse> | CalendarDayPhotosResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/calendar/days/:date/photos',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetDayPhotosResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
 export const getLokitAPIMock = () => [
   getGetPhotoDetailMockHandler(),
   getUpdateMockHandler(),
@@ -2277,4 +2422,6 @@ export const getLokitAPIMock = () => [
   getDeleteAllByEmailMockHandler(),
   getConfirmDisconnectNoticeMockHandler(),
   getGetDisconnectNoticeMockHandler(),
+  getGetMonthMockHandler(),
+  getGetDayPhotosMockHandler(),
 ];
