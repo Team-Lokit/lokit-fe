@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import {
   useUpdateFirstMetDate,
-  getGetMonthQueryKey,
   getGetMyPageQueryKey,
   type MyPageResponse,
 } from '@repo/api-client';
+import { invalidateCalendarQueries } from '@/utils/calendarQuery';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/toast';
 import Modal from '@/components/popup/modal/Modal';
@@ -93,7 +93,7 @@ export default function DdayEditModal({
         onSettled: () => {
           queryClient.invalidateQueries({ queryKey });
           // 기념일 배지 갱신
-          queryClient.invalidateQueries({ queryKey: getGetMonthQueryKey() });
+          invalidateCalendarQueries(queryClient);
         },
       },
     );

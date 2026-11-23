@@ -7,10 +7,10 @@ import type { PhotoUploadErrorType } from '@/lib/analytics/events';
 import {
   create,
   getGetMapMeV11QueryKey,
-  getGetMonthQueryKey,
   getGetPhotosQueryKey,
   getPresignedUrl,
 } from '@repo/api-client';
+import { invalidateCalendarQueries } from '@/utils/calendarQuery';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   createContext,
@@ -228,7 +228,7 @@ export function PendingPhotosProvider({ children }: PropsWithChildren) {
 
           // 성공 시 쿼리 invalidate
           queryClient.invalidateQueries({ queryKey: getGetMapMeV11QueryKey() });
-          queryClient.invalidateQueries({ queryKey: getGetMonthQueryKey() });
+          invalidateCalendarQueries(queryClient);
           if (albumId) {
             queryClient.invalidateQueries({
               queryKey: getGetPhotosQueryKey(albumId),
