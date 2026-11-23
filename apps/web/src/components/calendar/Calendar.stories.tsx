@@ -4,6 +4,16 @@ import Calendar from './Calendar';
 
 const photo = (seed: number) => `https://picsum.photos/seed/lokit-${seed}/48/56`;
 
+const days = {
+  '2026-10-02': { thumbnail: photo(1) },
+  '2026-10-05': { thumbnail: photo(2) },
+  '2026-10-09': { thumbnail: photo(3) },
+  '2026-10-11': { thumbnail: photo(4) },
+  '2026-10-17': { thumbnail: photo(5) },
+  '2026-10-18': { thumbnail: photo(6) },
+  '2026-10-24': { thumbnail: photo(7) },
+};
+
 const meta: Meta<typeof Calendar> = {
   title: 'Components/Calendar',
   component: Calendar,
@@ -21,15 +31,7 @@ const meta: Meta<typeof Calendar> = {
   args: {
     yearMonth: { year: 2026, month: 10 },
     todayKey: '2026-10-18',
-    thumbnails: {
-      '2026-10-02': photo(1),
-      '2026-10-05': photo(2),
-      '2026-10-09': photo(3),
-      '2026-10-11': photo(4),
-      '2026-10-17': photo(5),
-      '2026-10-18': photo(6),
-      '2026-10-24': photo(7),
-    },
+    days,
     onClickMonth: fn(),
     onClickDate: fn(),
   },
@@ -43,14 +45,14 @@ export const Default: Story = {};
 
 export const Empty: Story = {
   args: {
-    thumbnails: {},
+    days: {},
   },
 };
 
 /** 100일 단위 기념일 */
 export const HundredDays: Story = {
   args: {
-    anniversaries: { '2026-10-17': '100' },
+    days: { ...days, '2026-10-17': { thumbnail: photo(5), anniversary: '100' } },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -64,7 +66,7 @@ export const HundredDays: Story = {
 /** N주년 기념일 */
 export const FirstYear: Story = {
   args: {
-    anniversaries: { '2026-10-17': '1주년' },
+    days: { ...days, '2026-10-17': { thumbnail: photo(5), anniversary: '1주년' } },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -76,7 +78,7 @@ export const FirstYear: Story = {
 export const SixWeeks: Story = {
   args: {
     yearMonth: { year: 2026, month: 8 },
-    thumbnails: { '2026-08-15': photo(8) },
+    days: { '2026-08-15': { thumbnail: photo(8) } },
   },
 };
 

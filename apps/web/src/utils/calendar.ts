@@ -85,16 +85,28 @@ export const getAnniversaryLabel = (
   return null;
 };
 
-/** 월간 캘린더 응답을 날짜(YYYY-MM-DD)별 대표 썸네일 / 기념일 라벨로 변환한다. */
-export const mapCalendarDays = (days: CalendarDayResponse[] = []) => {
-  const thumbnails: Record<string, string> = {};
-  const anniversaries: Record<string, string> = {};
+/** 캘린더 날짜 칸 하나에 표시할 정보 */
+export interface CalendarDayInfo {
+  /** 대표 사진 URL */
+  thumbnail?: string;
+  /** 대표 사진 ID (날짜 클릭 시 사진 상세 진입용) */
+  photoId?: number;
+  /** 기념일 라벨 (예: '100', '1주년') */
+  anniversary?: string;
+}
+
+/** 월간 캘린더 응답을 날짜(YYYY-MM-DD)별 칸 정보로 변환한다. */
+export const mapCalendarDays = (
+  days: CalendarDayResponse[] = [],
+): Record<string, CalendarDayInfo> => {
+  const result: Record<string, CalendarDayInfo> = {};
   for (const day of days) {
     if (!day.date) continue;
-    const thumbnail = day.representativePhoto?.url;
-    if (thumbnail) thumbnails[day.date] = thumbnail;
-    const label = getAnniversaryLabel(day.anniversaries);
-    if (label) anniversaries[day.date] = label;
+    result[day.date] = {
+      thumbnail: day.representativePhoto?.url,
+      photoId: day.representativePhoto?.id,
+      anniversary: getAnniversaryLabel(day.anniversaries) ?? undefined,
+    };
   }
-  return { thumbnails, anniversaries };
+  return result;
 };

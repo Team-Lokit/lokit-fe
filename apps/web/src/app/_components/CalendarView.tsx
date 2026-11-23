@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Calendar from '@/components/calendar/Calendar';
 import { useCalendarMonth } from '@/hooks/queries';
+import { ROUTES } from '@/constants/routes';
 import { getTodayKey, getTodayYearMonth } from '@/utils/calendar';
 
 interface CalendarViewProps {
@@ -14,14 +16,29 @@ const CalendarView = ({ albumId }: CalendarViewProps) => {
   const [todayKey] = useState(getTodayKey);
   const [yearMonth] = useState(getTodayYearMonth);
 
-  const { thumbnails, anniversaries } = useCalendarMonth({ yearMonth, albumId });
+  const router = useRouter();
+
+  const { days } = useCalendarMonth({ yearMonth, albumId });
+
+  // 사진이 있는 날짜만 사진 상세로 이동 (하단 썸네일에 해당 날짜 사진 노출)
+  const handleClickDate = (dateKey: string) => {
+    const photoId = days[dateKey]?.photoId;
+    if (photoId === undefined) return;
+    router.push(
+      ROUTES.PHOTO.VIEW(photoId, {
+        date: dateKey,
+        source: albumId ? 'album_detail' : 'home_calendar',
+        ...(albumId ? { albumId } : {}),
+      }),
+    );
+  };
 
   return (
     <Calendar
       yearMonth={yearMonth}
       todayKey={todayKey}
-      thumbnails={thumbnails}
-      anniversaries={anniversaries}
+      days={days}
+      onClickDate={handleClickDate}
     />
   );
 };

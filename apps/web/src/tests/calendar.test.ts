@@ -70,7 +70,7 @@ describe('getAnniversaryLabel', () => {
 });
 
 describe('mapCalendarDays', () => {
-  it('날짜별 대표 썸네일과 기념일 라벨로 변환한다', () => {
+  it('날짜별 대표 사진과 기념일 라벨을 칸 정보로 변환한다', () => {
     const result = mapCalendarDays([
       {
         date: '2026-11-02',
@@ -82,11 +82,13 @@ describe('mapCalendarDays', () => {
         anniversaries: [{ type: AnniversaryResponseType.DAY_COUNT, value: 200 }],
       },
     ]);
-    expect(result.thumbnails).toEqual({ '2026-11-02': 'a.jpg' });
-    expect(result.anniversaries).toEqual({ '2026-11-10': '200' });
+    expect(result).toEqual({
+      '2026-11-02': { thumbnail: 'a.jpg', photoId: 1, anniversary: undefined },
+      '2026-11-10': { thumbnail: undefined, photoId: undefined, anniversary: '200' },
+    });
   });
 
   it('응답이 없으면 빈 객체', () => {
-    expect(mapCalendarDays(undefined)).toEqual({ thumbnails: {}, anniversaries: {} });
+    expect(mapCalendarDays(undefined)).toEqual({});
   });
 });

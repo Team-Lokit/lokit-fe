@@ -11,7 +11,7 @@ interface UseCalendarMonthParams {
 
 /**
  * GET /calendar 월간 캘린더 조회
- * - 날짜별 대표 썸네일과 기념일 라벨로 변환해 반환한다.
+ * - 날짜별 칸 정보(대표 사진, 기념일 라벨)로 변환해 반환한다.
  */
 export const useCalendarMonth = ({ yearMonth, albumId }: UseCalendarMonthParams) => {
   const params = {
@@ -23,14 +23,10 @@ export const useCalendarMonth = ({ yearMonth, albumId }: UseCalendarMonthParams)
     query: { queryKey: getGetMonthQueryKey(params), placeholderData: keepPreviousData },
   });
 
-  const { thumbnails, anniversaries } = useMemo(
-    () => mapCalendarDays(response.data?.days),
-    [response.data?.days],
-  );
+  const days = useMemo(() => mapCalendarDays(response.data?.days), [response.data?.days]);
 
   return {
-    thumbnails,
-    anniversaries,
+    days,
     isLoading: response.isLoading,
     isError: response.isError,
   };
