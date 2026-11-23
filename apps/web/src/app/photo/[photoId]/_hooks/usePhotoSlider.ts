@@ -10,6 +10,7 @@ interface UsePhotoSliderProps {
   initialPhotoId?: number;
   albumIdFromQuery?: number;
   clusterIdFromQuery?: string;
+  dateFromQuery?: string;
 }
 
 const usePhotoSlider = ({
@@ -17,21 +18,28 @@ const usePhotoSlider = ({
   initialPhotoId,
   albumIdFromQuery,
   clusterIdFromQuery,
+  dateFromQuery,
 }: UsePhotoSliderProps) => {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
 
   const updateUrl = useCallback(
     (photoId: number) => {
-      let url = `/photo/${photoId}`;
+      const params = new URLSearchParams();
+      if (dateFromQuery) params.set('date', dateFromQuery);
       if (albumIdFromQuery) {
-        url += `?albumId=${albumIdFromQuery}`;
+        params.set('albumId', String(albumIdFromQuery));
       } else if (clusterIdFromQuery) {
-        url += `?clusterId=${clusterIdFromQuery}`;
+        params.set('clusterId', clusterIdFromQuery);
       }
-      window.history.replaceState(null, '', url);
+      const query = params.toString();
+      window.history.replaceState(
+        null,
+        '',
+        `/photo/${photoId}${query ? `?${query}` : ''}`,
+      );
     },
-    [albumIdFromQuery, clusterIdFromQuery],
+    [albumIdFromQuery, clusterIdFromQuery, dateFromQuery],
   );
 
   useEffect(() => {
