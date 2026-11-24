@@ -16,7 +16,7 @@ export const Title = styled.h2`
 `;
 
 export const Description = styled.p`
-  ${({ theme }) => theme.typography.body15Regular};
+  ${({ theme }) => theme.typography.body16Regular};
   color: ${({ theme }) => theme.colors.grayScale[500]};
   margin: 0;
 `;
