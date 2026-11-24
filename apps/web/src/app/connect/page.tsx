@@ -20,6 +20,7 @@ import KakaoSvg from '@/assets/images/kakao.svg';
 import ClockSvg from '@/assets/images/clock.svg';
 import { formatTimeLeft } from './_utils/formatTimeLeft';
 import { toCoupleConnectErrorType } from './_utils/toCoupleConnectErrorType';
+import { formatDeadline } from '@/utils/formatDeadline';
 import * as S from './page.styles';
 
 const COUPLE_STATUS_POLLING_INTERVAL = 3000;
@@ -36,6 +37,7 @@ export default function ConnectPage() {
   // 내가 코드로 연결하는 중에는 폴링이 같은 연결을 성공으로 중복 처리하지 않게 막는다
   const isJoiningRef = useRef(false);
   const { data: myPageData } = useGetMyPage();
+  const reconnectDeadline = formatDeadline(myPageData?.reconnectDeadline);
   const { inviteCode, createCode, copyCode } = useInviteCode();
   const { joinCode, isJoining } = useCodeVerification();
 
@@ -164,7 +166,11 @@ export default function ConnectPage() {
       <S.Content>
         <S.TitleGroup>
           <S.Title>함께 사진을 채워봐요</S.Title>
-          <S.Description>로킷을 함께할 사람과 연결해주세요</S.Description>
+          <S.Description>
+            {reconnectDeadline === null
+              ? '로킷을 함께할 사람과 연결해주세요'
+              : `${reconnectDeadline}까지 기존 파트너와 재연결하면\n업로드한 사진들을 다시 복구할 수 있어요`}
+          </S.Description>
         </S.TitleGroup>
 
         <S.InviteSection>

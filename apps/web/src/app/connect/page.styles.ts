@@ -44,6 +44,7 @@ export const Description = styled.p`
   ${({ theme }) => theme.typography.body16Regular};
   color: ${({ theme }) => theme.colors.grayScale[300]};
   margin: 0;
+  white-space: pre-line;
 `;
 
 export const Section = styled.section`

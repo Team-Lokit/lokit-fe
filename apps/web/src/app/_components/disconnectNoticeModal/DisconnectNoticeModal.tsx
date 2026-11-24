@@ -10,16 +10,8 @@ import {
 } from '@repo/api-client';
 import Modal from '@/components/popup/modal/Modal';
 import TextButton from '@/components/buttons/textButton/TextButton';
+import { formatDeadline } from '@/utils/formatDeadline';
 import * as S from './DisconnectNoticeModal.styles';
-
-// "2026-02-11" 또는 "2026-02-11T..." → "2026년 2월 11일" (시간대 변환 없이 날짜만 사용)
-const formatDeadline = (deadline?: string) => {
-  const match = deadline?.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (!match) return null;
-
-  const [, year, month, day] = match;
-  return `${year}년 ${Number(month)}월 ${Number(day)}일`;
-};
 
 /**
  * 상대가 연결을 끊은 뒤 처음 홈에 들어왔을 때 1회 노출하는 알림창.
