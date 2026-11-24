@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CalendarSwiper from '@/components/calendar/calendarSwiper/CalendarSwiper';
 import MonthPickerModal from '@/components/calendar/monthPickerModal/MonthPickerModal';
+import Chip from '@/components/buttons/chip/Chip';
+import ChevronRightSvg from '@/assets/images/chevronRightSmall.svg';
 import { useCalendarMonth } from '@/hooks/queries';
 import { ROUTES } from '@/constants/routes';
 import {
@@ -13,6 +15,7 @@ import {
   toYearMonthKey,
   type YearMonth,
 } from '@/utils/calendar';
+import * as S from './CalendarView.styles';
 
 interface CalendarViewProps {
   /** 앨범 상세에서 볼 때만 전달 */
@@ -21,7 +24,8 @@ interface CalendarViewProps {
 
 const CalendarView = ({ albumId }: CalendarViewProps) => {
   const [todayKey] = useState(getTodayKey);
-  const [yearMonth, setYearMonth] = useState(getTodayYearMonth);
+  const [todayYearMonth] = useState(getTodayYearMonth);
+  const [yearMonth, setYearMonth] = useState(todayYearMonth);
   const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
 
   const router = useRouter();
@@ -52,6 +56,9 @@ const CalendarView = ({ albumId }: CalendarViewProps) => {
     );
   };
 
+  const isViewingCurrentMonth =
+    yearMonth.year === todayYearMonth.year && yearMonth.month === todayYearMonth.month;
+
   const handleConfirmMonth = (nextYearMonth: YearMonth) => {
     setYearMonth(nextYearMonth);
     setIsMonthPickerOpen(false);
@@ -67,6 +74,18 @@ const CalendarView = ({ albumId }: CalendarViewProps) => {
         onClickDate={handleClickDate}
         onClickMonth={() => setIsMonthPickerOpen(true)}
       />
+      {!isViewingCurrentMonth && (
+        <S.TodayButtonWrapper>
+          <Chip
+            text="오늘"
+            variant="gray"
+            size="medium"
+            trailingIcon={<ChevronRightSvg width={14} height={14} />}
+            ariaLabel="현재 달로 이동"
+            onClick={() => setYearMonth(todayYearMonth)}
+          />
+        </S.TodayButtonWrapper>
+      )}
       <MonthPickerModal
         isOpen={isMonthPickerOpen}
         initialYearMonth={yearMonth}
