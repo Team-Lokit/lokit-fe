@@ -4,9 +4,8 @@ import { useHasUnreadNotifications } from '@repo/api-client';
 import { VIEW_CONTEXT_TYPE, type ViewContext } from '@/constants/viewContext';
 import { ExploreHeader } from '@/components/header';
 import AlbumMenu from '@/components/album-container/albumMenu/AlbumMenu';
-import CircleButton from '@/components/buttons/circleButton/CircleButton';
+import { HeaderIconButton } from '@/components/header';
 import MenuIcon from '@/assets/images/menu.svg';
-import { BUTTON_SIZE, ICON_SIZE } from '@/components/header/base/Header.constants';
 import { DEFAULT_ALBUM_TITLE } from '@/constants';
 
 interface MapRouteHeaderProps {
@@ -41,14 +40,7 @@ export const MapRouteHeader = ({
           <AlbumMenu
             onRename={onRenameAlbum}
             onDelete={onDeleteAlbum}
-            triggerElement={
-              <CircleButton
-                aria-label="앨범 메뉴"
-                style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
-              >
-                <MenuIcon width={ICON_SIZE} height={ICON_SIZE} />
-              </CircleButton>
-            }
+            triggerElement={<HeaderIconButton icon={MenuIcon} aria-label="앨범 메뉴" />}
           />
         ) : undefined
       }

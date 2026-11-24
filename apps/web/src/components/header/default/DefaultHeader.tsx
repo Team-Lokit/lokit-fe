@@ -2,6 +2,7 @@ import ChevronLeftIcon from '@/assets/images/chevronLeft.svg';
 import { ICON_SIZE } from '../base/Header.constants';
 import * as BaseS from '../base/Header.styles';
 import HeaderBase from '../base/HeaderBase';
+import HeaderIconButton from '../base/HeaderIconButton';
 import * as S from './DefaultHeader.styles';
 
 export interface DefaultHeaderProps {
@@ -33,16 +34,22 @@ const DefaultHeader = ({
   rightSlot,
   fixed,
 }: DefaultHeaderProps) => {
-  const BackButton = backButtonVariant === 'circle' ? S.CircleIconButton : S.IconButton;
-
   return (
     <HeaderBase
-      transparent
+      background="transparent"
       fixed={fixed}
       left={
-        <BackButton type="button" onClick={onClickBack}>
-          <ChevronLeftIcon width={ICON_SIZE} height={ICON_SIZE} />
-        </BackButton>
+        backButtonVariant === 'circle' ? (
+          <HeaderIconButton
+            icon={ChevronLeftIcon}
+            onClick={onClickBack}
+            aria-label="뒤로가기"
+          />
+        ) : (
+          <S.IconButton type="button" onClick={onClickBack} aria-label="뒤로가기">
+            <ChevronLeftIcon width={ICON_SIZE} height={ICON_SIZE} />
+          </S.IconButton>
+        )
       }
       center={title && <BaseS.Title>{title}</BaseS.Title>}
       right={
