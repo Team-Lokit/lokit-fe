@@ -10,7 +10,7 @@ export const Input = styled.input<{ isFilled: boolean }>`
   flex: 1;
   min-width: 0;
   height: 56px;
-  ${({ theme }) => theme.typography.heading20Bold};
+  ${({ theme }) => theme.typography.body18Semibold};
   text-align: center;
   border: 1px solid transparent;
   border-radius: 8px;
