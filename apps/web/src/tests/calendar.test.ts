@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { AnniversaryResponseType } from '@repo/api-client';
 import {
   buildCalendarWeeks,
+  formatYear,
   getAnniversaryLabel,
   mapCalendarDays,
   shiftYearMonth,
+  toDateKey,
   toYearMonthKey,
 } from '@/utils/calendar';
 
@@ -112,5 +114,32 @@ describe('shiftYearMonth', () => {
       year: 2025,
       month: 12,
     });
+  });
+});
+
+describe('formatYear / toYearMonthKey / toDateKey', () => {
+  it('4자리 미만은 앞을 0으로 채우고, 5자리는 앞에 +를 붙인다', () => {
+    expect(formatYear(1)).toBe('0001');
+    expect(formatYear(999)).toBe('0999');
+    expect(formatYear(9999)).toBe('9999');
+    expect(formatYear(10000)).toBe('+10000');
+  });
+
+  it('서버 형식에 맞는 연월/날짜 키를 만든다', () => {
+    expect(toYearMonthKey({ year: 1, month: 1 })).toBe('0001-01');
+    expect(toYearMonthKey({ year: 10000, month: 1 })).toBe('+10000-01');
+    expect(toDateKey(999, 12, 31)).toBe('0999-12-31');
+    expect(toDateKey(10000, 1, 1)).toBe('+10000-01-01');
+  });
+});
+
+describe('buildCalendarWeeks (0~99년)', () => {
+  it('1년 1월을 1901년이 아닌 1년 기준으로 만든다', () => {
+    const days = buildCalendarWeeks({ year: 1, month: 1 }).flat();
+    const currentMonth = days.filter((day) => day.isCurrentMonth);
+    expect(currentMonth).toHaveLength(31);
+    expect(currentMonth[0].dateKey).toBe('0001-01-01');
+    // 서기 1년 1월 1일은 월요일 (프롤렙틱 그레고리력)
+    expect(currentMonth[0].dayOfWeek).toBe(1);
   });
 });

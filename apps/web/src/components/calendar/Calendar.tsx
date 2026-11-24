@@ -69,7 +69,7 @@ export const CalendarGrid = ({
             const { thumbnail, anniversary } = days[day.dateKey] ?? {};
             const [year, month] = day.dateKey.split('-');
             const label = [
-              `${year}년 ${Number(month)}월 ${day.day}일`,
+              `${Number(year)}년 ${Number(month)}월 ${day.day}일`,
               anniversary &&
                 `${anniversary.endsWith('주년') ? anniversary : `${anniversary}일`} 기념일`,
               thumbnail && '사진 있음',

@@ -27,6 +27,10 @@ interface CalendarSwiperProps {
   todayKey: string;
   /** 연월 키(yyyy-MM)별 날짜 칸 정보. 이전/현재/다음 달을 넘겨야 스와이프 중에도 옆 달이 채워져 보인다. */
   daysByMonth: Record<string, Record<string, CalendarDayInfo>>;
+  /** 이전 달로 이동 가능 여부 (조회 범위 시작이면 false) */
+  hasPrev?: boolean;
+  /** 다음 달로 이동 가능 여부 (조회 범위 끝이면 false) */
+  hasNext?: boolean;
   /** 스와이프로 옆 달로 넘어갔을 때 */
   onChangeMonth: (yearMonth: YearMonth) => void;
   /** 연/월 영역 클릭 */
@@ -40,6 +44,8 @@ const CalendarSwiper = ({
   yearMonth,
   todayKey,
   daysByMonth,
+  hasPrev = true,
+  hasNext = true,
   onChangeMonth,
   onClickMonth,
   onClickDate,
@@ -71,6 +77,9 @@ const CalendarSwiper = ({
     let direction = 0;
     if (offset.x < -threshold || velocity.x < -SWIPE_VELOCITY) direction = 1;
     else if (offset.x > threshold || velocity.x > SWIPE_VELOCITY) direction = -1;
+
+    // 범위 끝에서는 더 넘어가지 않고 제자리로
+    if ((direction === -1 && !hasPrev) || (direction === 1 && !hasNext)) direction = 0;
 
     if (direction === 0 || width === 0) {
       animate(x, 0, SLIDE_TRANSITION);
@@ -106,14 +115,18 @@ const CalendarSwiper = ({
             const panelYearMonth = shiftYearMonth(yearMonth, offset);
             const key = toYearMonthKey(panelYearMonth);
             const isCurrent = offset === 0;
+            const isOutOfRange =
+              (offset === -1 && !hasPrev) || (offset === 1 && !hasNext);
             return (
               <S.Panel key={key} aria-hidden={!isCurrent || undefined}>
-                <CalendarGrid
-                  yearMonth={panelYearMonth}
-                  todayKey={todayKey}
-                  days={daysByMonth[key] ?? {}}
-                  onClickDate={isCurrent ? onClickDate : undefined}
-                />
+                {!isOutOfRange && (
+                  <CalendarGrid
+                    yearMonth={panelYearMonth}
+                    todayKey={todayKey}
+                    days={daysByMonth[key] ?? {}}
+                    onClickDate={isCurrent ? onClickDate : undefined}
+                  />
+                )}
               </S.Panel>
             );
           })}

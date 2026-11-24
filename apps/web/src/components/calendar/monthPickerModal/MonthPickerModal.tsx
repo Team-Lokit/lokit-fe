@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import Modal from '@/components/popup/modal/Modal';
 import TextButton from '@/components/buttons/textButton/TextButton';
-import type { YearMonth } from '@/utils/calendar';
+import { CALENDAR_MAX_YEAR, CALENDAR_MIN_YEAR, type YearMonth } from '@/utils/calendar';
 import * as S from './MonthPickerModal.styles';
 import { createNumericChangeHandler } from '@/utils/numericInput';
 
-// TODO(#102): 1~10000년 범위로 변경 예정. 4자리가 아닌 연도의 API 전달 형식을 서버와 확인 후 반영 (현재 임시값)
-const MIN_YEAR = 1900;
-const MAX_YEAR = 2100;
+const MAX_YEAR_LENGTH = String(CALENDAR_MAX_YEAR).length;
 
 interface MonthPickerModalProps {
   isOpen: boolean;
@@ -41,9 +39,9 @@ const MonthPickerModal = ({
   const yearNumber = Number(year);
   const monthNumber = Number(month);
   const isValid =
-    year.length === 4 &&
-    yearNumber >= MIN_YEAR &&
-    yearNumber <= MAX_YEAR &&
+    year.length > 0 &&
+    yearNumber >= CALENDAR_MIN_YEAR &&
+    yearNumber <= CALENDAR_MAX_YEAR &&
     monthNumber >= 1 &&
     monthNumber <= 12;
 
@@ -69,7 +67,11 @@ const MonthPickerModal = ({
               aria-label="연도"
               value={year}
               $charCount={year.length || 4}
-              onChange={createNumericChangeHandler(setYear, 4, MAX_YEAR)}
+              onChange={createNumericChangeHandler(
+                setYear,
+                MAX_YEAR_LENGTH,
+                CALENDAR_MAX_YEAR,
+              )}
             />
             {year && <S.Suffix>년</S.Suffix>}
           </S.InputBlock>

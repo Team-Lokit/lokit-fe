@@ -11,6 +11,7 @@ import { ROUTES } from '@/constants/routes';
 import {
   getTodayKey,
   getTodayYearMonth,
+  isYearMonthInRange,
   shiftYearMonth,
   toYearMonthKey,
   type YearMonth,
@@ -34,8 +35,19 @@ const CalendarView = ({ albumId }: CalendarViewProps) => {
   const prevYearMonth = shiftYearMonth(yearMonth, -1);
   const nextYearMonth = shiftYearMonth(yearMonth, 1);
   const { days } = useCalendarMonth({ yearMonth, albumId });
-  const { days: prevDays } = useCalendarMonth({ yearMonth: prevYearMonth, albumId });
-  const { days: nextDays } = useCalendarMonth({ yearMonth: nextYearMonth, albumId });
+  // 조회 가능 범위(1년 1월 ~ 10000년 12월) 밖으로는 조회·이동하지 않음
+  const hasPrev = isYearMonthInRange(prevYearMonth);
+  const hasNext = isYearMonthInRange(nextYearMonth);
+  const { days: prevDays } = useCalendarMonth({
+    yearMonth: prevYearMonth,
+    albumId,
+    enabled: hasPrev,
+  });
+  const { days: nextDays } = useCalendarMonth({
+    yearMonth: nextYearMonth,
+    albumId,
+    enabled: hasNext,
+  });
 
   const daysByMonth = {
     [toYearMonthKey(prevYearMonth)]: prevDays,
@@ -70,6 +82,8 @@ const CalendarView = ({ albumId }: CalendarViewProps) => {
         yearMonth={yearMonth}
         todayKey={todayKey}
         daysByMonth={daysByMonth}
+        hasPrev={hasPrev}
+        hasNext={hasNext}
         onChangeMonth={setYearMonth}
         onClickDate={handleClickDate}
         onClickMonth={() => setIsMonthPickerOpen(true)}
