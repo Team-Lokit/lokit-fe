@@ -132,9 +132,9 @@ export const KakaoShareButton = styled.button`
   justify-content: center;
   align-items: center;
   align-self: center;
-  gap: 8px;
+  gap: 9px;
   margin-top: 12px;
-  ${({ theme }) => theme.typography.body15Semibold};
+  ${({ theme }) => theme.typography.body16Semibold};
   color: ${({ theme }) => theme.colors.grayScale[200]};
 `;
 
