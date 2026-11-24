@@ -13,7 +13,7 @@ import { useCodeVerification } from './_hooks/useCodeVerification';
 import { useToast } from '@/components/toast';
 import { ROUTES } from '@/constants/routes';
 import { KAKAO_TEMPLATE_ID } from '@/constants/kakao';
-import { INVITE_CODE_LENGTH } from './constants';
+import { CONNECT_FROM_MYPAGE, CONNECT_FROM_PARAM, INVITE_CODE_LENGTH } from './constants';
 import { track } from '@/lib/analytics';
 import CopySvg from '@/assets/images/copy.svg';
 import KakaoSvg from '@/assets/images/kakao.svg';
@@ -28,6 +28,16 @@ const CONNECT_SUCCESS_MESSAGE = '연결에 성공했어요';
 
 export default function ConnectPage() {
   const router = useRouter();
+  // 마이페이지 배너로 들어왔으면 그 마이페이지로 돌아가고, URL 직접 진입 등 다른 경로면 마이페이지로 replace한다.
+  // history 개수만으로는 바로 앞 화면이 마이페이지인지 알 수 없어 진입 경로를 쿼리로 표시한다.
+  const goBackToMyPage = useCallback(() => {
+    const from = new URLSearchParams(window.location.search).get(CONNECT_FROM_PARAM);
+    if (from === CONNECT_FROM_MYPAGE && window.history.length > 1) {
+      router.back();
+      return;
+    }
+    router.replace(ROUTES.MYPAGE);
+  }, [router]);
   const { showToast } = useToast();
   const [expiryTime, setExpiryTime] = useState('');
   const [partnerCode, setPartnerCode] = useState('');
@@ -54,7 +64,7 @@ export default function ConnectPage() {
             // TODO: days_since_signup은 클라이언트가 알 수 없어 제외 (백엔드 응답에 가입일 추가 후 적용)
           });
           await saveCoupleStatusCookie().catch(() => {});
-          router.replace(ROUTES.MYPAGE);
+          goBackToMyPage();
         }
       } catch (error) {
         console.error('연결 상태 확인 실패:', error);
@@ -65,7 +75,7 @@ export default function ConnectPage() {
     const interval = setInterval(checkCoupleStatus, COUPLE_STATUS_POLLING_INTERVAL);
 
     return () => clearInterval(interval);
-  }, [router, showToast]);
+  }, [goBackToMyPage, showToast]);
 
   // 코드가 자동으로 갱신되었을 때 토스트 표시
   useEffect(() => {
@@ -131,7 +141,7 @@ export default function ConnectPage() {
         // TODO: days_since_signup은 클라이언트가 알 수 없어 제외 (백엔드 응답에 가입일 추가 후 적용)
       });
       showToast(CONNECT_SUCCESS_MESSAGE, 3000, 'success');
-      router.replace(ROUTES.MYPAGE);
+      goBackToMyPage();
       return;
     }
 
@@ -154,7 +164,7 @@ export default function ConnectPage() {
     } else {
       setIsMismatchModalOpen(true);
     }
-  }, [partnerCode, isJoining, joinCode, showToast, router]);
+  }, [partnerCode, isJoining, joinCode, showToast, goBackToMyPage]);
 
   const handleRetry = useCallback(() => {
     setIsMismatchModalOpen(false);
