@@ -2,7 +2,12 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { getMyStatus, saveCoupleStatusCookie, useGetMyPage } from '@repo/api-client';
+import {
+  getGetMyStatusQueryKey,
+  saveCoupleStatusCookie,
+  useGetMyPage,
+  useGetMyStatus,
+} from '@repo/api-client';
 import Button from '@/components/buttons/button/Button';
 import { BackHeader } from '@/components/header';
 import QaSkipCoupleButton from './_components/QaSkipCoupleButton/QaSkipCoupleButton';
@@ -43,8 +48,10 @@ export default function ConnectPage() {
   const [partnerCode, setPartnerCode] = useState('');
   const [isMismatchModalOpen, setIsMismatchModalOpen] = useState(false);
   const hasNavigatedRef = useRef(false);
-  // 내가 코드로 연결하는 중에는 폴링이 같은 연결을 성공으로 중복 처리하지 않게 막는다
-  const isJoiningRef = useRef(false);
+  // 내가 코드로 연결하는 중에는 폴링이 같은 연결을 성공으로 중복 처리하지 않게 막는다.
+  // ref가 아닌 state인 이유: 연결 요청이 실패로 끝났는데 그사이 폴링이 연결을 감지했다면
+  // (상대가 동시에 내 코드로 연결한 경우) 요청이 끝난 시점에 effect가 다시 판단해 이동해야 한다.
+  const [isJoiningByCode, setIsJoiningByCode] = useState(false);
   const { data: myPageData } = useGetMyPage();
   const reconnectDeadline = formatDeadline(myPageData?.reconnectDeadline);
   const { inviteCode, createCode, refreshCode, copyCode } = useInviteCode();
@@ -52,31 +59,41 @@ export default function ConnectPage() {
   const refreshedExpiresAtRef = useRef<string | null>(null);
   const { joinCode, isJoining } = useCodeVerification();
 
+  // 상대방이 내 코드로 연결했는지 폴링한다.
+  // 백그라운드에서는 쉬고(refetchIntervalInBackground 기본값 false), 연결이 감지되면 멈춘다.
+  // 전역 refetchOnWindowFocus가 false이고 staleTime이 30초라, 돌아왔을 때 바로 확인하도록 'always'로 둔다.
+  const { data: myStatus, isFetchedAfterMount } = useGetMyStatus({
+    query: {
+      queryKey: getGetMyStatusQueryKey(),
+      refetchInterval: (query) =>
+        query.state.data?.isCoupled ? false : COUPLE_STATUS_POLLING_INTERVAL,
+      refetchOnMount: 'always',
+      refetchOnWindowFocus: 'always',
+    },
+  });
+
   // 상대방이 내 코드로 연결하면 마이페이지로 이동
+  // 이전에 캐시된 응답으로 잘못 이동하지 않도록 이 화면에서 새로 받은 응답만 본다.
   useEffect(() => {
-    const checkCoupleStatus = async () => {
-      try {
-        const data = await getMyStatus();
-        if (data.isCoupled && !hasNavigatedRef.current && !isJoiningRef.current) {
-          hasNavigatedRef.current = true;
-          showToast(CONNECT_SUCCESS_MESSAGE, 3000, 'success');
-          track('couple_connect_success', {
-            invite_method: 'link',
-            // TODO: days_since_signup은 클라이언트가 알 수 없어 제외 (백엔드 응답에 가입일 추가 후 적용)
-          });
-          await saveCoupleStatusCookie().catch(() => {});
-          goBackToMyPage();
-        }
-      } catch (error) {
-        console.error('연결 상태 확인 실패:', error);
-      }
-    };
+    if (!isFetchedAfterMount || !myStatus?.isCoupled) return;
+    if (hasNavigatedRef.current || isJoiningByCode) return;
 
-    checkCoupleStatus();
-    const interval = setInterval(checkCoupleStatus, COUPLE_STATUS_POLLING_INTERVAL);
-
-    return () => clearInterval(interval);
-  }, [goBackToMyPage, showToast]);
+    hasNavigatedRef.current = true;
+    showToast(CONNECT_SUCCESS_MESSAGE, 3000, 'success');
+    track('couple_connect_success', {
+      invite_method: 'link',
+      // TODO: days_since_signup은 클라이언트가 알 수 없어 제외 (백엔드 응답에 가입일 추가 후 적용)
+    });
+    void saveCoupleStatusCookie()
+      .catch(() => {})
+      .then(goBackToMyPage);
+  }, [
+    isFetchedAfterMount,
+    myStatus?.isCoupled,
+    isJoiningByCode,
+    goBackToMyPage,
+    showToast,
+  ]);
 
   // 페이지 진입 시 코드 생성
   useEffect(() => {
@@ -133,11 +150,12 @@ export default function ConnectPage() {
   const handleConnectClick = useCallback(async () => {
     if (partnerCode.length !== INVITE_CODE_LENGTH || isJoining) return;
 
-    isJoiningRef.current = true;
+    setIsJoiningByCode(true);
     const result = await joinCode(partnerCode);
-    isJoiningRef.current = false;
+    setIsJoiningByCode(false);
 
     if (result.success) {
+      // setIsJoiningByCode(false)로 effect가 다시 실행되기 전에 표시해 중복 처리를 막는다
       hasNavigatedRef.current = true;
       track('couple_connect_success', {
         invite_method: 'code',
