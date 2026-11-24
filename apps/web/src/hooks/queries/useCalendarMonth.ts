@@ -1,5 +1,4 @@
-import { keepPreviousData } from '@tanstack/react-query';
-import { getGetMonthQueryKey, useGetMonth } from '@repo/api-client';
+import { getGetMonthQueryKey, useGetMonth, type GetMonthParams } from '@repo/api-client';
 import { useMemo } from 'react';
 import { mapCalendarDays, toYearMonthKey, type YearMonth } from '@/utils/calendar';
 
@@ -25,7 +24,12 @@ export const useCalendarMonth = ({ yearMonth, albumId }: UseCalendarMonthParams)
   const response = useGetMonth(params, {
     query: {
       queryKey: getGetMonthQueryKey(params),
-      placeholderData: keepPreviousData,
+      // 같은 앨범에서 달만 바뀔 때는 새 데이터가 올 때까지 이전 달 화면을 유지하고,
+      // 앨범이 바뀌면 다른 앨범 사진이 잠깐 보이지 않도록 유지하지 않는다.
+      placeholderData: (previousData, previousQuery) => {
+        const previousParams = previousQuery?.queryKey[1] as GetMonthParams | undefined;
+        return previousParams?.albumId === params.albumId ? previousData : undefined;
+      },
       // 스와이프로 앞뒤 달을 오갈 때마다 다시 요청하지 않도록 잠시 캐시 유지
       // (사진 추가/수정/삭제 시에는 invalidateCalendarQueries로 갱신됨)
       staleTime: CALENDAR_STALE_TIME,

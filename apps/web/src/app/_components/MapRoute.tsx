@@ -333,7 +333,9 @@ export default function MapRoute() {
         />
       )}
 
-      {activeView === VIEW_TYPE.CALENDAR && !isAlbumDetailLoading && (
+      {/* 캘린더는 /calendar API로 직접 조회하므로 앨범 상세 로딩을 기다리지 않는다
+          (기다리면 로딩 중 언마운트 → 재마운트되며 요청이 취소·재요청됨) */}
+      {activeView === VIEW_TYPE.CALENDAR && (
         <S.CalendarViewContainer>
           <CalendarView
             albumId={
