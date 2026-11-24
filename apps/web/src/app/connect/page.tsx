@@ -192,7 +192,9 @@ export default function ConnectPage() {
         </S.InviteSection>
 
         <S.Section>
-          <S.SectionTitle>상대방에게 받은 코드를 입력해주세요</S.SectionTitle>
+          <S.SectionHeader>
+            <S.SectionTitle>상대방에게 받은 코드를 입력해주세요</S.SectionTitle>
+          </S.SectionHeader>
           <CodeInput value={partnerCode} onChange={setPartnerCode} />
           <S.ConnectButtonWrapper>
             <Button

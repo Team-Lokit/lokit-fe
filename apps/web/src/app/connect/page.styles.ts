@@ -67,6 +67,7 @@ export const SectionHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 4px;
 `;
 
 export const SectionTitle = styled.h2`
