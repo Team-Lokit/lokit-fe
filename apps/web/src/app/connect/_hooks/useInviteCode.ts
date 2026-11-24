@@ -25,7 +25,7 @@ export function useInviteCode() {
         });
       }
     } catch (error) {
-      showToast('코드 생성에 실패했어요');
+      showToast('초대코드 생성에 실패했어요');
     }
   }, [create, setInviteCode, showToast]);
 
@@ -37,10 +37,10 @@ export function useInviteCode() {
           code: result.inviteCode,
           expiresAt: result.expiresAt,
         });
-        showToast('코드가 갱신되었어요');
+        showToast('초대코드가 변경되었어요', 3000, 'warn');
       }
     } catch (error) {
-      showToast('코드 갱신에 실패했어요');
+      showToast('초대코드 갱신에 실패했어요');
     }
   }, [refresh, setInviteCode, showToast]);
 

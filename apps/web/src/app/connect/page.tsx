@@ -42,13 +42,14 @@ export default function ConnectPage() {
   const [expiryTime, setExpiryTime] = useState('');
   const [partnerCode, setPartnerCode] = useState('');
   const [isMismatchModalOpen, setIsMismatchModalOpen] = useState(false);
-  const previousCodeRef = useRef<string | null>(null);
   const hasNavigatedRef = useRef(false);
   // 내가 코드로 연결하는 중에는 폴링이 같은 연결을 성공으로 중복 처리하지 않게 막는다
   const isJoiningRef = useRef(false);
   const { data: myPageData } = useGetMyPage();
   const reconnectDeadline = formatDeadline(myPageData?.reconnectDeadline);
-  const { inviteCode, createCode, copyCode } = useInviteCode();
+  const { inviteCode, createCode, refreshCode, copyCode } = useInviteCode();
+  // 같은 코드에 대해 재발급을 한 번만 요청하기 위해 마지막으로 재발급을 요청한 만료 시각을 기억한다
+  const refreshedExpiresAtRef = useRef<string | null>(null);
   const { joinCode, isJoining } = useCodeVerification();
 
   // 상대방이 내 코드로 연결하면 마이페이지로 이동
@@ -77,29 +78,31 @@ export default function ConnectPage() {
     return () => clearInterval(interval);
   }, [goBackToMyPage, showToast]);
 
-  // 코드가 자동으로 갱신되었을 때 토스트 표시
-  useEffect(() => {
-    if (previousCodeRef.current && previousCodeRef.current !== inviteCode?.code) {
-      showToast('초대코드가 변경되었어요', 3000, 'warn');
-    }
-    previousCodeRef.current = inviteCode?.code || null;
-  }, [inviteCode?.code, showToast]);
-
   // 페이지 진입 시 코드 생성
   useEffect(() => {
     createCode();
   }, [createCode]);
 
-  // 남은 시간 표시
+  // 남은 시간 표시, 만료되면 새 코드 재발급
   useEffect(() => {
-    if (!inviteCode?.expiresAt) return;
+    const expiresAt = inviteCode?.expiresAt;
+    if (!expiresAt) return;
 
-    const update = () => setExpiryTime(formatTimeLeft(inviteCode.expiresAt));
+    const update = () => {
+      setExpiryTime(formatTimeLeft(expiresAt));
+
+      const isExpired = new Date(expiresAt).getTime() <= Date.now();
+      // 재발급이 실패하거나 기기 시계가 서버보다 빨라 같은 코드가 다시 오더라도 반복 요청하지 않는다
+      if (isExpired && refreshedExpiresAtRef.current !== expiresAt) {
+        refreshedExpiresAtRef.current = expiresAt;
+        void refreshCode();
+      }
+    };
     update();
     const interval = setInterval(update, 1000);
 
     return () => clearInterval(interval);
-  }, [inviteCode?.expiresAt]);
+  }, [inviteCode?.expiresAt, refreshCode]);
 
   const handleShareKakao = useCallback(() => {
     const kakao = window.Kakao;
