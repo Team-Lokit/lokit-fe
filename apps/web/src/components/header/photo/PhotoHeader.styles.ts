@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
+import { HEADER_PADDING } from '../base/Header.constants';
 
 export const Container = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 12px 16px;
+  padding: ${HEADER_PADDING};
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
 `;
 

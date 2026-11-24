@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
+import { HEADER_PADDING } from './Header.constants';
 
 export const Container = styled.header<{ transparent?: boolean; fixed?: boolean }>`
   display: flex;
   align-items: center;
   width: 100%;
   height: 60px;
-  padding: 0 16px;
+  padding: ${HEADER_PADDING};
   background: ${({ theme, transparent, fixed }) =>
     fixed
       ? theme.colors.blackOpacity[100]
