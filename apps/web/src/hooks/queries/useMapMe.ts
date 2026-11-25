@@ -1,14 +1,17 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import { getGetMapMeV11QueryKey, getMapMeV11 } from '@repo/api-client';
+import { customFetcher, getGetMapMeV11QueryKey } from '@repo/api-client';
 import type {
-  ClusterResponse,
   GetMapMeV11Params,
+  MapMeV2Response,
   MapPhotoResponse,
+  RegionClusterResponse,
 } from '@repo/api-client';
 import { useMemo, useRef, useState, useEffect } from 'react';
 import Supercluster from 'supercluster';
 import type { MapPin } from '@/types/map.type';
-import { MAP_CLUSTERING_CONFIG } from '@/constants/map';
+import { API_URL } from '@/constants';
+import { MAP_CLUSTERING_CONFIG, MAP_REGION_CONFIG } from '@/constants/map';
+import { parseRegionClusterId } from '@/components/map/regionPhotoLayer/regionBoundary.calc';
 import { useIdentifyUser } from '@/hooks/analytics/useIdentifyUser';
 import {
   convertPhotosToGeoJsonFeatures,
@@ -19,8 +22,37 @@ import {
 } from './_utils/mapClustering.calc';
 
 /**
- * /map/me v1.1 API를 호출하여 앨범, 사진, 클러스터 데이터를 한 번에 조회
+ * /map/me v2 (X-API-VERSION: 2.0) 호출
+ * 생성된 getMapMeV11 은 버전 헤더를 받지 않아 customFetcher 를 직접 사용한다.
+ */
+const getMapMeV2 = (params: GetMapMeV11Params, signal?: AbortSignal) =>
+  customFetcher<MapMeV2Response>(
+    { url: API_URL.MAP.ME, method: 'GET', params, signal },
+    { headers: { 'X-API-VERSION': MAP_REGION_CONFIG.API_VERSION } },
+  );
+
+/** 행정구역 클러스터 → MapPin */
+const convertRegionClusterToMapPin = (cluster: RegionClusterResponse): MapPin => {
+  const region = parseRegionClusterId(cluster.clusterId);
+  return {
+    id: 0,
+    albumId: 0,
+    latitude: cluster.latitude ?? 0,
+    longitude: cluster.longitude ?? 0,
+    imageUrl: cluster.thumbnailUrl ?? '',
+    imageCount: cluster.count ?? 1,
+    clusterId: cluster.clusterId ?? '',
+    isCluster: true,
+    regionLevel: region?.level,
+    regionCode: region?.code,
+    regionName: cluster.regionName,
+  };
+};
+
+/**
+ * /map/me v2 API를 호출하여 앨범, 사진, 행정구역 클러스터 데이터를 한 번에 조회
  * - photos/clusters: 이 훅에서 mapPins로 변환
+ * - 줌레벨 < 15: 행정구역(시·도 / 시·군·구 / 읍·면·동) 클러스터 → 지도에서 영역(경계 모양)으로 표시
  * - 줌레벨 >= MAP_CLUSTERING_CONFIG.CLIENT_CLUSTERING_MIN_ZOOM: 클라이언트 측 Supercluster로 동적 클러스터링
  */
 export const useMapMe = ({ longitude, latitude, zoom, albumId }: GetMapMeV11Params) => {
@@ -53,7 +85,7 @@ export const useMapMe = ({ longitude, latitude, zoom, albumId }: GetMapMeV11Para
     queryKey: getGetMapMeV11QueryKey(params),
     queryFn: ({ signal }) => {
       const requestParams = lastDataVersion ? { ...params, lastDataVersion } : params;
-      return getMapMeV11(requestParams, signal);
+      return getMapMeV2(requestParams, signal);
     },
     placeholderData: keepPreviousData,
   });
@@ -97,19 +129,10 @@ export const useMapMe = ({ longitude, latitude, zoom, albumId }: GetMapMeV11Para
       };
     }
 
-    // 줌레벨 < CLIENT_CLUSTERING_MIN_ZOOM: 서버 클러스터 사용
+    // 줌레벨 < CLIENT_CLUSTERING_MIN_ZOOM: 서버 행정구역 클러스터 사용
     if (zoom < MAP_CLUSTERING_CONFIG.CLIENT_CLUSTERING_MIN_ZOOM) {
       const clusterPins: MapPin[] = (data.clusters ?? []).map(
-        (cluster: ClusterResponse) => ({
-          id: 0,
-          albumId: 0,
-          latitude: cluster.latitude ?? 0,
-          longitude: cluster.longitude ?? 0,
-          imageUrl: cluster.thumbnailUrl ?? '',
-          imageCount: cluster.count ?? 1,
-          clusterId: cluster.clusterId ?? '',
-          isCluster: true,
-        }),
+        convertRegionClusterToMapPin,
       );
       return {
         mapPins: clusterPins,
