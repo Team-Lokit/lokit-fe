@@ -19,7 +19,7 @@ import { useToast } from '@/components/toast';
 import { ROUTES } from '@/constants/routes';
 import { KAKAO_TEMPLATE_ID } from '@/constants/kakao';
 import { CONNECT_FROM_MYPAGE, CONNECT_FROM_PARAM, INVITE_CODE_LENGTH } from './constants';
-import { track } from '@/lib/analytics';
+import { track, type EventParams } from '@/lib/analytics';
 import CopySvg from '@/assets/images/copy.svg';
 import KakaoSvg from '@/assets/images/kakao.svg';
 import ClockSvg from '@/assets/images/clock.svg';
@@ -59,6 +59,19 @@ export default function ConnectPage() {
   const refreshedExpiresAtRef = useRef<string | null>(null);
   const { joinCode, isJoining } = useCodeVerification();
 
+  // 폴링 감지(상대가 내 코드로 연결)와 코드 입력 연결의 공통 성공 처리
+  const handleConnectSuccess = useCallback(
+    (inviteMethod: EventParams<'couple_connect_success'>['invite_method']) => {
+      track('couple_connect_success', {
+        invite_method: inviteMethod,
+        // TODO: days_since_signup은 클라이언트가 알 수 없어 제외 (백엔드 응답에 가입일 추가 후 적용)
+      });
+      showToast(CONNECT_SUCCESS_MESSAGE, 3000, 'success');
+      goBackToMyPage();
+    },
+    [showToast, goBackToMyPage],
+  );
+
   // 상대방이 내 코드로 연결했는지 폴링한다.
   // 백그라운드에서는 쉬고(refetchIntervalInBackground 기본값 false), 연결이 감지되면 멈춘다.
   // 전역 refetchOnWindowFocus가 false이고 staleTime이 30초라, 돌아왔을 때 바로 확인하도록 'always'로 둔다.
@@ -79,21 +92,10 @@ export default function ConnectPage() {
     if (hasNavigatedRef.current || isJoiningByCode) return;
 
     hasNavigatedRef.current = true;
-    showToast(CONNECT_SUCCESS_MESSAGE, 3000, 'success');
-    track('couple_connect_success', {
-      invite_method: 'link',
-      // TODO: days_since_signup은 클라이언트가 알 수 없어 제외 (백엔드 응답에 가입일 추가 후 적용)
-    });
     void saveCoupleStatusCookie()
       .catch(() => {})
-      .then(goBackToMyPage);
-  }, [
-    isFetchedAfterMount,
-    myStatus?.isCoupled,
-    isJoiningByCode,
-    goBackToMyPage,
-    showToast,
-  ]);
+      .then(() => handleConnectSuccess('link'));
+  }, [isFetchedAfterMount, myStatus?.isCoupled, isJoiningByCode, handleConnectSuccess]);
 
   // 페이지 진입 시 코드 생성
   useEffect(() => {
@@ -157,12 +159,7 @@ export default function ConnectPage() {
     if (result.success) {
       // setIsJoiningByCode(false)로 effect가 다시 실행되기 전에 표시해 중복 처리를 막는다
       hasNavigatedRef.current = true;
-      track('couple_connect_success', {
-        invite_method: 'code',
-        // TODO: days_since_signup은 클라이언트가 알 수 없어 제외 (백엔드 응답에 가입일 추가 후 적용)
-      });
-      showToast(CONNECT_SUCCESS_MESSAGE, 3000, 'success');
-      goBackToMyPage();
+      handleConnectSuccess('code');
       return;
     }
 
@@ -185,7 +182,7 @@ export default function ConnectPage() {
     } else {
       setIsMismatchModalOpen(true);
     }
-  }, [partnerCode, isJoining, joinCode, showToast, goBackToMyPage]);
+  }, [partnerCode, isJoining, joinCode, showToast, handleConnectSuccess]);
 
   const handleRetry = useCallback(() => {
     setIsMismatchModalOpen(false);
