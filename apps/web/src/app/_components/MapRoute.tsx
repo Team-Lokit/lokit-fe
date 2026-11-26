@@ -51,6 +51,7 @@ import { usePhotoContext } from '@/app/photo/_contexts/PhotoContext';
 import { usePhotoSelect } from '@/app/photo/add/_hooks/usePhotoSelect';
 import type { SelectedPhoto } from '@/app/photo/add/_types/photo';
 import Chip from '@/components/buttons/chip/Chip';
+import { usePrefetchSidoBoundary } from '@/components/map/regionPhotoLayer/useRegionBoundaries';
 
 export default function MapRoute() {
   const router = useRouter();
@@ -134,6 +135,7 @@ export default function MapRoute() {
     useLocationPermissionModal();
   useNotificationPermissionSync();
   useDeviceTokenSync();
+  usePrefetchSidoBoundary();
 
   // 모달 상태 관리
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -231,8 +233,7 @@ export default function MapRoute() {
 
     track('click_photo_cluster', {
       cluster_count: pin.imageCount,
-      /** @deprecated /map/me v1.1 응답에서 위치 정보 사라짐 */
-      location_name: '',
+      location_name: pin.regionName ?? '',
     });
 
     let photos = clusterExpansionData?.get(clusterId);

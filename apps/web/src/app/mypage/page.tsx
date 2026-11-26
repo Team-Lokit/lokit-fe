@@ -36,7 +36,7 @@ export default async function MyPage() {
       <QueryRetryBoundary>
         <main className={styles.wrapper}>
           <h1 className={styles.srOnly}>{PAGE_TITLE}</h1>
-          <CoupleStatusSyncClient />
+          <CoupleStatusSyncClient renderedCoupleStatus={coupleStatusCookie} />
           <HeaderClient />
           <div className={styles.coupleInfo}>
             <CoupleInfoContainer isCoupled={isCoupled} />

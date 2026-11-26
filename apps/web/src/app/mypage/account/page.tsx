@@ -17,8 +17,8 @@ import AccountActionContainer from '@/app/mypage/account/_components/AccountActi
 
 export default async function AccountPage() {
   const cookieStore = await cookies();
-  const isCoupled =
-    cookieStore.get(COUPLE_STATUS_COOKIE)?.value === COUPLE_STATUS.COUPLED;
+  const coupleStatusCookie = cookieStore.get(COUPLE_STATUS_COOKIE)?.value;
+  const isCoupled = coupleStatusCookie === COUPLE_STATUS.COUPLED;
 
   const queryClient = createStreamingQueryClient();
   void queryClient.prefetchQuery({
@@ -32,7 +32,7 @@ export default async function AccountPage() {
       <QueryRetryBoundary>
         <main className={styles.wrapper}>
           <h1 className={styles.srOnly}>{PAGE_TITLE}</h1>
-          <CoupleStatusSyncClient />
+          <CoupleStatusSyncClient renderedCoupleStatus={coupleStatusCookie} />
           <HeaderClient />
           <div className={styles.sectionContainer}>
             <ProfileContainer />

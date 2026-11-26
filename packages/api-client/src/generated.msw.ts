@@ -22,11 +22,13 @@ import type {
   CommentListResponse,
   CoupleStatusResponse,
   DisconnectNoticeResponse,
+  GetMapMeV11200,
   IdResponse,
   InviteCodePreviewResponse,
   InviteCodeResponse,
   LocationInfoResponse,
   MapMeResponse,
+  MapMeV2Response,
   MyPageResponse,
   NotificationSettingsResponse,
   PageResultNotificationResponse,
@@ -605,6 +607,10 @@ export const getGetMyPageResponseMock = (
     faker.date.past().toISOString().split('T')[0],
     undefined,
   ]),
+  reconnectDeadline: faker.helpers.arrayElement([
+    faker.date.past().toISOString().split('T')[0],
+    undefined,
+  ]),
   ...overrideResponse,
 });
 
@@ -639,116 +645,247 @@ export const getSearchPlacesResponseMock = (
   ...overrideResponse,
 });
 
-export const getGetMapMeV11ResponseMock = (
+export const getGetMapMeV11ResponseMapMeResponseMock = (
   overrideResponse: Partial<MapMeResponse> = {},
 ): MapMeResponse => ({
-  boundingBox: faker.helpers.arrayElement([
-    {
-      west: faker.helpers.arrayElement([
-        faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
-        undefined,
-      ]),
-      south: faker.helpers.arrayElement([
-        faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
-        undefined,
-      ]),
-      east: faker.helpers.arrayElement([
-        faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
-        undefined,
-      ]),
-      north: faker.helpers.arrayElement([
-        faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
-        undefined,
-      ]),
-    },
-    undefined,
-  ]),
-  totalHistoryCount: faker.helpers.arrayElement([
-    faker.number.int({ min: undefined, max: undefined }),
-    undefined,
-  ]),
-  albums: faker.helpers.arrayElement([
-    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
-      () => ({
-        id: faker.helpers.arrayElement([
-          faker.number.int({ min: undefined, max: undefined }),
+  ...{
+    boundingBox: faker.helpers.arrayElement([
+      {
+        west: faker.helpers.arrayElement([
+          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
           undefined,
         ]),
-        title: faker.helpers.arrayElement([
-          faker.string.alpha({ length: { min: 10, max: 20 } }),
+        south: faker.helpers.arrayElement([
+          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
           undefined,
         ]),
-        photoCount: faker.helpers.arrayElement([
-          faker.number.int({ min: undefined, max: undefined }),
+        east: faker.helpers.arrayElement([
+          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
           undefined,
         ]),
-        thumbnailUrls: faker.helpers.arrayElement([
-          Array.from(
-            { length: faker.number.int({ min: 1, max: 10 }) },
-            (_, i) => i + 1,
-          ).map(() => faker.string.alpha({ length: { min: 10, max: 20 } })),
+        north: faker.helpers.arrayElement([
+          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
           undefined,
         ]),
-      }),
-    ),
-    undefined,
-  ]),
-  dataVersion: faker.helpers.arrayElement([
-    faker.number.int({ min: undefined, max: undefined }),
-    undefined,
-  ]),
-  clusters: faker.helpers.arrayElement([
-    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
-      () => ({
-        clusterId: faker.helpers.arrayElement([
-          faker.string.alpha({ length: { min: 10, max: 20 } }),
-          undefined,
-        ]),
-        count: faker.helpers.arrayElement([
-          faker.number.int({ min: undefined, max: undefined }),
-          undefined,
-        ]),
-        thumbnailUrl: faker.helpers.arrayElement([
-          faker.string.alpha({ length: { min: 10, max: 20 } }),
-          undefined,
-        ]),
-        longitude: faker.number.float({ min: 124, max: 132, fractionDigits: 2 }),
-        latitude: faker.number.float({ min: 33, max: 39, fractionDigits: 2 }),
-      }),
-    ),
-    undefined,
-  ]),
-  photos: faker.helpers.arrayElement([
-    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
-      () => ({
-        id: faker.helpers.arrayElement([
-          faker.number.int({ min: undefined, max: undefined }),
-          undefined,
-        ]),
-        thumbnailUrl: faker.helpers.arrayElement([
-          faker.string.alpha({ length: { min: 10, max: 20 } }),
-          undefined,
-        ]),
-        longitude: faker.number.float({ min: 124, max: 132, fractionDigits: 2 }),
-        latitude: faker.number.float({ min: 33, max: 39, fractionDigits: 2 }),
-        takenAt: faker.helpers.arrayElement([
-          `${faker.date.past().toISOString().split('.')[0]}Z`,
-          undefined,
-        ]),
-      }),
-    ),
-    undefined,
-  ]),
-  profileImageUrl: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  userId: faker.helpers.arrayElement([
-    faker.number.int({ min: undefined, max: undefined }),
-    undefined,
-  ]),
+      },
+      undefined,
+    ]),
+    totalHistoryCount: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+    albums: faker.helpers.arrayElement([
+      Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+        () => ({
+          id: faker.helpers.arrayElement([
+            faker.number.int({ min: undefined, max: undefined }),
+            undefined,
+          ]),
+          title: faker.helpers.arrayElement([
+            faker.string.alpha({ length: { min: 10, max: 20 } }),
+            undefined,
+          ]),
+          photoCount: faker.helpers.arrayElement([
+            faker.number.int({ min: undefined, max: undefined }),
+            undefined,
+          ]),
+          thumbnailUrls: faker.helpers.arrayElement([
+            Array.from(
+              { length: faker.number.int({ min: 1, max: 10 }) },
+              (_, i) => i + 1,
+            ).map(() => faker.string.alpha({ length: { min: 10, max: 20 } })),
+            undefined,
+          ]),
+        }),
+      ),
+      undefined,
+    ]),
+    dataVersion: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+    clusters: faker.helpers.arrayElement([
+      Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+        () => ({
+          clusterId: faker.helpers.arrayElement([
+            faker.string.alpha({ length: { min: 10, max: 20 } }),
+            undefined,
+          ]),
+          count: faker.helpers.arrayElement([
+            faker.number.int({ min: undefined, max: undefined }),
+            undefined,
+          ]),
+          thumbnailUrl: faker.helpers.arrayElement([
+            faker.string.alpha({ length: { min: 10, max: 20 } }),
+            undefined,
+          ]),
+          longitude: faker.number.float({ min: 124, max: 132, fractionDigits: 2 }),
+          latitude: faker.number.float({ min: 33, max: 39, fractionDigits: 2 }),
+        }),
+      ),
+      undefined,
+    ]),
+    photos: faker.helpers.arrayElement([
+      Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+        () => ({
+          id: faker.helpers.arrayElement([
+            faker.number.int({ min: undefined, max: undefined }),
+            undefined,
+          ]),
+          thumbnailUrl: faker.helpers.arrayElement([
+            faker.string.alpha({ length: { min: 10, max: 20 } }),
+            undefined,
+          ]),
+          longitude: faker.number.float({ min: 124, max: 132, fractionDigits: 2 }),
+          latitude: faker.number.float({ min: 33, max: 39, fractionDigits: 2 }),
+          takenAt: faker.helpers.arrayElement([
+            `${faker.date.past().toISOString().split('.')[0]}Z`,
+            undefined,
+          ]),
+        }),
+      ),
+      undefined,
+    ]),
+    profileImageUrl: faker.helpers.arrayElement([
+      faker.string.alpha({ length: { min: 10, max: 20 } }),
+      undefined,
+    ]),
+    userId: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+  },
   ...overrideResponse,
 });
+
+export const getGetMapMeV11ResponseMapMeV2ResponseMock = (
+  overrideResponse: Partial<MapMeV2Response> = {},
+): MapMeV2Response => ({
+  ...{
+    boundingBox: faker.helpers.arrayElement([
+      {
+        west: faker.helpers.arrayElement([
+          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+          undefined,
+        ]),
+        south: faker.helpers.arrayElement([
+          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+          undefined,
+        ]),
+        east: faker.helpers.arrayElement([
+          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+          undefined,
+        ]),
+        north: faker.helpers.arrayElement([
+          faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+          undefined,
+        ]),
+      },
+      undefined,
+    ]),
+    totalHistoryCount: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+    albums: faker.helpers.arrayElement([
+      Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+        () => ({
+          id: faker.helpers.arrayElement([
+            faker.number.int({ min: undefined, max: undefined }),
+            undefined,
+          ]),
+          title: faker.helpers.arrayElement([
+            faker.string.alpha({ length: { min: 10, max: 20 } }),
+            undefined,
+          ]),
+          photoCount: faker.helpers.arrayElement([
+            faker.number.int({ min: undefined, max: undefined }),
+            undefined,
+          ]),
+          thumbnailUrls: faker.helpers.arrayElement([
+            Array.from(
+              { length: faker.number.int({ min: 1, max: 10 }) },
+              (_, i) => i + 1,
+            ).map(() => faker.string.alpha({ length: { min: 10, max: 20 } })),
+            undefined,
+          ]),
+        }),
+      ),
+      undefined,
+    ]),
+    dataVersion: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+    clusters: faker.helpers.arrayElement([
+      Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+        () => ({
+          clusterId: faker.helpers.arrayElement([
+            faker.string.alpha({ length: { min: 10, max: 20 } }),
+            undefined,
+          ]),
+          regionName: faker.helpers.arrayElement([
+            faker.string.alpha({ length: { min: 10, max: 20 } }),
+            undefined,
+          ]),
+          count: faker.helpers.arrayElement([
+            faker.number.int({ min: undefined, max: undefined }),
+            undefined,
+          ]),
+          thumbnailUrl: faker.helpers.arrayElement([
+            faker.string.alpha({ length: { min: 10, max: 20 } }),
+            undefined,
+          ]),
+          longitude: faker.helpers.arrayElement([
+            faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+            undefined,
+          ]),
+          latitude: faker.helpers.arrayElement([
+            faker.number.float({ min: undefined, max: undefined, fractionDigits: 2 }),
+            undefined,
+          ]),
+        }),
+      ),
+      undefined,
+    ]),
+    photos: faker.helpers.arrayElement([
+      Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+        () => ({
+          id: faker.helpers.arrayElement([
+            faker.number.int({ min: undefined, max: undefined }),
+            undefined,
+          ]),
+          thumbnailUrl: faker.helpers.arrayElement([
+            faker.string.alpha({ length: { min: 10, max: 20 } }),
+            undefined,
+          ]),
+          longitude: faker.number.float({ min: 124, max: 132, fractionDigits: 2 }),
+          latitude: faker.number.float({ min: 33, max: 39, fractionDigits: 2 }),
+          takenAt: faker.helpers.arrayElement([
+            `${faker.date.past().toISOString().split('.')[0]}Z`,
+            undefined,
+          ]),
+        }),
+      ),
+      undefined,
+    ]),
+    profileImageUrl: faker.helpers.arrayElement([
+      faker.string.alpha({ length: { min: 10, max: 20 } }),
+      undefined,
+    ]),
+    userId: faker.helpers.arrayElement([
+      faker.number.int({ min: undefined, max: undefined }),
+      undefined,
+    ]),
+  },
+  ...overrideResponse,
+});
+
+export const getGetMapMeV11ResponseMock = (): GetMapMeV11200 =>
+  faker.helpers.arrayElement([
+    { ...getGetMapMeV11ResponseMapMeResponseMock() },
+    { ...getGetMapMeV11ResponseMapMeV2ResponseMock() },
+  ]);
 
 export const getGetLocationInfoResponseMock = (
   overrideResponse: Partial<LocationInfoResponse> = {},
@@ -859,57 +996,10 @@ export const getGetMyStatusResponseMock = (
   ...overrideResponse,
 });
 
-export const getGetSelectableAlbumsResponseMock = (
-  overrideResponse: Partial<SelectableAlbumResponse> = {},
-): SelectableAlbumResponse => ({
-  albums: faker.helpers.arrayElement([
-    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
-      () => ({
-        id: faker.helpers.arrayElement([
-          faker.number.int({ min: undefined, max: undefined }),
-          undefined,
-        ]),
-        title: faker.helpers.arrayElement([
-          faker.string.alpha({ length: { min: 10, max: 20 } }),
-          undefined,
-        ]),
-        photoCount: faker.helpers.arrayElement([
-          faker.number.int({ min: undefined, max: undefined }),
-          undefined,
-        ]),
-        thumbnailUrl: faker.helpers.arrayElement([
-          faker.string.alpha({ length: { min: 10, max: 20 } }),
-          undefined,
-        ]),
-        isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-      }),
-    ),
-    undefined,
-  ]),
-  ...overrideResponse,
-});
-
-export const getGetUsersResponseMock = (): AdminUserSummaryResponse[] =>
-  Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
-    () => ({
-      id: faker.helpers.arrayElement([
-        faker.number.int({ min: undefined, max: undefined }),
-        undefined,
-      ]),
-      email: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-    }),
-  );
-
-export const getDeleteAllByEmailResponseMock = (
-  overrideResponse: Partial<AdminActionResponse> = {},
-): AdminActionResponse => ({
-  message: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
+export const getGetDisconnectNoticeResponseMock = (
+  overrideResponse: Partial<DisconnectNoticeResponse> = {},
+): DisconnectNoticeResponse => ({
+  shouldShow: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
   ...overrideResponse,
 });
 
@@ -995,6 +1085,60 @@ export const getGetDayPhotosResponseMock = (
         ]),
       }),
     ),
+    undefined,
+  ]),
+  ...overrideResponse,
+});
+
+export const getGetSelectableAlbumsResponseMock = (
+  overrideResponse: Partial<SelectableAlbumResponse> = {},
+): SelectableAlbumResponse => ({
+  albums: faker.helpers.arrayElement([
+    Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+      () => ({
+        id: faker.helpers.arrayElement([
+          faker.number.int({ min: undefined, max: undefined }),
+          undefined,
+        ]),
+        title: faker.helpers.arrayElement([
+          faker.string.alpha({ length: { min: 10, max: 20 } }),
+          undefined,
+        ]),
+        photoCount: faker.helpers.arrayElement([
+          faker.number.int({ min: undefined, max: undefined }),
+          undefined,
+        ]),
+        thumbnailUrl: faker.helpers.arrayElement([
+          faker.string.alpha({ length: { min: 10, max: 20 } }),
+          undefined,
+        ]),
+        isEditable: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
+      }),
+    ),
+    undefined,
+  ]),
+  ...overrideResponse,
+});
+
+export const getGetUsersResponseMock = (): AdminUserSummaryResponse[] =>
+  Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(
+    () => ({
+      id: faker.helpers.arrayElement([
+        faker.number.int({ min: undefined, max: undefined }),
+        undefined,
+      ]),
+      email: faker.helpers.arrayElement([
+        faker.string.alpha({ length: { min: 10, max: 20 } }),
+        undefined,
+      ]),
+    }),
+  );
+
+export const getDeleteAllByEmailResponseMock = (
+  overrideResponse: Partial<AdminActionResponse> = {},
+): AdminActionResponse => ({
+  message: faker.helpers.arrayElement([
+    faker.string.alpha({ length: { min: 10, max: 20 } }),
     undefined,
   ]),
   ...overrideResponse,
@@ -1412,13 +1556,6 @@ export const getReconnectMockHandler = (
   );
 };
 
-export const getGetDisconnectNoticeResponseMock = (
-  overrideResponse: Partial<DisconnectNoticeResponse> = {},
-): DisconnectNoticeResponse => ({
-  shouldShow: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  ...overrideResponse,
-});
-
 export const getConfirmDisconnectNoticeMockHandler = (
   overrideResponse?:
     | void
@@ -1433,34 +1570,6 @@ export const getConfirmDisconnectNoticeMockHandler = (
         await overrideResponse(info);
       }
       return new HttpResponse(null, { status: 204 });
-    },
-    options,
-  );
-};
-
-export const getGetDisconnectNoticeMockHandler = (
-  overrideResponse?:
-    | DisconnectNoticeResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<DisconnectNoticeResponse> | DisconnectNoticeResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/couples/me/disconnect-notice',
-    async (info) => {
-      await delay(1000);
-
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getGetDisconnectNoticeResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      );
     },
     options,
   );
@@ -2011,10 +2120,10 @@ export const getSearchPlacesMockHandler = (
 
 export const getGetMapMeV11MockHandler = (
   overrideResponse?:
-    | MapMeResponse
+    | GetMapMeV11200
     | ((
         info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<MapMeResponse> | MapMeResponse),
+      ) => Promise<GetMapMeV11200> | GetMapMeV11200),
   options?: RequestHandlerOptions,
 ) => {
   return http.get(
@@ -2141,6 +2250,90 @@ export const getGetMyStatusMockHandler = (
               ? await overrideResponse(info)
               : overrideResponse
             : getGetMyStatusResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
+export const getGetDisconnectNoticeMockHandler = (
+  overrideResponse?:
+    | DisconnectNoticeResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<DisconnectNoticeResponse> | DisconnectNoticeResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/couples/me/disconnect-notice',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetDisconnectNoticeResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
+export const getGetMonthMockHandler = (
+  overrideResponse?:
+    | CalendarMonthResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<CalendarMonthResponse> | CalendarMonthResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/calendar',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetMonthResponseMock(),
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    },
+    options,
+  );
+};
+
+export const getGetDayPhotosMockHandler = (
+  overrideResponse?:
+    | CalendarDayPhotosResponse
+    | ((
+        info: Parameters<Parameters<typeof http.get>[1]>[0],
+      ) => Promise<CalendarDayPhotosResponse> | CalendarDayPhotosResponse),
+  options?: RequestHandlerOptions,
+) => {
+  return http.get(
+    '*/calendar/days/:date/photos',
+    async (info) => {
+      await delay(1000);
+
+      return new HttpResponse(
+        JSON.stringify(
+          overrideResponse !== undefined
+            ? typeof overrideResponse === 'function'
+              ? await overrideResponse(info)
+              : overrideResponse
+            : getGetDayPhotosResponseMock(),
         ),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       );
@@ -2314,62 +2507,6 @@ export const getDeleteAllByEmailMockHandler = (
     options,
   );
 };
-export const getGetMonthMockHandler = (
-  overrideResponse?:
-    | CalendarMonthResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<CalendarMonthResponse> | CalendarMonthResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/calendar',
-    async (info) => {
-      await delay(1000);
-
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getGetMonthResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      );
-    },
-    options,
-  );
-};
-
-export const getGetDayPhotosMockHandler = (
-  overrideResponse?:
-    | CalendarDayPhotosResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<CalendarDayPhotosResponse> | CalendarDayPhotosResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/calendar/days/:date/photos',
-    async (info) => {
-      await delay(1000);
-
-      return new HttpResponse(
-        JSON.stringify(
-          overrideResponse !== undefined
-            ? typeof overrideResponse === 'function'
-              ? await overrideResponse(info)
-              : overrideResponse
-            : getGetDayPhotosResponseMock(),
-        ),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      );
-    },
-    options,
-  );
-};
-
 export const getLokitAPIMock = () => [
   getGetPhotoDetailMockHandler(),
   getUpdateMockHandler(),
@@ -2387,6 +2524,7 @@ export const getLokitAPIMock = () => [
   getRemoveEmoticonMockHandler(),
   getRegisterDeviceTokenMockHandler(),
   getReconnectMockHandler(),
+  getConfirmDisconnectNoticeMockHandler(),
   getSaveCoupleStatusCookieMockHandler(),
   getJoinByInviteCodeMockHandler(),
   getCreateInviteMockHandler(),
@@ -2413,6 +2551,9 @@ export const getLokitAPIMock = () => [
   getGetClusterPhotosMockHandler(),
   getGetAlbumMapInfoMockHandler(),
   getGetMyStatusMockHandler(),
+  getGetDisconnectNoticeMockHandler(),
+  getGetMonthMockHandler(),
+  getGetDayPhotosMockHandler(),
   getKakaoAuthorizeMockHandler(),
   getAppleAuthorizeMockHandler(),
   getGetSelectableAlbumsMockHandler(),
@@ -2420,8 +2561,4 @@ export const getLokitAPIMock = () => [
   getWithdrawMockHandler(),
   getDisconnectMockHandler(),
   getDeleteAllByEmailMockHandler(),
-  getConfirmDisconnectNoticeMockHandler(),
-  getGetDisconnectNoticeMockHandler(),
-  getGetMonthMockHandler(),
-  getGetDayPhotosMockHandler(),
 ];

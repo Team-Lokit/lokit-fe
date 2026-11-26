@@ -16,15 +16,27 @@ export type InviteMethod = 'link' | 'code';
 export type CoupleConnectErrorType = 'invalid_code' | 'expired' | 'already_connected';
 export type PhotoUploadErrorType = 'network' | 'server' | 'timeout';
 
-export type CoupleConnectErrorCode = 'INVITE_001' | 'INVITE_002' | 'COUPLE_001';
+/** 초대코드 확인·커플 합류 API가 내려주는 에러 코드 */
+export type CoupleConnectErrorCode =
+  | 'COUPLE_008' // 코드 형식 오류
+  | 'COUPLE_009' // 존재하지 않는 코드
+  | 'COUPLE_010' // 만료된 코드
+  | 'COUPLE_011' // 이미 사용된 코드
+  | 'COUPLE_012' // 취소된 코드
+  | 'COUPLE_013' // 이미 커플로 연결됨 (합류 시에는 코드 주인이 이미 연결된 경우)
+  | 'COUPLE_014'; // 내 코드를 입력함
 
 export const COUPLE_CONNECT_ERROR_TYPE_BY_CODE: Record<
   CoupleConnectErrorCode,
   CoupleConnectErrorType
 > = {
-  INVITE_001: 'invalid_code',
-  INVITE_002: 'expired',
-  COUPLE_001: 'already_connected',
+  COUPLE_008: 'invalid_code',
+  COUPLE_009: 'invalid_code',
+  COUPLE_010: 'expired',
+  COUPLE_011: 'invalid_code',
+  COUPLE_012: 'invalid_code',
+  COUPLE_013: 'already_connected',
+  COUPLE_014: 'invalid_code',
 };
 
 export type EventMap = {

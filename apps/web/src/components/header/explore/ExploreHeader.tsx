@@ -1,10 +1,9 @@
 import BellIcon from '@/assets/images/bell.svg';
 import BellCircleIcon from '@/assets/images/bellCircle.svg';
 import HamburgerIcon from '@/assets/images/hamburger.svg';
-import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import CrossfadeText from '@/components/common/crossfadeText/CrossfadeText';
-import { BUTTON_SIZE, ICON_SIZE } from '../base/Header.constants';
 import HeaderBase from '../base/HeaderBase';
+import HeaderIconButton from '../base/HeaderIconButton';
 import * as S from './ExploreHeader.styles';
 
 export interface ExploreHeaderProps {
@@ -18,12 +17,6 @@ export interface ExploreHeaderProps {
   hasUnreadNotification?: boolean;
   /** 우측 버튼 커스텀 슬롯 (지정 시 알림 버튼 대체) */
   rightSlot?: React.ReactNode;
-  /** 프로필 버튼 클릭 이벤트 @deprecated 사이드바 My로 이동 */
-  onClickProfile?: () => void;
-  /** 탐색 버튼 클릭 이벤트 @deprecated 사이드바 Menu로 이동 */
-  onClickExplore?: () => void;
-  /** 프로필 이미지 URL @deprecated */
-  profileImageSrc?: string;
 }
 
 const ExploreHeader = ({
@@ -36,13 +29,11 @@ const ExploreHeader = ({
   return (
     <HeaderBase
       left={
-        <CircleButton
+        <HeaderIconButton
+          icon={HamburgerIcon}
           onClick={onClickMenu}
           aria-label="사이드바 열기"
-          style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
-        >
-          <HamburgerIcon width={ICON_SIZE} height={ICON_SIZE} />
-        </CircleButton>
+        />
       }
       center={
         <S.LocationWrapper>
@@ -53,17 +44,11 @@ const ExploreHeader = ({
       }
       right={
         rightSlot ?? (
-          <CircleButton
-            onClick={onClickAlarm ?? (() => {})}
+          <HeaderIconButton
+            icon={hasUnreadNotification ? BellCircleIcon : BellIcon}
+            onClick={onClickAlarm}
             aria-label="알림"
-            style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
-          >
-            {hasUnreadNotification ? (
-              <BellCircleIcon width={ICON_SIZE} height={ICON_SIZE} />
-            ) : (
-              <BellIcon width={ICON_SIZE} height={ICON_SIZE} />
-            )}
-          </CircleButton>
+          />
         )
       }
     />

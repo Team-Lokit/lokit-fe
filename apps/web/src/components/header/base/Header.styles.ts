@@ -1,17 +1,25 @@
 import styled from '@emotion/styled';
+import type { Theme } from '@emotion/react';
+import { HEADER_PADDING } from './Header.constants';
+import type { HeaderBackground } from './HeaderBase';
 
-export const Container = styled.header<{ transparent?: boolean; fixed?: boolean }>`
+const BACKGROUNDS: Record<HeaderBackground, (theme: Theme) => string> = {
+  default: (theme) => theme.colors.gradient.black1,
+  transparent: () => 'transparent',
+  dim: () => 'linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%)',
+};
+
+export const Container = styled.header<{
+  $background: HeaderBackground;
+  fixed?: boolean;
+}>`
   display: flex;
   align-items: center;
   width: 100%;
   height: 60px;
-  padding: 0 16px;
-  background: ${({ theme, transparent, fixed }) =>
-    fixed
-      ? theme.colors.blackOpacity[100]
-      : transparent
-        ? 'transparent'
-        : theme.colors.gradient.black1};
+  padding: ${HEADER_PADDING};
+  background: ${({ theme, $background, fixed }) =>
+    fixed ? theme.colors.blackOpacity[100] : BACKGROUNDS[$background](theme)};
 
   ${({ fixed, theme }) =>
     fixed &&

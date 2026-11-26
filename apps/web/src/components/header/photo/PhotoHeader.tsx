@@ -1,28 +1,12 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+'use client';
+
+import { ReactNode } from 'react';
 
 import ChevronLeftIcon from '@/assets/images/chevronLeft.svg';
-import MenuIcon from '@/assets/images/menu.svg';
-import CircleButton from '@/components/buttons/circleButton/CircleButton';
 
-import { BUTTON_SIZE, ICON_SIZE } from '../base/Header.constants';
-import * as S from './PhotoHeader.styles';
-
-interface PhotoHeaderContextValue {
-  isOpen: boolean;
-  close: () => void;
-}
-
-const PhotoHeaderContext = createContext<PhotoHeaderContextValue | null>(null);
-
-const usePhotoHeaderContext = () => {
-  const context = useContext(PhotoHeaderContext);
-
-  if (!context) {
-    throw new Error('PhotoHeader 컴포넌트 내부에서 사용해주세요.');
-  }
-
-  return context;
-};
+import HeaderBase from '../base/HeaderBase';
+import HeaderIconButton from '../base/HeaderIconButton';
+import HeaderMenu from '../base/HeaderMenu';
 
 export interface PhotoHeaderProps {
   /** 뒤로가기 버튼 클릭 이벤트 */
@@ -38,67 +22,29 @@ const PhotoHeaderMain = ({
   showMenu = true,
   children,
 }: PhotoHeaderProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleClickMenu = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-  const close = () => {
-    setIsOpen(false);
-  };
-
   return (
-    <PhotoHeaderContext.Provider value={{ isOpen, close }}>
-      <S.Container>
-        <CircleButton
-          onClick={onClickBack}
-          aria-label="뒤로가기"
-          style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
-        >
-          <ChevronLeftIcon width={ICON_SIZE} height={ICON_SIZE} />
-        </CircleButton>
-
-        {showMenu ? (
-          <CircleButton
-            onClick={handleClickMenu}
-            style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
-          >
-            <MenuIcon width={ICON_SIZE} height={ICON_SIZE} />
-          </CircleButton>
-        ) : null}
-
-        {children}
-      </S.Container>
-    </PhotoHeaderContext.Provider>
+    <HeaderMenu.Provider>
+      <HeaderBase
+        background="dim"
+        left={
+          <HeaderIconButton
+            icon={ChevronLeftIcon}
+            onClick={onClickBack}
+            aria-label="뒤로가기"
+          />
+        }
+        right={showMenu ? <HeaderMenu.Button /> : null}
+      />
+      {children}
+    </HeaderMenu.Provider>
   );
 };
-
-interface MenuProps {
-  children: ReactNode;
-}
-
-const Menu = ({ children }: MenuProps) => {
-  const { isOpen, close } = usePhotoHeaderContext();
-
-  if (!isOpen) return null;
-
-  return (
-    <>
-      <S.MenuBackdrop onClick={close} />
-      <S.MenuDropdown>{children}</S.MenuDropdown>
-    </>
-  );
-};
-
-export interface MenuItemProps {
-  children: ReactNode;
-  onClick?: () => void;
-  variant?: 'default' | 'danger';
-}
 
 const PhotoHeader = Object.assign(PhotoHeaderMain, {
-  Menu,
+  /** 메뉴 드롭다운. 안에 Menu 컴포넌트를 넣는다. */
+  Menu: HeaderMenu.Dropdown,
+  /** 클릭 시 메뉴가 닫히는 Menu.Item */
+  Item: HeaderMenu.Item,
 });
 
 export default PhotoHeader;

@@ -1,28 +1,17 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+'use client';
+
+import { ReactNode } from 'react';
 import ChevronLeftIcon from '@/assets/images/chevronLeft.svg';
-import MenuIcon from '@/assets/images/menu.svg';
-import CircleButton from '@/components/buttons/circleButton/CircleButton';
 import CrossfadeText from '@/components/common/crossfadeText/CrossfadeText';
-import { BUTTON_SIZE, ICON_SIZE } from '../base/Header.constants';
+import Menu from '@/components/menu/Menu';
 import HeaderBase from '../base/HeaderBase';
+import HeaderIconButton from '../base/HeaderIconButton';
+import HeaderMenu from '../base/HeaderMenu';
 import * as B from '../base/Header.styles';
 import * as S from './MenuHeader.styles';
 import * as E from '../explore/ExploreHeader.styles';
 
-interface MenuContextValue {
-  isOpen: boolean;
-  close: () => void;
-}
-
-const MenuContext = createContext<MenuContextValue | null>(null);
-
-const useMenuContext = () => {
-  const context = useContext(MenuContext);
-  if (!context) {
-    throw new Error('MenuHeader 컴포넌트 내부에서 사용해주세요.');
-  }
-  return context;
-};
+export type { HeaderMenuItemProps as MenuItemProps } from '../base/HeaderMenu';
 
 export interface MenuHeaderProps {
   /** 헤더 타이틀 */
@@ -44,27 +33,16 @@ const MenuHeaderMain = ({
   showLocation,
   showMenu = true,
 }: MenuHeaderProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleClickMenu = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-  const close = () => {
-    setIsOpen(false);
-  };
-
   return (
-    <MenuContext.Provider value={{ isOpen, close }}>
+    <HeaderMenu.Provider>
       <S.MenuHeaderWrapper>
         <HeaderBase
           left={
-            <CircleButton
+            <HeaderIconButton
+              icon={ChevronLeftIcon}
               onClick={onClickBack}
-              style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
-            >
-              <ChevronLeftIcon width={ICON_SIZE} height={ICON_SIZE} />
-            </CircleButton>
+              aria-label="뒤로가기"
+            />
           }
           center={
             <B.CenterSection>
@@ -76,67 +54,24 @@ const MenuHeaderMain = ({
               )}
             </B.CenterSection>
           }
-          right={
-            showMenu ? (
-              <CircleButton
-                onClick={handleClickMenu}
-                style={{ width: BUTTON_SIZE, height: BUTTON_SIZE }}
-              >
-                <MenuIcon width={ICON_SIZE} height={ICON_SIZE} />
-              </CircleButton>
-            ) : null
-          }
+          right={showMenu ? <HeaderMenu.Button /> : null}
         />
         {children}
       </S.MenuHeaderWrapper>
-    </MenuContext.Provider>
+    </HeaderMenu.Provider>
   );
 };
 
-interface MenuProps {
-  children: ReactNode;
-}
-
-const Menu = ({ children }: MenuProps) => {
-  const { isOpen, close } = useMenuContext();
-
-  if (!isOpen) return null;
-
-  return (
-    <>
-      <S.MenuBackdrop onClick={close} />
-      <S.MenuDropdown>{children}</S.MenuDropdown>
-    </>
-  );
-};
-
-export interface MenuItemProps {
-  /** 메뉴 아이템 텍스트 */
-  children: ReactNode;
-  /** 클릭 이벤트 */
-  onClick?: () => void;
-  /** 텍스트 색상 variant */
-  variant?: 'default' | 'danger';
-}
-
-const MenuItem = ({ children, onClick, variant = 'default' }: MenuItemProps) => {
-  const { close } = useMenuContext();
-
-  const handleClick = () => {
-    onClick?.();
-    close();
-  };
-
-  return (
-    <S.MenuItem onClick={handleClick} variant={variant}>
-      {children}
-    </S.MenuItem>
-  );
-};
+/** 메뉴 드롭다운. 안에 MenuHeader.Item을 넣는다. */
+const MenuHeaderMenu = ({ children }: { children: ReactNode }) => (
+  <HeaderMenu.Dropdown>
+    <Menu>{children}</Menu>
+  </HeaderMenu.Dropdown>
+);
 
 const MenuHeader = Object.assign(MenuHeaderMain, {
-  Menu,
-  Item: MenuItem,
+  Menu: MenuHeaderMenu,
+  Item: HeaderMenu.Item,
 });
 
 export default MenuHeader;
