@@ -21,19 +21,6 @@ export const IconButton = styled.button`
   }
 `;
 
-export const CircleIconButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.blackOpacity[50]};
-  backdrop-filter: ${({ theme }) => theme.effects.backdropBlur[25]};
-  color: ${({ theme }) => theme.colors.grayScale[100]};
-  cursor: pointer;
-`;
-
 export const TextButton = styled.button<{ disabled?: boolean }>`
   ${({ theme }) => theme.typography.body18Semibold}
   padding: 8px 12px;

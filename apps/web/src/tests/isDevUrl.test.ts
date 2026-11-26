@@ -4,7 +4,7 @@ import { isDevUrl } from '@repo/webview-bridge';
 describe('isDevUrl', () => {
   it.each([
     'https://develop.lokit.co.kr',
-    'https://develop.lokit.co.kr/onboarding/connect',
+    'https://develop.lokit.co.kr/connect',
     'https://local.lokit.co.kr:3000/',
     'http://localhost:3000?foo=bar',
   ])('개발 환경 URL이면 true: %s', (url) => {

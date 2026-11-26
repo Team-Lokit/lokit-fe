@@ -1,0 +1,252 @@
+'use client';
+
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  getGetMyStatusQueryKey,
+  saveCoupleStatusCookie,
+  useGetMyPage,
+  useGetMyStatus,
+} from '@repo/api-client';
+import Button from '@/components/buttons/button/Button';
+import { BackHeader } from '@/components/header';
+import QaSkipCoupleButton from './_components/QaSkipCoupleButton/QaSkipCoupleButton';
+import CodeInput from './_components/CodeInput/CodeInput';
+import CodeMismatchModal from './_components/CodeMismatchModal/CodeMismatchModal';
+import { useInviteCode } from './_hooks/useInviteCode';
+import { useCodeVerification } from './_hooks/useCodeVerification';
+import { useToast } from '@/components/toast';
+import { ROUTES } from '@/constants/routes';
+import { KAKAO_TEMPLATE_ID } from '@/constants/kakao';
+import { CONNECT_FROM_MYPAGE, CONNECT_FROM_PARAM, INVITE_CODE_LENGTH } from './constants';
+import { track, type EventParams } from '@/lib/analytics';
+import CopySvg from '@/assets/images/copy.svg';
+import KakaoSvg from '@/assets/images/kakao.svg';
+import ClockSvg from '@/assets/images/clock.svg';
+import { formatTimeLeft } from './_utils/formatTimeLeft';
+import { toCoupleConnectErrorType } from './_utils/toCoupleConnectErrorType';
+import { formatDeadline } from '@/utils/formatDeadline';
+import * as S from './page.styles';
+
+const COUPLE_STATUS_POLLING_INTERVAL = 3000;
+const CONNECT_SUCCESS_MESSAGE = '연결에 성공했어요';
+
+export default function ConnectPage() {
+  const router = useRouter();
+  // 마이페이지 배너로 들어왔으면 그 마이페이지로 돌아가고, URL 직접 진입 등 다른 경로면 마이페이지로 replace한다.
+  // history 개수만으로는 바로 앞 화면이 마이페이지인지 알 수 없어 진입 경로를 쿼리로 표시한다.
+  const goBackToMyPage = useCallback(() => {
+    const from = new URLSearchParams(window.location.search).get(CONNECT_FROM_PARAM);
+    if (from === CONNECT_FROM_MYPAGE && window.history.length > 1) {
+      router.back();
+      return;
+    }
+    router.replace(ROUTES.MYPAGE);
+  }, [router]);
+  const { showToast } = useToast();
+  const [expiryTime, setExpiryTime] = useState('');
+  const [partnerCode, setPartnerCode] = useState('');
+  const [isMismatchModalOpen, setIsMismatchModalOpen] = useState(false);
+  const hasNavigatedRef = useRef(false);
+  // 내가 코드로 연결하는 중에는 폴링이 같은 연결을 성공으로 중복 처리하지 않게 막는다.
+  // ref가 아닌 state인 이유: 연결 요청이 실패로 끝났는데 그사이 폴링이 연결을 감지했다면
+  // (상대가 동시에 내 코드로 연결한 경우) 요청이 끝난 시점에 effect가 다시 판단해 이동해야 한다.
+  const [isJoiningByCode, setIsJoiningByCode] = useState(false);
+  const { data: myPageData } = useGetMyPage();
+  const reconnectDeadline = formatDeadline(myPageData?.reconnectDeadline);
+  const { inviteCode, createCode, refreshCode, copyCode } = useInviteCode();
+  // 같은 코드에 대해 재발급을 한 번만 요청하기 위해 마지막으로 재발급을 요청한 만료 시각을 기억한다
+  const refreshedExpiresAtRef = useRef<string | null>(null);
+  const { joinCode, isJoining } = useCodeVerification();
+
+  // 폴링 감지(상대가 내 코드로 연결)와 코드 입력 연결의 공통 성공 처리
+  const handleConnectSuccess = useCallback(
+    (inviteMethod: EventParams<'couple_connect_success'>['invite_method']) => {
+      track('couple_connect_success', {
+        invite_method: inviteMethod,
+        // TODO: days_since_signup은 클라이언트가 알 수 없어 제외 (백엔드 응답에 가입일 추가 후 적용)
+      });
+      showToast(CONNECT_SUCCESS_MESSAGE, 3000, 'success');
+      goBackToMyPage();
+    },
+    [showToast, goBackToMyPage],
+  );
+
+  // 상대방이 내 코드로 연결했는지 폴링한다.
+  // 백그라운드에서는 쉬고(refetchIntervalInBackground 기본값 false), 연결이 감지되면 멈춘다.
+  // 전역 refetchOnWindowFocus가 false이고 staleTime이 30초라, 돌아왔을 때 바로 확인하도록 'always'로 둔다.
+  const { data: myStatus, isFetchedAfterMount } = useGetMyStatus({
+    query: {
+      queryKey: getGetMyStatusQueryKey(),
+      refetchInterval: (query) =>
+        query.state.data?.isCoupled ? false : COUPLE_STATUS_POLLING_INTERVAL,
+      refetchOnMount: 'always',
+      refetchOnWindowFocus: 'always',
+    },
+  });
+
+  // 상대방이 내 코드로 연결하면 마이페이지로 이동
+  // 이전에 캐시된 응답으로 잘못 이동하지 않도록 이 화면에서 새로 받은 응답만 본다.
+  useEffect(() => {
+    if (!isFetchedAfterMount || !myStatus?.isCoupled) return;
+    if (hasNavigatedRef.current || isJoiningByCode) return;
+
+    hasNavigatedRef.current = true;
+    void saveCoupleStatusCookie()
+      .catch(() => {})
+      .then(() => handleConnectSuccess('link'));
+  }, [isFetchedAfterMount, myStatus?.isCoupled, isJoiningByCode, handleConnectSuccess]);
+
+  // 페이지 진입 시 코드 생성
+  useEffect(() => {
+    createCode();
+  }, [createCode]);
+
+  // 남은 시간 표시, 만료되면 새 코드 재발급
+  useEffect(() => {
+    const expiresAt = inviteCode?.expiresAt;
+    if (!expiresAt) return;
+
+    const update = () => {
+      setExpiryTime(formatTimeLeft(expiresAt));
+
+      const isExpired = new Date(expiresAt).getTime() <= Date.now();
+      // 재발급이 실패하거나 기기 시계가 서버보다 빨라 같은 코드가 다시 오더라도 반복 요청하지 않는다
+      if (isExpired && refreshedExpiresAtRef.current !== expiresAt) {
+        refreshedExpiresAtRef.current = expiresAt;
+        void refreshCode();
+      }
+    };
+    update();
+    const interval = setInterval(update, 1000);
+
+    return () => clearInterval(interval);
+  }, [inviteCode?.expiresAt, refreshCode]);
+
+  const handleShareKakao = useCallback(() => {
+    const kakao = window.Kakao;
+    if (!kakao || !inviteCode?.code) return;
+
+    try {
+      const isDev = process.env.NEXT_PUBLIC_APP_ENV !== 'production';
+      const templateId = isDev ? KAKAO_TEMPLATE_ID.DEV : KAKAO_TEMPLATE_ID.PROD;
+
+      if (!templateId) {
+        console.error('카카오톡 템플릿 ID가 설정되지 않았습니다.');
+        return;
+      }
+
+      kakao.Share.sendCustom({
+        templateId,
+        templateArgs: {
+          userName: myPageData?.myName || '사용자',
+          inviteCode: inviteCode.code,
+          link: window.location.origin,
+        },
+      });
+    } catch (error) {
+      console.error('카카오톡 공유 실패:', error);
+    }
+  }, [inviteCode, myPageData]);
+
+  const handleConnectClick = useCallback(async () => {
+    if (partnerCode.length !== INVITE_CODE_LENGTH || isJoining) return;
+
+    setIsJoiningByCode(true);
+    const result = await joinCode(partnerCode);
+    setIsJoiningByCode(false);
+
+    if (result.success) {
+      // setIsJoiningByCode(false)로 effect가 다시 실행되기 전에 표시해 중복 처리를 막는다
+      hasNavigatedRef.current = true;
+      handleConnectSuccess('code');
+      return;
+    }
+
+    const errorType = toCoupleConnectErrorType(result.errorCode);
+
+    // 코드 문제가 아닌 실패(요청 제한, 동시 요청 충돌, 네트워크 등)는 다시 시도하도록 안내한다
+    if (!errorType) {
+      showToast('잠시 후 다시 시도해주세요', 3000, 'warn');
+      return;
+    }
+
+    track('couple_connect_fail', { error_type: errorType });
+    setPartnerCode('');
+
+    if (errorType === 'expired') {
+      showToast('만료된 코드예요', 3000, 'warn');
+    } else if (errorType === 'already_connected') {
+      // 내가 이미 커플이면 합류 API가 성공으로 응답하므로, 이 경우는 코드 주인이 이미 연결된 경우다
+      showToast('이미 다른 사람과 연결된 코드예요', 3000, 'warn');
+    } else {
+      setIsMismatchModalOpen(true);
+    }
+  }, [partnerCode, isJoining, joinCode, showToast, handleConnectSuccess]);
+
+  const handleRetry = useCallback(() => {
+    setIsMismatchModalOpen(false);
+  }, []);
+
+  return (
+    <S.Wrapper>
+      <BackHeader />
+      <S.Content>
+        <S.TitleGroup>
+          <S.Title>함께 사진을 채워봐요</S.Title>
+          <S.Description>
+            {reconnectDeadline === null
+              ? '로킷을 함께할 사람과 연결해주세요'
+              : `${reconnectDeadline}까지 기존 파트너와 재연결하면\n업로드한 사진들을 다시 복구할 수 있어요`}
+          </S.Description>
+        </S.TitleGroup>
+
+        <S.InviteSection>
+          <S.SectionHeader>
+            <S.SectionTitle>내 초대코드</S.SectionTitle>
+            {expiryTime && (
+              <S.ExpiryText>
+                <ClockSvg aria-hidden />
+                {expiryTime}
+              </S.ExpiryText>
+            )}
+          </S.SectionHeader>
+          <S.CodeDisplay>
+            <span>{inviteCode?.code || '000000'}</span>
+            <S.CopyIconButton onClick={copyCode} aria-label="초대코드 복사">
+              <CopySvg />
+            </S.CopyIconButton>
+          </S.CodeDisplay>
+          <S.KakaoShareButton onClick={handleShareKakao}>
+            <S.KakaoIcon>
+              <KakaoSvg />
+            </S.KakaoIcon>
+            카카오톡으로 공유하기
+          </S.KakaoShareButton>
+        </S.InviteSection>
+
+        <S.Section>
+          <S.SectionHeader>
+            <S.SectionTitle>상대방에게 받은 코드를 입력해주세요</S.SectionTitle>
+          </S.SectionHeader>
+          <CodeInput value={partnerCode} onChange={setPartnerCode} />
+          <S.ConnectButtonWrapper>
+            <Button
+              text="코드로 연결하기"
+              variant="highlight"
+              size="large"
+              onClick={handleConnectClick}
+              disabled={partnerCode.length !== INVITE_CODE_LENGTH || isJoining}
+            />
+          </S.ConnectButtonWrapper>
+        </S.Section>
+      </S.Content>
+
+      <S.Footer>
+        <QaSkipCoupleButton />
+      </S.Footer>
+
+      <CodeMismatchModal isOpen={isMismatchModalOpen} onRetry={handleRetry} />
+    </S.Wrapper>
+  );
+}
