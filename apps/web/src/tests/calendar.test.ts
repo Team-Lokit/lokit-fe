@@ -5,6 +5,7 @@ import {
   formatYear,
   getAnniversaryLabel,
   mapCalendarDays,
+  parseYearMonthKey,
   shiftYearMonth,
   toDateKey,
   toYearMonthKey,
@@ -141,5 +142,29 @@ describe('buildCalendarWeeks (0~99년)', () => {
     expect(currentMonth[0].dateKey).toBe('0001-01-01');
     // 서기 1년 1월 1일은 월요일 (프롤렙틱 그레고리력)
     expect(currentMonth[0].dayOfWeek).toBe(1);
+  });
+});
+
+describe('parseYearMonthKey', () => {
+  it('toYearMonthKey 결과를 다시 연/월로 되돌린다', () => {
+    const cases = [
+      { year: 2026, month: 5 },
+      { year: 1, month: 1 },
+      { year: 10000, month: 12 },
+    ];
+    for (const yearMonth of cases) {
+      expect(parseYearMonthKey(toYearMonthKey(yearMonth))).toEqual(yearMonth);
+    }
+  });
+
+  it('형식이 맞지 않거나 범위를 벗어나면 null', () => {
+    expect(parseYearMonthKey(null)).toBeNull();
+    expect(parseYearMonthKey('')).toBeNull();
+    expect(parseYearMonthKey('2026-5')).toBeNull();
+    expect(parseYearMonthKey('2026-13')).toBeNull();
+    expect(parseYearMonthKey('2026-00')).toBeNull();
+    expect(parseYearMonthKey('0000-01')).toBeNull();
+    expect(parseYearMonthKey('+10001-01')).toBeNull();
+    expect(parseYearMonthKey('abc')).toBeNull();
   });
 });

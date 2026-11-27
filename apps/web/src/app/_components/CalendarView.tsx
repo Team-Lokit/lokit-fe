@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import CalendarSwiper from '@/components/calendar/calendarSwiper/CalendarSwiper';
 import MonthPickerModal from '@/components/calendar/monthPickerModal/MonthPickerModal';
 import Chip from '@/components/buttons/chip/Chip';
@@ -12,11 +12,15 @@ import {
   getTodayKey,
   getTodayYearMonth,
   isYearMonthInRange,
+  parseYearMonthKey,
   shiftYearMonth,
   toYearMonthKey,
   type YearMonth,
 } from '@/utils/calendar';
 import * as S from './CalendarView.styles';
+
+/** 캘린더에서 보고 있는 달(yyyy-MM)을 담는 URL 쿼리 키 */
+const CALENDAR_MONTH_PARAM = 'month';
 
 interface CalendarViewProps {
   /** 앨범 상세에서 볼 때만 전달 */
@@ -24,12 +28,34 @@ interface CalendarViewProps {
 }
 
 const CalendarView = ({ albumId }: CalendarViewProps) => {
+  const searchParams = useSearchParams();
+
   const [todayKey] = useState(getTodayKey);
   const [todayYearMonth] = useState(getTodayYearMonth);
-  const [yearMonth, setYearMonth] = useState(todayYearMonth);
+  // 사진 상세에서 뒤로가기·앨범 변경 시에도 보던 달을 유지하도록 URL 쿼리에서 복원
+  const [yearMonth, setYearMonthState] = useState(
+    () => parseYearMonthKey(searchParams.get(CALENDAR_MONTH_PARAM)) ?? todayYearMonth,
+  );
   const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
 
   const router = useRouter();
+
+  // 스와이프마다 서버 요청(RSC)이 생기지 않도록 router 대신 history API로 쿼리만 교체
+  // (현재 달이면 쿼리를 지워 URL을 깔끔하게 유지)
+  const setYearMonth = (next: YearMonth) => {
+    setYearMonthState(next);
+    const params = new URLSearchParams(window.location.search);
+    const isTodayMonth =
+      next.year === todayYearMonth.year && next.month === todayYearMonth.month;
+    if (isTodayMonth) params.delete(CALENDAR_MONTH_PARAM);
+    else params.set(CALENDAR_MONTH_PARAM, toYearMonthKey(next));
+    const query = params.toString();
+    window.history.replaceState(
+      null,
+      '',
+      `${window.location.pathname}${query ? `?${query}` : ''}`,
+    );
+  };
 
   // 스와이프 중 옆 달이 비어 보이지 않도록 이전/다음 달도 함께 조회
   const prevYearMonth = shiftYearMonth(yearMonth, -1);

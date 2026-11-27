@@ -99,6 +99,18 @@ export const toYearMonthKey = ({ year, month }: YearMonth) =>
   `${formatYear(year)}-${pad(month)}`;
 
 /**
+ * 연월 문자열(yyyy-MM)을 연/월로 변환한다. toYearMonthKey의 역변환.
+ * 형식이 맞지 않거나 조회 가능 범위 밖이면 null.
+ */
+export const parseYearMonthKey = (value: string | null): YearMonth | null => {
+  const match = value?.match(/^\+?(\d{4,5})-(\d{2})$/);
+  if (!match) return null;
+  const yearMonth = { year: Number(match[1]), month: Number(match[2]) };
+  if (yearMonth.month < 1 || yearMonth.month > 12) return null;
+  return isYearMonthInRange(yearMonth) ? yearMonth : null;
+};
+
+/**
  * 기념일 배지 라벨. (DAY_COUNT 100 → '100', YEARLY 1 → '1주년')
  * 같은 날 여러 기념일이 겹치면 주년을 우선한다.
  */
