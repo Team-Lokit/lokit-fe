@@ -20,7 +20,7 @@ import {
 import * as S from './CalendarView.styles';
 
 /** 캘린더에서 보고 있는 달(yyyy-MM)을 담는 URL 쿼리 키 */
-const CALENDAR_MONTH_PARAM = 'month';
+const CALENDAR_YEAR_MONTH_PARAM = 'yearMonth';
 
 interface CalendarViewProps {
   /** 앨범 상세에서 볼 때만 전달 */
@@ -34,7 +34,8 @@ const CalendarView = ({ albumId }: CalendarViewProps) => {
   const [todayYearMonth] = useState(getTodayYearMonth);
   // 사진 상세에서 뒤로가기·앨범 변경 시에도 보던 달을 유지하도록 URL 쿼리에서 복원
   const [yearMonth, setYearMonthState] = useState(
-    () => parseYearMonthKey(searchParams.get(CALENDAR_MONTH_PARAM)) ?? todayYearMonth,
+    () =>
+      parseYearMonthKey(searchParams.get(CALENDAR_YEAR_MONTH_PARAM)) ?? todayYearMonth,
   );
   const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false);
 
@@ -47,8 +48,8 @@ const CalendarView = ({ albumId }: CalendarViewProps) => {
     const params = new URLSearchParams(window.location.search);
     const isTodayMonth =
       next.year === todayYearMonth.year && next.month === todayYearMonth.month;
-    if (isTodayMonth) params.delete(CALENDAR_MONTH_PARAM);
-    else params.set(CALENDAR_MONTH_PARAM, toYearMonthKey(next));
+    if (isTodayMonth) params.delete(CALENDAR_YEAR_MONTH_PARAM);
+    else params.set(CALENDAR_YEAR_MONTH_PARAM, toYearMonthKey(next));
     const query = params.toString();
     window.history.replaceState(
       null,
