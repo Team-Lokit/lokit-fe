@@ -1,4 +1,4 @@
-import { getGetMonthQueryKey, useGetMonth, type GetMonthParams } from '@repo/api-client';
+import { getGetMonthQueryKey, useGetMonth } from '@repo/api-client';
 import { useMemo } from 'react';
 import { mapCalendarDays, toYearMonthKey, type YearMonth } from '@/utils/calendar';
 
@@ -31,12 +31,6 @@ export const useCalendarMonth = ({
     query: {
       queryKey: getGetMonthQueryKey(params),
       enabled,
-      // 같은 앨범에서 달만 바뀔 때는 새 데이터가 올 때까지 이전 달 화면을 유지하고,
-      // 앨범이 바뀌면 다른 앨범 사진이 잠깐 보이지 않도록 유지하지 않는다.
-      placeholderData: (previousData, previousQuery) => {
-        const previousParams = previousQuery?.queryKey[1] as GetMonthParams | undefined;
-        return previousParams?.albumId === params.albumId ? previousData : undefined;
-      },
       // 파트너가 올린 사진도 바로 보이도록 달이 바뀔 때마다 재요청한다.
       // 캐시된 달은 이전 데이터를 먼저 보여주고 백그라운드에서 갱신한다.
       staleTime: 0,
