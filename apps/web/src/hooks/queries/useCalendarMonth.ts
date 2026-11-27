@@ -10,8 +10,8 @@ interface UseCalendarMonthParams {
   enabled?: boolean;
 }
 
-/** 스와이프로 오가는 동안 재요청하지 않을 캐시 유지 시간 */
-const CALENDAR_STALE_TIME = 60 * 1000;
+/** 다른 달로 넘어갔다 돌아올 때 이전 데이터를 바로 보여주기 위한 캐시 보관 시간 */
+const CALENDAR_GC_TIME = 5 * 60 * 1000;
 
 /**
  * GET /calendar 월간 캘린더 조회
@@ -37,9 +37,10 @@ export const useCalendarMonth = ({
         const previousParams = previousQuery?.queryKey[1] as GetMonthParams | undefined;
         return previousParams?.albumId === params.albumId ? previousData : undefined;
       },
-      // 스와이프로 앞뒤 달을 오갈 때마다 다시 요청하지 않도록 잠시 캐시 유지
-      // (사진 추가/수정/삭제 시에는 invalidateCalendarQueries로 갱신됨)
-      staleTime: CALENDAR_STALE_TIME,
+      // 파트너가 올린 사진도 바로 보이도록 달이 바뀔 때마다 재요청한다.
+      // 캐시된 달은 이전 데이터를 먼저 보여주고 백그라운드에서 갱신한다.
+      staleTime: 0,
+      gcTime: CALENDAR_GC_TIME,
     },
   });
 
