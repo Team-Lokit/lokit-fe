@@ -61,7 +61,7 @@ const CalendarView = ({ albumId }: CalendarViewProps) => {
   const prevYearMonth = shiftYearMonth(yearMonth, -1);
   const nextYearMonth = shiftYearMonth(yearMonth, 1);
   const { days } = useCalendarMonth({ yearMonth, albumId });
-  // 조회 가능 범위(1년 1월 ~ 10000년 12월) 밖으로는 조회·이동하지 않음
+  // 조회 가능 범위 밖으로는 조회·이동하지 않음
   const hasPrev = isYearMonthInRange(prevYearMonth);
   const hasNext = isYearMonthInRange(nextYearMonth);
   const { days: prevDays } = useCalendarMonth({

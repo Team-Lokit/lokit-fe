@@ -20,7 +20,7 @@ export interface CalendarDay {
  * 월 이동 시 12월 → 다음 해 1월처럼 두 값이 함께 바뀌므로 하나로 묶어 관리한다.
  */
 export interface YearMonth {
-  /** 연도 (1 ~ 10000, 예: 2026) */
+  /** 연도 (CALENDAR_MIN_YEAR ~ CALENDAR_MAX_YEAR, 예: 2026) */
   year: number;
   /** 1 ~ 12 */
   month: number;
@@ -84,7 +84,7 @@ export const getTodayYearMonth = (): YearMonth => {
   return { year, month };
 };
 
-/** 연/월이 캘린더 조회 가능 범위(1년 1월 ~ 10000년 12월) 안인지 */
+/** 연/월이 캘린더 조회 가능 범위(CALENDAR_MIN_YEAR ~ CALENDAR_MAX_YEAR) 안인지 */
 export const isYearMonthInRange = ({ year }: YearMonth) =>
   year >= CALENDAR_MIN_YEAR && year <= CALENDAR_MAX_YEAR;
 
