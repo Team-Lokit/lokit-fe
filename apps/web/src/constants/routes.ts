@@ -19,6 +19,8 @@ export const ROUTES = {
       params?: {
         albumId?: number;
         source?: string;
+        /** 캘린더에서 진입 시 해당 날짜(YYYY-MM-DD) 사진만 슬라이더에 노출 */
+        date?: string;
       },
     ) => buildUrlWithQueryParams(`/photo/${photoId}`, params),
     VIEW_WITH_CLUSTER: (photoId: number, clusterId: string) =>

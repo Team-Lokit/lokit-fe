@@ -1,4 +1,5 @@
 import { getGetMapMeV11QueryKey, useDelete1 } from '@repo/api-client';
+import { invalidateCalendarQueries } from '@/utils/calendarQuery';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/toast';
@@ -20,6 +21,7 @@ const useDeleteAlbum = (onSuccess?: () => void) => {
           queryClient.refetchQueries({ queryKey: getGetMapMeV11QueryKey() });
           // 선택된 앨범 상세 정보 업데이트
           queryClient.invalidateQueries({ queryKey: ['albumPhotos', albumId] });
+          invalidateCalendarQueries(queryClient);
           showToast('앨범이 삭제되었어요');
           onSuccess?.();
           router.back();

@@ -45,6 +45,7 @@ export * from './emoticonSummaryResponse';
 export * from './errorDetail';
 export * from './errorDetailErrors';
 export * from './getClusterPhotosParams';
+export * from './getDayPhotosParams';
 export * from './getLocationInfoParams';
 export * from './getMapMeParams';
 export * from './getMapMeParams';

@@ -4,11 +4,13 @@ import {
   getGetMyPageQueryKey,
   type MyPageResponse,
 } from '@repo/api-client';
+import { invalidateCalendarQueries } from '@/utils/calendarQuery';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/toast';
 import Modal from '@/components/popup/modal/Modal';
 import TextButton from '@/components/buttons/textButton/TextButton';
 import * as S from './DdayEditModal.styles';
+import { createNumericChangeHandler } from '@/utils/numericInput';
 
 interface DdayEditModalProps {
   isOpen: boolean;
@@ -91,18 +93,12 @@ export default function DdayEditModal({
         },
         onSettled: () => {
           queryClient.invalidateQueries({ queryKey });
+          // 기념일 배지 갱신
+          invalidateCalendarQueries(queryClient);
         },
       },
     );
   };
-
-  const handleNumericChange =
-    (setter: (value: string) => void, maxLength: number, max?: number) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/\D/g, '').slice(0, maxLength);
-      if (value && max && Number(value) > max) return;
-      setter(value);
-    };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -118,7 +114,7 @@ export default function DdayEditModal({
               placeholder={placeholderYear}
               value={year}
               $charCount={year.length || 4}
-              onChange={handleNumericChange(setYear, 4, new Date().getFullYear())}
+              onChange={createNumericChangeHandler(setYear, 4, new Date().getFullYear())}
             />
             <S.DateSuffix $isEmpty={!year}>년</S.DateSuffix>
           </S.DateBlock>
@@ -129,7 +125,7 @@ export default function DdayEditModal({
               placeholder={placeholderMonth}
               value={month}
               $charCount={month.length || 2}
-              onChange={handleNumericChange(setMonth, 2, 12)}
+              onChange={createNumericChangeHandler(setMonth, 2, 12)}
             />
             <S.DateSuffix $isEmpty={!month}>월</S.DateSuffix>
           </S.DateBlock>
@@ -140,7 +136,7 @@ export default function DdayEditModal({
               placeholder={placeholderDay}
               value={day}
               $charCount={day.length || 2}
-              onChange={handleNumericChange(setDay, 2, 31)}
+              onChange={createNumericChangeHandler(setDay, 2, 31)}
             />
             <S.DateSuffix $isEmpty={!day}>일</S.DateSuffix>
           </S.DateBlock>

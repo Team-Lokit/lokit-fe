@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { getGetClusterPhotosQueryOptions, useGetMyPage } from '@repo/api-client';
 import MapView from '@/components/map/MapView';
@@ -43,6 +43,7 @@ import LocationPermissionModal from './locationPermissionModal/LocationPermissio
 import PhotoSourceSheet from './photoSourceSheet/PhotoSourceSheet';
 import { validateCenterCoordinate } from '../_utils/mapRoute.calc';
 import { saveClusterToSession } from '@/utils/sessionStorage';
+import { readLastViewType, saveLastViewType } from '@/utils/viewTypeStorage';
 import { checkIsInWebView } from '@/utils/environment';
 import { useLocationPermissionModal } from '@/hooks/useLocationPermissionModal';
 import { useNotificationPermissionSync } from '@/hooks/useNotificationPermissionSync';
@@ -53,6 +54,10 @@ import type { SelectedPhoto } from '@/app/photo/add/_types/photo';
 import Chip from '@/components/buttons/chip/Chip';
 import { usePrefetchSidoBoundary } from '@/components/map/regionPhotoLayer/useRegionBoundaries';
 
+// 뷰 변경 시 URL 쿼리가 함께 갱신되므로 저장값 변경을 구독할 필요가 없음
+const subscribeNoop = () => () => {};
+const getServerLastViewType = () => undefined;
+
 export default function MapRoute() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -61,10 +66,22 @@ export default function MapRoute() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const searchParams = useSearchParams();
   const viewTypeParam = searchParams.get(VIEW_TYPE_PARAM);
-  const activeView = isViewType(viewTypeParam) ? viewTypeParam : VIEW_TYPE.MAP;
+  // URL에 뷰가 없으면 마지막으로 선택한 뷰로 진입
+  // 서버 렌더·hydration 시점엔 저장값을 알 수 없으므로(undefined) 뷰를 확정하지 않음(null)
+  // → 기본 뷰(지도)가 잠깐 보였다가 바뀌는 현상 방지
+  const lastViewType = useSyncExternalStore(
+    subscribeNoop,
+    readLastViewType,
+    getServerLastViewType,
+  );
+  const activeView = isViewType(viewTypeParam)
+    ? viewTypeParam
+    : lastViewType === undefined
+      ? null
+      : (lastViewType ?? VIEW_TYPE.MAP);
 
   // 사용자 프로필 데이터
-  const { data: myPageData } = useGetMyPage();
+  const { data: myPageData, isPending: isMyPagePending } = useGetMyPage();
 
   // 상태 관리
   const { viewState, mapViewRef, handleViewStateChange, handleGoToCurrentLocation } =
@@ -187,14 +204,18 @@ export default function MapRoute() {
 
   useTrackPage(
     'screen_view_home',
-    viewContext.type === VIEW_CONTEXT_TYPE.HOME && totalHistoryCount !== undefined
+    activeView &&
+      viewContext.type === VIEW_CONTEXT_TYPE.HOME &&
+      totalHistoryCount !== undefined
       ? { view_mode: activeView, total_records: totalHistoryCount }
       : null,
   );
 
   useTrackPage(
     'screen_view_album_detail',
-    viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL && albumDetail?.id !== undefined
+    activeView &&
+      viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL &&
+      albumDetail?.id !== undefined
       ? {
           album_id: String(albumDetail.id),
           album_name: albumDetail.title ?? '',
@@ -211,6 +232,10 @@ export default function MapRoute() {
   }, [viewContext, albumDetail, totalHistoryCount]);
 
   const hasPhoto = (albumDetail?.photoCount ?? 0) > 0 || displayPhotos.length > 0;
+  // 홈에서는 기본 앨범 ID(마이페이지 응답)를 받기 전까지 앨범 사진 조회가 비활성 상태라
+  // isAlbumDetailLoading이 false로 나오므로, 그동안도 로딩으로 취급해 빈 화면 노출을 막음
+  const isGridLoading =
+    isAlbumDetailLoading || (selectedAlbumId === null && isMyPagePending);
 
   const selectedAlbumTitle = albumDetail?.title;
 
@@ -334,13 +359,21 @@ export default function MapRoute() {
         />
       )}
 
-      {activeView === VIEW_TYPE.CALENDAR && !isAlbumDetailLoading && (
+      {/* 캘린더는 /calendar API로 직접 조회하므로 앨범 상세 로딩을 기다리지 않는다
+          (기다리면 로딩 중 언마운트 → 재마운트되며 요청이 취소·재요청됨) */}
+      {activeView === VIEW_TYPE.CALENDAR && (
         <S.CalendarViewContainer>
-          <CalendarView photos={displayPhotos} firstMetDate={myPageData?.firstMetDate} />
+          <CalendarView
+            albumId={
+              viewContext.type === VIEW_CONTEXT_TYPE.ALBUM_DETAIL
+                ? viewContext.albumId
+                : undefined
+            }
+          />
         </S.CalendarViewContainer>
       )}
 
-      {activeView === VIEW_TYPE.GRID && !isAlbumDetailLoading && (
+      {activeView === VIEW_TYPE.GRID && !isGridLoading && (
         <S.GridViewContainer>
           {hasPhoto ? (
             <PhotoGridContainer>
@@ -430,28 +463,31 @@ export default function MapRoute() {
         </CircleButton>
       </S.ActionColumn>
 
-      {activeView !== VIEW_TYPE.CALENDAR && (
+      {activeView && activeView !== VIEW_TYPE.CALENDAR && (
         <S.FloatingButtonWrapper>
           <Chip text={`기록 ${photoCount}개`} size="medium" />
         </S.FloatingButtonWrapper>
       )}
 
-      <S.ViewSwitcherWrapper>
-        <ViewSwitcher
-          activeView={activeView}
-          onChangeView={(view) => {
-            if (view !== activeView) {
-              track('click_view_mode_switch', {
-                from_mode: activeView,
-                to_mode: view,
-              });
-            }
-            const params = new URLSearchParams(searchParams.toString());
-            params.set(VIEW_TYPE_PARAM, view);
-            router.replace(`?${params.toString()}`, { scroll: false });
-          }}
-        />
-      </S.ViewSwitcherWrapper>
+      {activeView && (
+        <S.ViewSwitcherWrapper>
+          <ViewSwitcher
+            activeView={activeView}
+            onChangeView={(view) => {
+              if (view !== activeView) {
+                track('click_view_mode_switch', {
+                  from_mode: activeView,
+                  to_mode: view,
+                });
+              }
+              saveLastViewType(view);
+              const params = new URLSearchParams(searchParams.toString());
+              params.set(VIEW_TYPE_PARAM, view);
+              router.replace(`?${params.toString()}`, { scroll: false });
+            }}
+          />
+        </S.ViewSwitcherWrapper>
+      )}
 
       <Sidebar
         isOpen={isSidebarOpen}

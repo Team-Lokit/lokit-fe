@@ -36,6 +36,7 @@ import type {
   CreateCommentRequest,
   CreatePhotoRequest,
   DisconnectNoticeResponse,
+  GetDayPhotosParams,
   GetLocationInfoParams,
   GetMapMeV11200,
   GetMapMeV11Params,
@@ -4242,6 +4243,9 @@ export function useGetDisconnectNoticeSuspense<
  * 
             해당 월에 사진 또는 기념일이 있는 날짜 목록을 조회합니다.
 
+            - albumId 가 없거나 기본 앨범이면 커플의 전체 사진, 그 외에는 해당 앨범의 사진만 대상으로 합니다.
+              기념일은 albumId 와 관계없이 항상 포함됩니다.
+
             - 사진은 기준 시각(촬영 시각, 없으면 업로드 시각)의 날짜에 배치됩니다.
             - 대표 사진은 같은 날짜 사진 중 기준 시각 최신(같으면 나중에 등록된) 1장입니다.
             - 기념일은 커플이 된 날짜를 1일째로 계산한 100일 단위 기념일과 N주년입니다.
@@ -4264,7 +4268,7 @@ export const getGetMonthQueryKey = (params?: GetMonthParams) => {
 
 export const getGetMonthQueryOptions = <
   TData = Awaited<ReturnType<typeof getMonth>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = void | ApiResponseErrorDetail,
 >(
   params: GetMonthParams,
   options?: {
@@ -4286,7 +4290,7 @@ export const getGetMonthQueryOptions = <
 };
 
 export type GetMonthQueryResult = NonNullable<Awaited<ReturnType<typeof getMonth>>>;
-export type GetMonthQueryError = ApiResponseErrorDetail | void;
+export type GetMonthQueryError = void | ApiResponseErrorDetail;
 
 /**
  * @summary 월간 캘린더 조회
@@ -4294,7 +4298,7 @@ export type GetMonthQueryError = ApiResponseErrorDetail | void;
 
 export function useGetMonth<
   TData = Awaited<ReturnType<typeof getMonth>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = void | ApiResponseErrorDetail,
 >(
   params: GetMonthParams,
   options?: {
@@ -4314,7 +4318,7 @@ export function useGetMonth<
 
 export const getGetMonthSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof getMonth>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = void | ApiResponseErrorDetail,
 >(
   params: GetMonthParams,
   options?: {
@@ -4338,7 +4342,7 @@ export const getGetMonthSuspenseQueryOptions = <
 export type GetMonthSuspenseQueryResult = NonNullable<
   Awaited<ReturnType<typeof getMonth>>
 >;
-export type GetMonthSuspenseQueryError = ApiResponseErrorDetail | void;
+export type GetMonthSuspenseQueryError = void | ApiResponseErrorDetail;
 
 /**
  * @summary 월간 캘린더 조회
@@ -4346,7 +4350,7 @@ export type GetMonthSuspenseQueryError = ApiResponseErrorDetail | void;
 
 export function useGetMonthSuspense<
   TData = Awaited<ReturnType<typeof getMonth>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = void | ApiResponseErrorDetail,
 >(
   params: GetMonthParams,
   options?: {
@@ -4368,37 +4372,44 @@ export function useGetMonthSuspense<
 /**
  * 
             해당 날짜의 사진을 기준 시각 최신순으로 조회합니다.
+            albumId 가 없거나 기본 앨범이면 커플의 전체 사진, 그 외에는 해당 앨범의 사진만 조회합니다.
             첫 번째 사진은 월간 캘린더의 대표 사진과 같습니다. 사진 상세는 GET /photos/{id} 로 조회합니다.
         
  * @summary 날짜별 사진 목록 조회
  */
-export const getDayPhotos = (date: string, signal?: AbortSignal) => {
+export const getDayPhotos = (
+  date: string,
+  params?: GetDayPhotosParams,
+  signal?: AbortSignal,
+) => {
   return customFetcher<CalendarDayPhotosResponse>({
     url: `/calendar/days/${date}/photos`,
     method: 'GET',
+    params,
     signal,
   });
 };
 
-export const getGetDayPhotosQueryKey = (date?: string) => {
-  return [`/calendar/days/${date}/photos`] as const;
+export const getGetDayPhotosQueryKey = (date?: string, params?: GetDayPhotosParams) => {
+  return [`/calendar/days/${date}/photos`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetDayPhotosQueryOptions = <
   TData = Awaited<ReturnType<typeof getDayPhotos>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = void | ApiResponseErrorDetail,
 >(
   date: string,
+  params?: GetDayPhotosParams,
   options?: {
     query?: UseQueryOptions<Awaited<ReturnType<typeof getDayPhotos>>, TError, TData>;
   },
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetDayPhotosQueryKey(date);
+  const queryKey = queryOptions?.queryKey ?? getGetDayPhotosQueryKey(date, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getDayPhotos>>> = ({ signal }) =>
-    getDayPhotos(date, signal);
+    getDayPhotos(date, params, signal);
 
   return { queryKey, queryFn, enabled: !!date, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getDayPhotos>>,
@@ -4410,7 +4421,7 @@ export const getGetDayPhotosQueryOptions = <
 export type GetDayPhotosQueryResult = NonNullable<
   Awaited<ReturnType<typeof getDayPhotos>>
 >;
-export type GetDayPhotosQueryError = ApiResponseErrorDetail | void;
+export type GetDayPhotosQueryError = void | ApiResponseErrorDetail;
 
 /**
  * @summary 날짜별 사진 목록 조회
@@ -4418,14 +4429,15 @@ export type GetDayPhotosQueryError = ApiResponseErrorDetail | void;
 
 export function useGetDayPhotos<
   TData = Awaited<ReturnType<typeof getDayPhotos>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = void | ApiResponseErrorDetail,
 >(
   date: string,
+  params?: GetDayPhotosParams,
   options?: {
     query?: UseQueryOptions<Awaited<ReturnType<typeof getDayPhotos>>, TError, TData>;
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetDayPhotosQueryOptions(date, options);
+  const queryOptions = getGetDayPhotosQueryOptions(date, params, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
@@ -4438,9 +4450,10 @@ export function useGetDayPhotos<
 
 export const getGetDayPhotosSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof getDayPhotos>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = void | ApiResponseErrorDetail,
 >(
   date: string,
+  params?: GetDayPhotosParams,
   options?: {
     query?: UseSuspenseQueryOptions<
       Awaited<ReturnType<typeof getDayPhotos>>,
@@ -4451,10 +4464,10 @@ export const getGetDayPhotosSuspenseQueryOptions = <
 ) => {
   const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetDayPhotosQueryKey(date);
+  const queryKey = queryOptions?.queryKey ?? getGetDayPhotosQueryKey(date, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getDayPhotos>>> = ({ signal }) =>
-    getDayPhotos(date, signal);
+    getDayPhotos(date, params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
     Awaited<ReturnType<typeof getDayPhotos>>,
@@ -4466,7 +4479,7 @@ export const getGetDayPhotosSuspenseQueryOptions = <
 export type GetDayPhotosSuspenseQueryResult = NonNullable<
   Awaited<ReturnType<typeof getDayPhotos>>
 >;
-export type GetDayPhotosSuspenseQueryError = ApiResponseErrorDetail | void;
+export type GetDayPhotosSuspenseQueryError = void | ApiResponseErrorDetail;
 
 /**
  * @summary 날짜별 사진 목록 조회
@@ -4474,9 +4487,10 @@ export type GetDayPhotosSuspenseQueryError = ApiResponseErrorDetail | void;
 
 export function useGetDayPhotosSuspense<
   TData = Awaited<ReturnType<typeof getDayPhotos>>,
-  TError = ApiResponseErrorDetail | void,
+  TError = void | ApiResponseErrorDetail,
 >(
   date: string,
+  params?: GetDayPhotosParams,
   options?: {
     query?: UseSuspenseQueryOptions<
       Awaited<ReturnType<typeof getDayPhotos>>,
@@ -4485,7 +4499,7 @@ export function useGetDayPhotosSuspense<
     >;
   },
 ): UseSuspenseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetDayPhotosSuspenseQueryOptions(date, options);
+  const queryOptions = getGetDayPhotosSuspenseQueryOptions(date, params, options);
 
   const query = useSuspenseQuery(queryOptions) as UseSuspenseQueryResult<
     TData,

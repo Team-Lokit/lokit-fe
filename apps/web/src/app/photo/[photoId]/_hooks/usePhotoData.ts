@@ -3,6 +3,8 @@ import {
   useGetPhotoDetail,
   getGetPhotoDetailQueryOptions,
   useGetPhotos,
+  useGetDayPhotos,
+  getGetDayPhotosQueryKey,
   useGetClusterPhotos,
   getGetClusterPhotosQueryOptions,
   getGetPhotosQueryKey,
@@ -16,6 +18,8 @@ interface UsePhotoDataProps {
   photoId: number;
   albumIdFromQuery?: number;
   clusterIdFromQuery?: string;
+  /** 캘린더에서 진입한 날짜(YYYY-MM-DD). 있으면 해당 날짜 사진 목록을 슬라이더에 사용 */
+  dateFromQuery?: string;
   /** false이면 모든 API 호출 건너뜀 (pending 사진 모드) */
   enabled?: boolean;
 }
@@ -45,6 +49,7 @@ const usePhotoData = ({
   photoId,
   albumIdFromQuery,
   clusterIdFromQuery,
+  dateFromQuery,
   enabled = true,
 }: UsePhotoDataProps) => {
   // 클라이언트 클러스터 여부 판별
@@ -112,7 +117,15 @@ const usePhotoData = ({
   const { data: albumPhotos } = useGetPhotos(albumIdFromQuery ?? 0, {
     query: {
       queryKey: getGetPhotosQueryKey(albumIdFromQuery),
-      enabled: enabled && !!albumIdFromQuery && !clusterIdFromQuery,
+      enabled: enabled && !!albumIdFromQuery && !clusterIdFromQuery && !dateFromQuery,
+    },
+  });
+
+  const dayPhotosParams = albumIdFromQuery ? { albumId: albumIdFromQuery } : undefined;
+  const { data: dayPhotos } = useGetDayPhotos(dateFromQuery ?? '', dayPhotosParams, {
+    query: {
+      queryKey: getGetDayPhotosQueryKey(dateFromQuery ?? '', dayPhotosParams),
+      enabled: enabled && !!dateFromQuery && !clusterIdFromQuery,
     },
   });
 
@@ -122,13 +135,19 @@ const usePhotoData = ({
     // 클러스터 사진 우선
     if (clusterPhotosData && Array.isArray(clusterPhotosData)) {
       photoList = clusterPhotosData.map(convertClusterPhotoToPhotoResponse);
+    } else if (dateFromQuery) {
+      photoList = (dayPhotos?.photos ?? []).map(({ id, url, takenAt }) => ({
+        id,
+        url,
+        takenAt,
+      }));
     } else if (albumPhotos?.albums?.[0]?.photos) {
       photoList = albumPhotos.albums[0].photos;
     }
 
     // 날짜순 정렬
     return sortPhotosByDate(photoList);
-  }, [clusterPhotosData, albumPhotos]);
+  }, [clusterPhotosData, dateFromQuery, dayPhotos, albumPhotos]);
 
   return {
     photoDetail,

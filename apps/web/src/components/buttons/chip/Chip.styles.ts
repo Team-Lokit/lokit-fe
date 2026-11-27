@@ -12,6 +12,12 @@ const variantStyles = {
     backdrop-filter: ${theme.effects.backdropBlur[25]};
     -webkit-backdrop-filter: ${theme.effects.backdropBlur[25]};
   `,
+  gray: (theme: Theme) => css`
+    background: ${theme.colors.grayScale[900]};
+    color: ${theme.colors.grayScale[100]};
+    backdrop-filter: ${theme.effects.backdropBlur[25]};
+    -webkit-backdrop-filter: ${theme.effects.backdropBlur[25]};
+  `,
 };
 
 const sizeStyles = {
@@ -21,7 +27,7 @@ const sizeStyles = {
     gap: 4px;
   `,
   medium: (theme: Theme) => css`
-    ${theme.typography.body15Semibold}
+    ${theme.typography.body14Semibold}
     padding: 6px 14px;
     gap: 6px;
   `,

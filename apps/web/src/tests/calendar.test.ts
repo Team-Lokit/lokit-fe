@@ -1,8 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { AnniversaryResponseType } from '@repo/api-client';
 import {
   buildCalendarWeeks,
+  formatYear,
   getAnniversaryLabel,
-  groupPhotosByDate,
+  mapCalendarDays,
+  parseYearMonthKey,
+  shiftYearMonth,
+  toDateKey,
+  toYearMonthKey,
 } from '@/utils/calendar';
 
 describe('buildCalendarWeeks', () => {
@@ -35,48 +41,130 @@ describe('buildCalendarWeeks', () => {
   });
 });
 
-describe('groupPhotosByDate', () => {
-  it('촬영일을 KST 기준 날짜로 묶는다', () => {
-    const photos = [
-      { id: 1, takenAt: '2026-10-18T05:00:00Z' },
-      // UTC 15시 = KST 다음 날 0시
-      { id: 2, takenAt: '2026-10-18T15:00:00Z' },
-      { id: 3, takenAt: '2026-10-18T01:00:00Z' },
-    ];
-
-    const grouped = groupPhotosByDate(photos);
-
-    expect(grouped.get('2026-10-18')?.map((p) => p.id)).toEqual([1, 3]);
-    expect(grouped.get('2026-10-19')?.map((p) => p.id)).toEqual([2]);
-  });
-
-  it('촬영일이 없는 사진은 제외한다', () => {
-    const grouped = groupPhotosByDate([{ id: 1 }, { id: 2, takenAt: undefined }]);
-    expect(grouped.size).toBe(0);
+describe('toYearMonthKey', () => {
+  it('yyyy-MM 형식으로 변환한다', () => {
+    expect(toYearMonthKey({ year: 2026, month: 3 })).toBe('2026-03');
+    expect(toYearMonthKey({ year: 2026, month: 11 })).toBe('2026-11');
   });
 });
 
 describe('getAnniversaryLabel', () => {
-  const firstMetDate = '2026-01-01';
-
-  it('커플이 된 날을 1일째로 계산해 99일 뒤를 100일로 표시한다', () => {
-    expect(getAnniversaryLabel('2026-04-10', firstMetDate)).toBe('100');
-    expect(getAnniversaryLabel('2026-04-09', firstMetDate)).toBeNull();
-    expect(getAnniversaryLabel('2026-07-19', firstMetDate)).toBe('200');
+  it('DAY_COUNT는 일수, YEARLY는 N주년으로 표시한다', () => {
+    expect(
+      getAnniversaryLabel([{ type: AnniversaryResponseType.DAY_COUNT, value: 100 }]),
+    ).toBe('100');
+    expect(
+      getAnniversaryLabel([{ type: AnniversaryResponseType.YEARLY, value: 1 }]),
+    ).toBe('1주년');
   });
 
-  it('같은 월·일에 매년 N주년을 표시한다', () => {
-    expect(getAnniversaryLabel('2027-01-01', firstMetDate)).toBe('1주년');
-    expect(getAnniversaryLabel('2028-01-01', firstMetDate)).toBe('2주년');
+  it('같은 날 겹치면 주년을 우선한다', () => {
+    expect(
+      getAnniversaryLabel([
+        { type: AnniversaryResponseType.DAY_COUNT, value: 1100 },
+        { type: AnniversaryResponseType.YEARLY, value: 3 },
+      ]),
+    ).toBe('3주년');
   });
 
-  it('커플이 된 당일과 그 이전에는 표시하지 않는다', () => {
-    expect(getAnniversaryLabel('2026-01-01', firstMetDate)).toBeNull();
-    expect(getAnniversaryLabel('2025-01-01', firstMetDate)).toBeNull();
-    expect(getAnniversaryLabel('2025-09-24', firstMetDate)).toBeNull();
+  it('기념일이 없으면 null', () => {
+    expect(getAnniversaryLabel([])).toBeNull();
+    expect(getAnniversaryLabel(undefined)).toBeNull();
+  });
+});
+
+describe('mapCalendarDays', () => {
+  it('날짜별 대표 사진과 기념일 라벨을 칸 정보로 변환한다', () => {
+    const result = mapCalendarDays([
+      {
+        date: '2026-11-02',
+        representativePhoto: { id: 1, url: 'a.jpg' },
+        anniversaries: [],
+      },
+      {
+        date: '2026-11-10',
+        anniversaries: [{ type: AnniversaryResponseType.DAY_COUNT, value: 200 }],
+      },
+    ]);
+    expect(result).toEqual({
+      '2026-11-02': { thumbnail: 'a.jpg', photoId: 1, anniversary: undefined },
+      '2026-11-10': { thumbnail: undefined, photoId: undefined, anniversary: '200' },
+    });
   });
 
-  it('커플이 된 날짜가 없으면 표시하지 않는다', () => {
-    expect(getAnniversaryLabel('2026-04-10', undefined)).toBeNull();
+  it('응답이 없으면 빈 객체', () => {
+    expect(mapCalendarDays(undefined)).toEqual({});
+  });
+});
+
+describe('shiftYearMonth', () => {
+  it('같은 해 안에서 이동한다', () => {
+    expect(shiftYearMonth({ year: 2026, month: 5 }, 1)).toEqual({ year: 2026, month: 6 });
+    expect(shiftYearMonth({ year: 2026, month: 5 }, -1)).toEqual({
+      year: 2026,
+      month: 4,
+    });
+  });
+
+  it('연도 경계를 넘는다', () => {
+    expect(shiftYearMonth({ year: 2026, month: 12 }, 1)).toEqual({
+      year: 2027,
+      month: 1,
+    });
+    expect(shiftYearMonth({ year: 2026, month: 1 }, -1)).toEqual({
+      year: 2025,
+      month: 12,
+    });
+  });
+});
+
+describe('formatYear / toYearMonthKey / toDateKey', () => {
+  it('4자리 미만은 앞을 0으로 채우고, 5자리는 앞에 +를 붙인다', () => {
+    expect(formatYear(1)).toBe('0001');
+    expect(formatYear(999)).toBe('0999');
+    expect(formatYear(9999)).toBe('9999');
+    expect(formatYear(10000)).toBe('+10000');
+  });
+
+  it('서버 형식에 맞는 연월/날짜 키를 만든다', () => {
+    expect(toYearMonthKey({ year: 1, month: 1 })).toBe('0001-01');
+    expect(toYearMonthKey({ year: 10000, month: 1 })).toBe('+10000-01');
+    expect(toDateKey(999, 12, 31)).toBe('0999-12-31');
+    expect(toDateKey(10000, 1, 1)).toBe('+10000-01-01');
+  });
+});
+
+describe('buildCalendarWeeks (0~99년)', () => {
+  it('1년 1월을 1901년이 아닌 1년 기준으로 만든다', () => {
+    const days = buildCalendarWeeks({ year: 1, month: 1 }).flat();
+    const currentMonth = days.filter((day) => day.isCurrentMonth);
+    expect(currentMonth).toHaveLength(31);
+    expect(currentMonth[0].dateKey).toBe('0001-01-01');
+    // 서기 1년 1월 1일은 월요일 (프롤렙틱 그레고리력)
+    expect(currentMonth[0].dayOfWeek).toBe(1);
+  });
+});
+
+describe('parseYearMonthKey', () => {
+  it('toYearMonthKey 결과를 다시 연/월로 되돌린다', () => {
+    const cases = [
+      { year: 2026, month: 5 },
+      { year: 1, month: 1 },
+      { year: 10000, month: 12 },
+    ];
+    for (const yearMonth of cases) {
+      expect(parseYearMonthKey(toYearMonthKey(yearMonth))).toEqual(yearMonth);
+    }
+  });
+
+  it('형식이 맞지 않거나 범위를 벗어나면 null', () => {
+    expect(parseYearMonthKey(null)).toBeNull();
+    expect(parseYearMonthKey('')).toBeNull();
+    expect(parseYearMonthKey('2026-5')).toBeNull();
+    expect(parseYearMonthKey('2026-13')).toBeNull();
+    expect(parseYearMonthKey('2026-00')).toBeNull();
+    expect(parseYearMonthKey('0000-01')).toBeNull();
+    expect(parseYearMonthKey('+10001-01')).toBeNull();
+    expect(parseYearMonthKey('abc')).toBeNull();
   });
 });

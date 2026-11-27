@@ -9,6 +9,7 @@ import {
   type AlbumThumbnails,
   type PhotoListResponse,
 } from '@repo/api-client';
+import { invalidateCalendarQueries } from '@/utils/calendarQuery';
 import { useToast } from '@/components/toast/ToastProvider';
 import { useGoBackOrHome } from '@/hooks/useGoBackOrHome';
 
@@ -89,6 +90,7 @@ const usePhotoDelete = () => {
       await deletePhotoAsync({ id: photoId });
       queryClient.removeQueries({ queryKey: getGetPhotoDetailQueryKey(photoId) });
       queryClient.invalidateQueries({ queryKey: getGetMapMeV11QueryKey() });
+      invalidateCalendarQueries(queryClient);
 
       // 전체 사진 앨범(첫 번째 앨범)은 항상 invalidate
       const cachedAlbums = queryClient.getQueryData<AlbumThumbnails[]>(

@@ -11,4 +11,8 @@ export type GetMonthParams = {
    * 조회 연월 (yyyy-MM)
    */
   yearMonth: string;
+  /**
+   * 앨범 ID (선택). 없거나 기본 앨범이면 전체 사진, 그 외에는 해당 앨범의 사진만 조회
+   */
+  albumId?: number;
 };

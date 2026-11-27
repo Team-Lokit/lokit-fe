@@ -23,6 +23,7 @@ import PhotoEditOverlay from './_components/PhotoEditOverlay';
 const VALID_SOURCES: readonly PhotoDetailSource[] = [
   'home_map',
   'home_grid',
+  'home_calendar',
   'album_detail',
 ];
 import {
@@ -49,6 +50,7 @@ export default function PhotoViewPage() {
     ? Number(searchParams.get('albumId'))
     : undefined;
   const clusterIdFromQuery = searchParams.get('clusterId') || undefined;
+  const dateFromQuery = searchParams.get('date') || undefined;
 
   useMarkPushNotificationAsRead();
 
@@ -70,6 +72,7 @@ export default function PhotoViewPage() {
     photoId: effectivePhotoId,
     albumIdFromQuery,
     clusterIdFromQuery,
+    dateFromQuery,
     enabled: !isPendingMode,
   });
 
@@ -92,6 +95,7 @@ export default function PhotoViewPage() {
     initialPhotoId: effectivePhotoId,
     albumIdFromQuery,
     clusterIdFromQuery,
+    dateFromQuery,
   });
 
   // 슬라이더에서 현재 선택된 사진의 상세 정보 조회

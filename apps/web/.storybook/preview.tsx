@@ -24,6 +24,8 @@ const withGlobalStyle: Decorator = (Story) => (
     <GlobalStyles />
     <QueryClientProvider client={queryClient}>
     <Story />
+    {/* PopupRoot(Modal 등)가 portal로 렌더링할 대상. 앱에서는 app/layout.tsx에 있음 */}
+    <div id="modal-root" />
     </QueryClientProvider>
   </ThemeProvider>
 );

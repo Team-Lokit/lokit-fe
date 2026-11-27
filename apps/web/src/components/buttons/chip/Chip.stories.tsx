@@ -1,5 +1,6 @@
 import Chip from '@/components/buttons/chip/Chip';
 import type { Meta, StoryObj } from '@storybook/react';
+import ChevronRightSvg from '@/assets/images/chevronRightSmall.svg';
 
 const meta: Meta<typeof Chip> = {
   title: 'Components/Chip',
@@ -62,5 +63,25 @@ export const Medium: Story = {
   args: {
     text: 'Medium Chip',
     size: 'medium',
+  },
+};
+
+export const Gray: Story = {
+  args: {
+    text: 'Gray Chip',
+    variant: 'gray',
+    size: 'medium',
+  },
+};
+
+/** 우측 아이콘 + 클릭 (예: 캘린더 '오늘' 버튼) */
+export const WithTrailingIcon: Story = {
+  args: {
+    text: '오늘',
+    variant: 'gray',
+    size: 'medium',
+    trailingIcon: <ChevronRightSvg width={14} height={14} />,
+    ariaLabel: '현재 달로 이동',
+    onClick: () => {},
   },
 };

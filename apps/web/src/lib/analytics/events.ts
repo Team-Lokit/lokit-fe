@@ -4,7 +4,11 @@
  */
 
 export type ViewMode = 'map' | 'calendar' | 'grid';
-export type PhotoDetailSource = 'home_map' | 'home_grid' | 'album_detail';
+export type PhotoDetailSource =
+  | 'home_map'
+  | 'home_grid'
+  | 'home_calendar'
+  | 'album_detail';
 export type PhotoPickerSource = 'home' | 'album_detail';
 export type LoginMethod = 'kakao' | 'apple';
 export type LoginReferrer = 'organic' | 'deeplink';
