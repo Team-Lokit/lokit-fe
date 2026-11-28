@@ -7,7 +7,7 @@
  *
  * 코드 (백엔드 /map/me v2 clusterId 와 동일)
  *   - sd_{2자리}  → sido.json
- *   - sgg_{5자리} → sgg.json (일반구는 시로 병합. 41111 → 41110)
+ *   - sgg_{5자리} → sgg.json (일반구만 시로 병합. 41111 → 41110 / 자치구·군은 그대로. 11215)
  *   - emd_{8자리} → emd/{시도}.json (adm_cd2 앞 8자리. 통계청 코드 adm_cd 는 쓰면 안 됨)
  *
  * 갱신: 백엔드가 region 을 교체하면 같은 기준일로 다시 실행하고, 출력된 시·도/읍·면·동 수를
@@ -55,19 +55,26 @@ const download = async () => {
   writeFileSync(RAW_PATH, Buffer.from(await res.arrayBuffer()));
 };
 
-/** 원본 속성(adm_cd2, sgg, sido)으로 백엔드 clusterId 코드를 만든다. */
+/**
+ * 일반구(시 아래의 구. 예: 수원시장안구 41111) 여부.
+ * 코드 끝자리만으로는 판별할 수 없다. 자치구(광진구 11215, 미추홀구 28177)나
+ * 군(증평군 43745, 태안군 44825)도 끝자리가 0 이 아니기 때문에 시군구명으로 판별한다.
+ */
+const isGeneralGu = (sggName) => /시.+구$/.test(sggName);
+
+/** 원본 속성(adm_cd2, sgg, sggnm, sido)으로 백엔드 clusterId 코드를 만든다. */
 const prepare = () => {
   const raw = JSON.parse(readFileSync(RAW_PATH, 'utf8'));
   const features = raw.features.map((feature) => {
-    const { adm_cd2: admCd2, sgg, sido } = feature.properties;
+    const { adm_cd2: admCd2, sgg, sggnm, sido } = feature.properties;
     const sggCode = String(sgg);
     return {
       type: 'Feature',
       geometry: feature.geometry,
       properties: {
         sd: String(sido),
-        // 일반구(끝자리 ≠ 0)는 상위 시(끝자리 0)로 병합
-        sgg: `${sggCode.slice(0, 4)}0`,
+        // 일반구는 상위 시(끝자리 0)로 병합. 41111 → 41110
+        sgg: isGeneralGu(String(sggnm)) ? `${sggCode.slice(0, 4)}0` : sggCode,
         emd: String(admCd2).slice(0, 8),
       },
     };
